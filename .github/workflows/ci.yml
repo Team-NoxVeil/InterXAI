@@ -1,0 +1,54 @@
+name: CI - Code Quality Checks
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: ["*"]
+
+jobs:
+  lint:
+    name: Backend Lint (Ruff + Mypy)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Check for Python files
+        id: check_files
+        run: |
+          if find . -name "*.py" -not -path "./.venv/*" -not -path "./venv/*" | grep -q .; then
+            echo "has_python=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_python=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Ruff (linting)
+        if: steps.check_files.outputs.has_python == 'true'
+        run: uv run ruff check .
+
+      - name: Run Ruff (format check)
+        if: steps.check_files.outputs.has_python == 'true'
+        run: uv run ruff format --check .
+
+      - name: Run mypy (type checking)
+        if: steps.check_files.outputs.has_python == 'true'
+        run: uv run mypy .
