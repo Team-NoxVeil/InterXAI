@@ -8,7 +8,12 @@ run_ruff() {
     cd "$BACKEND_DIR"
 
     if ! uv run ruff check .; then
-        echo "Ruff found issues."
+        echo "Ruff lint found issues."
+        return 1
+    fi
+
+    if ! uv run ruff format --check .; then
+        echo "Ruff formatting found issues. Run 'uv run ruff format .' to fix them."
         return 1
     fi
 
