@@ -1,0 +1,7 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "InterXAI - AI-powered interview automation system (FastAPI backend)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
