@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -e
+
+BACKEND_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../backend" && pwd)"
+
+run_ruff() {
+    cd "$BACKEND_DIR"
+
+    if ! uv run ruff check .; then
+        echo "Ruff found issues."
+        return 1
+    fi
+
+    echo "Ruff passed!"
+}
+
+run_mypy() {
+    cd "$BACKEND_DIR"
+
+    if ! uv run mypy .; then
+        echo "Mypy found issues."
+        return 1
+    fi
+
+    echo "Mypy passed!"
+}
+
+run_all() {
+    run_ruff
+    run_mypy
+    echo "All checks passed!"
+}
+
+main() {
+    if [[ "$1" == "--only=ruff" ]]; then
+        run_ruff
+    elif [[ "$1" == "--only=mypy" ]]; then
+        run_mypy
+    else
+        run_all
+    fi
+}
+
+main "$@"
