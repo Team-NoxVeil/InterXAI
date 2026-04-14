@@ -7,13 +7,15 @@ BACKEND_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../backend" && pwd)"
 run_ruff() {
     cd "$BACKEND_DIR"
 
-    if ! uv run ruff check .; then
-        echo "Ruff lint found issues."
+    echo "Running ruff check with auto-fix..."
+    if ! uv run ruff check --fix .; then
+        echo "Ruff lint found unfixable issues."
         return 1
     fi
 
-    if ! uv run ruff format --check .; then
-        echo "Ruff formatting found issues. Run 'uv run ruff format .' to fix them."
+    echo "Running ruff format..."
+    if ! uv run ruff format .; then
+        echo "Ruff formatting failed."
         return 1
     fi
 
