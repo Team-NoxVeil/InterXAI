@@ -11,10 +11,13 @@ class Settings(BaseSettings):
     DATABASE_URL: str
 
     # Security
-    SECRET_KEY: str = "your-secret-key-change-in-production"
+    SECRET_KEY: str = "secret"
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 3000
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30000
 
     class Config:
         env_file = ".env"
         case_sensitive = True
+
+
+settings: Settings = Settings()  # type: ignore[call-arg]
