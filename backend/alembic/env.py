@@ -7,6 +7,19 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 from app.database import Base, db_url
+from app.models.application import Application, InterviewSession  # noqa: F401
+from app.models.interaction import (  # noqa: F401
+    DsaInteraction,
+    FollowUpQuestion,
+    Interaction,
+    ResumeConversation,
+    ResumeQuestion,
+)
+from app.models.interview import CustomInterview, CustomQuestion, DsaTopic  # noqa: F401
+from app.models.organization import Organization  # noqa: F401
+
+# Import all models to ensure they are registered with Base.metadata
+from app.models.user import User, UserProfile  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
