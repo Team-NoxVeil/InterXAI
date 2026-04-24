@@ -12,6 +12,7 @@ from app.exceptions.auth import (
 )
 from app.interfaces.authenticator import Authenticator
 from app.interfaces.hasher import Hasher
+from app.models.organization import Organization
 from app.models.user import User, UserProfile
 from app.utils.bcrypt_hasher import BcryptHasher
 from app.utils.jwt_encrypter import JWTEncrypter
@@ -55,6 +56,36 @@ class JwtAuth(Authenticator):
         await self.db_session.commit()
 
         await self.db_session.refresh(user, attribute_names=["profile"])
+
+        return user
+
+    async def create_organization(self, username: str, password: str, email: str) -> User:
+
+        existing_user = await self.db_session.execute(select(User).where(User.username == username))
+        if existing_user.scalar_one_or_none():
+            raise UserAlreadyExistsError(username)
+
+        existing_email = await self.db_session.execute(select(User).where(User.email == email))
+        if existing_email.scalar_one_or_none():
+            raise EmailAlreadyExistsError(email)
+
+        hashed_password = self.hasher.hash(password)
+
+        user = User(
+            username=username,
+            email=email,
+            password_hash=hashed_password,
+            is_organization=True,
+        )
+
+        self.db_session.add(user)
+        await self.db_session.flush()
+
+        org = Organization(account_id=user.id)
+        self.db_session.add(org)
+
+        await self.db_session.commit()
+        await self.db_session.refresh(user, attribute_names=["organization"])
 
         return user
 
