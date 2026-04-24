@@ -10,7 +10,7 @@ class User(BaseTable):
     username: Mapped[str] = mapped_column(String(150), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(128), nullable=False)
-    is_organization: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_organization: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
     profile = relationship(
         "UserProfile",
         back_populates="user",
