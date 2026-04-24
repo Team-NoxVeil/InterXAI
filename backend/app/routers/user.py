@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, Header, status
+from appp.utils.authorization import get_current_user, verify_ownership
+from fastapi import APIRouter, Depends, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.exceptions.auth import InvalidTokenError, UserNotFoundError
+from app.exceptions.auth import UserNotFoundError
 from app.logger import get_logger
 from app.models.user import User, UserProfile
 from app.schemas.user import (
@@ -19,35 +20,6 @@ from app.utils.jwt_auth import JwtAuth
 logger = get_logger(__name__)
 
 router = APIRouter(prefix="/users", tags=["users"])
-
-
-async def get_current_user(
-    authorization: str | None = Header(None),
-    db: AsyncSession = Depends(get_db),
-) -> User:
-    if not authorization or not authorization.startswith("Bearer "):
-        logger.warning("Missing or invalid authorization header")
-        raise InvalidTokenError()
-
-    token = authorization.split(" ")[1]
-
-    auth = JwtAuth(db_session=db)
-    payload = await auth.authorize(token)
-
-    user_id = payload.get("user_id")
-    if not user_id:
-        logger.warning("Invalid token: no user_id in payload")
-        raise InvalidTokenError()
-
-    result = await db.execute(select(User).where(User.id == user_id))
-    user = result.scalar_one_or_none()
-
-    if not user:
-        logger.warning("User not found during auth: %d", user_id)
-        raise UserNotFoundError(user_id=user_id)
-
-    logger.info("User authenticated: %d", user_id)
-    return user
 
 
 @router.post("/signup", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
@@ -102,7 +74,7 @@ async def update_user(
     user_id: int,
     user_data: UserUpdate,
     db: AsyncSession = Depends(get_db),
-    _current_user: User = Depends(get_current_user),
+    _current_user: User = Depends(verify_ownership),
 ) -> UserResponse:
     logger.info("Update user request for id: %d", user_id)
     result = await db.execute(select(User).where(User.id == user_id))
@@ -145,7 +117,7 @@ async def update_user(
 async def delete_user(
     user_id: int,
     db: AsyncSession = Depends(get_db),
-    _current_user: User = Depends(get_current_user),
+    _current_user: User = Depends(verify_ownership),
 ) -> None:
     logger.info("Delete user request for id: %d", user_id)
     result = await db.execute(select(User).where(User.id == user_id))
