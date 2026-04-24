@@ -31,7 +31,7 @@ ignore = [
 "alembic/env.py" = ["F401"]  # Model imports for Alembic autogenerate]
 "app/routers/*.py" = ["B008"]
 "app/utils/authorization.py" = ["B008"]
-
+"app/main.py" = ["F401"] # Unused models to make sure models are imported for sql alchemy.
 [lint.isort]
 known-first-party = ["backend"]
 combine-as-imports = true
