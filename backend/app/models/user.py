@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy import Boolean, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import BaseTable
@@ -10,7 +10,7 @@ class User(BaseTable):
     username: Mapped[str] = mapped_column(String(150), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(128), nullable=False)
-
+    is_organization: Mapped[bool] = mapped_column(Boolean, default=False)
     profile = relationship(
         "UserProfile",
         back_populates="user",
@@ -21,6 +21,11 @@ class User(BaseTable):
         "Application",
         back_populates="user",
         cascade="all, delete-orphan",
+    )
+    organization = relationship(
+        "Organization",
+        back_populates="owner",
+        uselist=False,
     )
 
     def __repr__(self) -> str:
