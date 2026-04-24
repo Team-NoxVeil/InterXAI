@@ -8,6 +8,11 @@ class ForbiddenError(Exception):
         self.detail = detail
 
 
+class NotFoundError(Exception):
+    def __init__(self, detail: str = "Not Found"):
+        self.detail = detail
+
+
 def register_common_exception_handlers(app: FastAPI) -> None:
     @app.exception_handler(RequestValidationError)
     async def validation_exception_handler(
@@ -22,5 +27,12 @@ def register_common_exception_handlers(app: FastAPI) -> None:
     async def forbidden_exception_handler(_request: Request, exc: ForbiddenError) -> JSONResponse:
         return JSONResponse(
             status_code=403,
+            content={"detail": exc.detail},
+        )
+
+    @app.exception_handler(NotFoundError)
+    async def not_found_exception_handler(_request: Request, exc: NotFoundError) -> JSONResponse:
+        return JSONResponse(
+            status_code=404,
             content={"detail": exc.detail},
         )
