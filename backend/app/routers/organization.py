@@ -18,7 +18,7 @@ from app.utils.jwt_auth import JwtAuth
 
 logger = get_logger(__name__)
 
-router = APIRouter(prefix="/organizations", tags=["organizations"])
+router: APIRouter = APIRouter(prefix="/organizations", tags=["organizations"])
 
 
 @router.post(

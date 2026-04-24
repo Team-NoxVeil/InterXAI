@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.security import OAuth2PasswordBearer
 
 from app.config import settings
 from app.exceptions.auth import register_auth_exception_handlers
@@ -22,7 +23,7 @@ from app.routers.user import router as user_router
 logger = get_logger(__name__)
 
 app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 register_auth_exception_handlers(app)
 register_common_exception_handlers(app)
 register_sql_alchemy_exception_handlers(app)

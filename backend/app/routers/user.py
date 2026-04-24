@@ -19,7 +19,7 @@ from app.utils.jwt_auth import JwtAuth
 
 logger = get_logger(__name__)
 
-router = APIRouter(prefix="/users", tags=["users"])
+router: APIRouter = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.post("/signup", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
