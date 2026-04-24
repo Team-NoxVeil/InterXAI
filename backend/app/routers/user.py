@@ -1,4 +1,3 @@
-from appp.utils.authorization import get_current_user, verify_ownership
 from fastapi import APIRouter, Depends, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +13,7 @@ from app.schemas.user import (
     UserResponse,
     UserUpdate,
 )
+from app.utils.authorization import get_current_user, verify_ownership
 from app.utils.bcrypt_hasher import BcryptHasher
 from app.utils.jwt_auth import JwtAuth
 
