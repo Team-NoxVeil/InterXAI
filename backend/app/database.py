@@ -1,9 +1,14 @@
 from collections.abc import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 from app.config import settings
+
+
+class Base(DeclarativeBase):
+    pass
+
 
 db_url = settings.DATABASE_URL
 if db_url.startswith("postgresql://"):
@@ -18,8 +23,6 @@ AsyncSessionLocal = async_sessionmaker(
     autocommit=False,
     autoflush=False,
 )
-
-Base = declarative_base()
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:

@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy import Boolean, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import BaseTable
@@ -10,7 +10,7 @@ class User(BaseTable):
     username: Mapped[str] = mapped_column(String(150), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(128), nullable=False)
-
+    is_organization: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
     profile = relationship(
         "UserProfile",
         back_populates="user",
@@ -22,6 +22,11 @@ class User(BaseTable):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    organization = relationship(
+        "Organization",
+        back_populates="owner",
+        uselist=False,
+    )
 
     def __repr__(self) -> str:
         return f"<User(username='{self.username}')>"
@@ -32,8 +37,8 @@ class UserProfile(BaseTable):
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     leetcode: Mapped[str] = mapped_column(String(100), nullable=True)
-    github: Mapped[str] = mapped_column(String(100), nullable=False)
-    linkedin: Mapped[str | None] = mapped_column(String(255), nullable=False)
+    github: Mapped[str] = mapped_column(String(100), nullable=True)
+    linkedin: Mapped[str | None] = mapped_column(String(255), nullable=True)
     photo: Mapped[str | None] = mapped_column(String(255), nullable=True)
     bio: Mapped[str | None] = mapped_column(Text, nullable=True)
 
