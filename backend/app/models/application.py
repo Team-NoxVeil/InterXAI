@@ -35,6 +35,8 @@ class Application(BaseTable):
     shortlisting_decision: Mapped[bool] = mapped_column(Boolean, default=False)
     feedback: Mapped[str | None] = mapped_column(Text, nullable=True)
 
+    user = relationship("User", back_populates="applications")
+
     interview = relationship(
         "CustomInterview", back_populates="applications", foreign_keys=[interview_id]
     )

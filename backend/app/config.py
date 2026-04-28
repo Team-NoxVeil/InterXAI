@@ -6,9 +6,8 @@ class Settings(BaseSettings):
     APP_NAME: str = "InterXAI"
     DEBUG: bool = False
     API_V1_PREFIX: str = "/api/v1"
-
     # Database
-    DATABASE_URL: str
+    DATABASE_URL: str = "sqlite+aiosqlite:///./dev.db"
 
     # Security
     SECRET_KEY: str = "secret"
@@ -20,4 +19,4 @@ class Settings(BaseSettings):
         case_sensitive = True
 
 
-settings: Settings = Settings()  # type: ignore[call-arg]
+settings: Settings = Settings()
