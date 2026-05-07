@@ -62,3 +62,21 @@ async def verify_org_ownership(
         raise ForbiddenError("You cannot access this resource")
 
     return org
+
+
+async def is_organization(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> Organization:
+    if not current_user.is_organization:
+        raise ForbiddenError("Only organizations can perform this action")
+
+    result = await db.execute(
+        select(Organization).where(Organization.account_id == current_user.id)
+    )
+    org = result.scalar_one_or_none()
+
+    if not org:
+        raise NotFoundError("Organization profile not found")
+
+    return org
