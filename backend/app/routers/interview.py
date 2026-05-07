@@ -1,12 +1,21 @@
 from fastapi import APIRouter, Depends, status
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.database import get_db
+from app.exceptions.common import ForbiddenError, NotFoundError
 from app.logger import get_logger
+from app.models.application import Application
 from app.models.interview import CustomInterview, CustomQuestion, DsaTopic
 from app.models.organization import Organization
-from app.schemas.interview import CustomInterviewCreate, CustomInterviewResponse
-from app.utils.authorization import is_organization
+from app.models.user import User
+from app.schemas.interview import (
+    CustomInterviewBasicResponse,
+    CustomInterviewCreate,
+    CustomInterviewResponse,
+)
+from app.utils.authorization import get_current_user, is_organization
 
 logger = get_logger(__name__)
 
@@ -45,4 +54,73 @@ async def create_interview(
     await db.refresh(interview, attribute_names=["questions", "dsa_topics"])
 
     logger.info("Interview created successfully: %d", interview.id)
+    return CustomInterviewResponse.model_validate(interview)
+
+
+@router.get("/", response_model=list[CustomInterviewBasicResponse])
+async def get_interviews(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[CustomInterviewBasicResponse]:
+    """
+    Get basic interviews list based on user role (Organization or Normal User).
+    """
+    if current_user.is_organization:
+        logger.info("Get interviews request for org user: %d", current_user.id)
+        org_result = await db.execute(
+            select(Organization.id).where(Organization.account_id == current_user.id)
+        )
+        org_id = org_result.scalar_one_or_none()
+
+        if not org_id:
+            return []
+
+        stmt = select(CustomInterview).where(CustomInterview.org_id == org_id)
+        result = await db.execute(stmt)
+        interviews = result.scalars().unique().all()
+
+        return [CustomInterviewBasicResponse.model_validate(interview) for interview in interviews]
+    else:
+        logger.info("Get interviews request for normal user: %d", current_user.id)
+        stmt = (
+            select(CustomInterview)
+            .outerjoin(Application, CustomInterview.id == Application.interview_id)
+            .where(
+                or_(
+                    CustomInterview.submission_deadline > func.now(),
+                    Application.user_id == current_user.id,
+                )
+            )
+        )
+        result = await db.execute(stmt)
+        interviews = result.scalars().unique().all()
+
+        return [CustomInterviewBasicResponse.model_validate(interview) for interview in interviews]
+
+
+@router.get("/{interview_id}", response_model=CustomInterviewResponse)
+async def get_interview(
+    interview_id: int,
+    db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(is_organization),
+) -> CustomInterviewResponse:
+    """
+    Get full interview details. Only accessible by the organization that created it.
+    """
+    logger.info("Get interview details request: %d by org: %d", interview_id, org.id)
+
+    stmt = (
+        select(CustomInterview)
+        .options(selectinload(CustomInterview.questions), selectinload(CustomInterview.dsa_topics))
+        .where(CustomInterview.id == interview_id)
+    )
+    result = await db.execute(stmt)
+    interview = result.scalar_one_or_none()
+
+    if not interview:
+        raise NotFoundError("Interview not found")
+
+    if interview.org_id != org.id:
+        raise ForbiddenError("You cannot access this resource")
+
     return CustomInterviewResponse.model_validate(interview)

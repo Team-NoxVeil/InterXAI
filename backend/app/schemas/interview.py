@@ -79,3 +79,17 @@ class CustomInterviewResponse(CustomInterviewCreate):
 
     class Config:
         from_attributes = True
+
+
+class CustomInterviewBasicResponse(BaseModel):
+    id: int
+    org_id: int
+    description: str
+    position: str
+    experience: str
+    submission_deadline: datetime
+    start_time: datetime
+    end_time: datetime
+
+    class Config:
+        from_attributes = True
