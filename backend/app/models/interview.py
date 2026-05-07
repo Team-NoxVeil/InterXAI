@@ -28,8 +28,8 @@ class CustomInterview(BaseTable):
     start_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     end_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     duration: Mapped[int] = mapped_column(Integer, default=60)
-    dsa_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    dev_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    dsa_score: Mapped[int | None] = mapped_column(Integer, nullable=False)
+    dev_score: Mapped[int | None] = mapped_column(Integer, nullable=False)
     resume_shortlist_score: Mapped[float] = mapped_column(Float, default=0)
     ask_questions_on_resume: Mapped[bool] = mapped_column(Boolean, default=False)
 
@@ -75,7 +75,7 @@ class CustomQuestion(BaseTable):
         ForeignKey("custom_interviews.id", ondelete="CASCADE"), nullable=False
     )
     question: Mapped[str] = mapped_column(Text, nullable=False)
-    expected_answer: Mapped[str | None] = mapped_column(Text, nullable=True)
+    expected_answer: Mapped[str | None] = mapped_column(Text, nullable=False)
 
     interview = relationship(
         "CustomInterview", back_populates="questions", foreign_keys=[interview_id]
