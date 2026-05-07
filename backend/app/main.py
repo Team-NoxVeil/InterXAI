@@ -16,6 +16,7 @@ from app.models.interaction import (
 from app.models.interview import CustomInterview, CustomQuestion, DsaTopic
 from app.models.organization import Organization
 from app.models.user import User, UserProfile
+from app.routers.interview import router as interview_router
 from app.routers.organization import router as organization_router
 from app.routers.user import router as user_router
 
@@ -28,6 +29,7 @@ register_sql_alchemy_exception_handlers(app)
 
 app.include_router(user_router)
 app.include_router(organization_router)
+app.include_router(interview_router)
 
 logger.info("Application initialized: %s", settings.APP_NAME)
 

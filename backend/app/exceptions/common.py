@@ -3,6 +3,11 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 
+class BadRequestError(Exception):
+    def __init__(self, detail: str = "Bad Request"):
+        self.detail = detail
+
+
 class ForbiddenError(Exception):
     def __init__(self, detail: str = "Forbidden"):
         self.detail = detail
@@ -21,6 +26,15 @@ def register_common_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=422,
             content={"detail": exc.errors()},
+        )
+
+    @app.exception_handler(BadRequestError)
+    async def bad_request_exception_handler(
+        _request: Request, exc: BadRequestError
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=400,
+            content={"detail": exc.detail},
         )
 
     @app.exception_handler(ForbiddenError)
