@@ -30,7 +30,7 @@ class Application(BaseTable):
     )
     resume: Mapped[str | None] = mapped_column(String(255), nullable=True)
     extracted_resume: Mapped[str | None] = mapped_column(Text, nullable=True)
-    approved: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(String(20), default="applied")
     score: Mapped[float] = mapped_column(Float, default=0)
     shortlisting_decision: Mapped[bool] = mapped_column(Boolean, default=False)
     feedback: Mapped[str | None] = mapped_column(Text, nullable=True)

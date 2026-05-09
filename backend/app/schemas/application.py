@@ -9,7 +9,7 @@ class ApplicationResponse(BaseModel):
     interview_id: int
     resume: str | None = None
     extracted_resume: str | None = None
-    approved: bool
+    status: str
     score: float
     shortlisting_decision: bool
     feedback: str | None = None
