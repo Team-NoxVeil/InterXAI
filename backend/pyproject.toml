@@ -19,8 +19,8 @@ dependencies = [
     "pydantic[email]>=2.13.0",
     "langchain-litellm>=0.6.4",
     "pypdf2>=3.0.1",
-    "celery>=5.6.3",
-    "redis>=7.4.0",
+    "taskiq>=0.11.0",
+    "taskiq-redis>=0.5.0",
     "python-multipart>=0.0.27",
     "supabase>=2.30.0",
 ]
