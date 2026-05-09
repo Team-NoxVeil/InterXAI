@@ -93,3 +93,7 @@ class CustomInterviewBasicResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class AppliedInterviewResponse(CustomInterviewBasicResponse):
+    status: str

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy import func, or_, select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -11,6 +11,7 @@ from app.models.interview import CustomInterview, CustomQuestion, DsaTopic
 from app.models.organization import Organization
 from app.models.user import User
 from app.schemas.interview import (
+    AppliedInterviewResponse,
     CustomInterviewBasicResponse,
     CustomInterviewCreate,
     CustomInterviewResponse,
@@ -82,20 +83,46 @@ async def get_interviews(
         return [CustomInterviewBasicResponse.model_validate(interview) for interview in interviews]
     else:
         logger.info("Get interviews request for normal user: %d", current_user.id)
-        stmt = (
-            select(CustomInterview)
-            .outerjoin(Application, CustomInterview.id == Application.interview_id)
+        stmt = select(CustomInterview).where(
+            CustomInterview.submission_deadline > func.now(),
+            ~select(Application)
             .where(
-                or_(
-                    CustomInterview.submission_deadline > func.now(),
-                    Application.user_id == current_user.id,
-                )
+                Application.interview_id == CustomInterview.id,
+                Application.user_id == current_user.id,
             )
+            .exists(),
         )
         result = await db.execute(stmt)
         interviews = result.scalars().unique().all()
 
         return [CustomInterviewBasicResponse.model_validate(interview) for interview in interviews]
+
+
+@router.get("/applied", response_model=list[AppliedInterviewResponse])
+async def get_applied_interviews(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[AppliedInterviewResponse]:
+    """
+    Get all interviews that the current user has applied to.
+    """
+    logger.info("Get applied interviews request for user: %d", current_user.id)
+
+    stmt = (
+        select(CustomInterview, Application.status)
+        .join(Application, CustomInterview.id == Application.interview_id)
+        .where(Application.user_id == current_user.id)
+    )
+
+    result = await db.execute(stmt)
+
+    applied_interviews = []
+    for interview, app_status in result:
+        data = CustomInterviewBasicResponse.model_validate(interview).model_dump()
+        data["status"] = app_status
+        applied_interviews.append(AppliedInterviewResponse(**data))
+
+    return applied_interviews
 
 
 @router.get("/{interview_id}", response_model=CustomInterviewResponse)
