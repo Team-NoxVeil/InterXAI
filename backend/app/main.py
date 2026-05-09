@@ -1,5 +1,9 @@
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
+from app.background.taskiq.taskiq import broker
 from app.config import settings
 from app.exceptions.auth import register_auth_exception_handlers
 from app.exceptions.common import register_common_exception_handlers
@@ -23,7 +27,15 @@ from app.routers.user import router as user_router
 
 logger = get_logger(__name__)
 
-app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
+    await broker.startup()
+    yield
+    await broker.shutdown()
+
+
+app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG, lifespan=lifespan)
 register_auth_exception_handlers(app)
 register_common_exception_handlers(app)
 register_sql_alchemy_exception_handlers(app)
