@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, File, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.background.taskiq.worker import worker
 from app.database import get_db
 from app.exceptions.common import BadRequestError, ForbiddenError, NotFoundError
 from app.logger import get_logger
@@ -14,7 +15,6 @@ from app.models.organization import Organization
 from app.models.user import User
 from app.schemas.application import ApplicationResponse
 from app.utils.authorization import get_current_user, is_organization
-from app.utils.default_providers import default_worker_provider
 
 logger = get_logger(__name__)
 
@@ -106,7 +106,7 @@ async def apply_for_interview(
     await db.refresh(application)
 
     file_bytes_b64 = base64.b64encode(file_bytes).decode("utf-8")
-    await default_worker_provider().process_resume_task(file_bytes_b64, new_filename, application.id)
+    await worker.process_resume_task.kiq(file_bytes_b64, new_filename, application.id)
 
     logger.info("Application created successfully: %d", application.id)
     return ApplicationResponse.model_validate(application)

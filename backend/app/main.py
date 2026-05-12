@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.background.taskiq.worker import worker
 from app.config import settings
 from app.exceptions.auth import register_auth_exception_handlers
 from app.exceptions.common import register_common_exception_handlers
@@ -23,16 +24,15 @@ from app.routers.application import router as application_router
 from app.routers.interview import router as interview_router
 from app.routers.organization import router as organization_router
 from app.routers.user import router as user_router
-from app.utils.default_providers import default_worker_provider
 
 logger = get_logger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
-    await default_worker_provider().startup()
+    await worker.startup()
     yield
-    await default_worker_provider().shutdown()
+    await worker.shutdown()
 
 
 app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG, lifespan=lifespan)

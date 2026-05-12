@@ -14,4 +14,4 @@ COPY . .
 
 ENV PYTHONPATH=/app
 
-CMD ["taskiq", "worker", "app.background.taskiq.taskiq:broker", "--tasks-pattern", "app/background/taskiq/tasks/*.py"]
+CMD ["taskiq", "worker", "app.background.taskiq.taskiq:broker", "--tasks-pattern", "app/background/taskiq/worker.py"]
