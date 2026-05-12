@@ -33,6 +33,8 @@ ignore = [
 "app/utils/authorization.py" = ["B008"]
 "app/main.py" = ["F401"] # Unused models to make sure models are imported for sql alchemy.
 "app/ai/prompts.py" = ["W291"] # ignoring whitspaces error
+"app/interfaces/background_worker.py" = ["N805"] # broker-decorated methods intentionally omit self
+"app/background/taskiq/worker.py" = ["N805"] # broker-decorated methods intentionally omit self
 
 [lint.isort]
 known-first-party = ["backend"]
