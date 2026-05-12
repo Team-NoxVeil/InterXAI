@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.background.taskiq.worker import worker
+from app.background.taskiq.taskiq import broker
 from app.config import settings
 from app.exceptions.auth import register_auth_exception_handlers
 from app.exceptions.common import register_common_exception_handlers
@@ -30,9 +30,9 @@ logger = get_logger(__name__)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
-    await worker.startup()
+    await broker.startup()
     yield
-    await worker.shutdown()
+    await broker.shutdown()
 
 
 app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG, lifespan=lifespan)

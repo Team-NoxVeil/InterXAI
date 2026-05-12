@@ -19,14 +19,8 @@ logger = get_logger(__name__)
 
 class TaskiqWorker(BackgroundWorkerInterface):
 
-    async def startup(self) -> None:
-        await broker.startup()
-
-    async def shutdown(self) -> None:
-        await broker.shutdown()
-
     @broker.task
-    async def process_resume_task(  # type: ignore[override]
+    async def process_resume_task(
         file_bytes_b64: str, file_name: str, application_id: int
     ) -> None:
         logger.info("Received resume processing job for application %d", application_id)
