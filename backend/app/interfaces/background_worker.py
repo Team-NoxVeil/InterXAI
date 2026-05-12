@@ -11,7 +11,7 @@ class BackgroundWorkerInterface(ABC):
         pass
 
     @abstractmethod
-    async def process_resume_task(
-        self, file_bytes_b64: str, file_name: str, application_id: int
+    async def process_resume_task(  # type: ignore[misc]
+        file_bytes_b64: str, file_name: str, application_id: int
     ) -> None:
         pass
