@@ -13,6 +13,8 @@ export interface NavbarProps {
   ctaLabel?: string;
   ctaHref?: string;
   onCtaClick?: () => void;
+  orgCtaLabel?: string;
+  onOrgCtaClick?: () => void;
 }
 
 const defaultNavItems: NavItem[] = [
@@ -27,6 +29,8 @@ const Navbar: React.FC<NavbarProps> = ({
   ctaLabel = 'Get Started',
   ctaHref,
   onCtaClick,
+  orgCtaLabel,
+  onOrgCtaClick,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -64,8 +68,18 @@ const Navbar: React.FC<NavbarProps> = ({
         ))}
       </ul>
 
-      {/* CTA Button */}
-      <div className="hidden md:block">
+      {/* CTA Buttons */}
+      <div className="hidden md:flex items-center gap-3">
+        {orgCtaLabel && onOrgCtaClick && (
+          <Button
+            variant="ghost"
+            onClick={onOrgCtaClick}
+            id="navbar-org-cta"
+            className="text-white/70 hover:text-white text-sm"
+          >
+            {orgCtaLabel}
+          </Button>
+        )}
         <Button
           variant="outline"
           href={onCtaClick ? undefined : ctaHref}

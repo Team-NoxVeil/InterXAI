@@ -5,21 +5,25 @@ import FeaturesSection from '../components/sections/FeaturesSection';
 import Footer from '../components/layout/Footer';
 
 export interface LandingPageProps {
-  /** Navigate to the login page when the user clicks a CTA */
+  /** Navigate to user login */
   onLoginClick?: () => void;
+  /** Navigate to organisation auth page */
+  onOrgLoginClick?: () => void;
 }
 
 /**
  * LandingPage
  * Top-level page component that composes all landing page sections.
  */
-const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick, onOrgLoginClick }) => {
   return (
     <div id="landing-page" className="min-h-screen bg-[#050e0a] font-sans antialiased">
       {/* Navigation */}
       <Navbar
         ctaLabel="Sign In"
         onCtaClick={onLoginClick}
+        orgCtaLabel="For Organisations"
+        onOrgCtaClick={onOrgLoginClick}
       />
 
       {/* Hero */}
@@ -43,3 +47,4 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
 };
 
 export default LandingPage;
+

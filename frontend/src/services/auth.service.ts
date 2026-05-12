@@ -36,11 +36,10 @@ export interface TokenResponse {
 // ── Service ──────────────────────────────────────────────────────────────────
 
 export class AuthServiceError extends Error {
-  constructor(
-    public readonly statusCode: number,
-    message: string,
-  ) {
+  public readonly statusCode: number;
+  constructor(statusCode: number, message: string) {
     super(message);
+    this.statusCode = statusCode;
     this.name = 'AuthServiceError';
   }
 }
