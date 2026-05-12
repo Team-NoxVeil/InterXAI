@@ -1,94 +1,72 @@
 import React from 'react';
 
-export interface Feature {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}
-
-export interface FeaturesSectionProps {
-  title?: string;
-  subtitle?: string;
-  features?: Feature[];
-}
-
-const defaultFeatures: Feature[] = [
+const features = [
   {
     icon: <MicIcon />,
     title: 'Voice-Driven Interviews',
-    description:
-      'Fully conversational AI interviewer with real-time voice analysis and natural language understanding.',
+    description: 'Fully conversational AI interviewer with real-time voice analysis and natural language understanding.',
+    color: 'bg-blue-50 border-blue-100 text-blue-600',
   },
   {
     icon: <BrainIcon />,
     title: 'Instant Evaluation',
-    description:
-      'Confidence scoring, clarity rating, and structured feedback delivered the moment your session ends.',
+    description: 'Confidence scoring, clarity rating, and structured feedback delivered the moment your session ends.',
+    color: 'bg-violet-50 border-violet-100 text-violet-600',
   },
   {
     icon: <ChartIcon />,
     title: 'Career Coaching',
-    description:
-      'Personalised improvement plans based on your performance, role target, and industry benchmarks.',
+    description: 'Personalised improvement plans based on your performance, role target, and industry benchmarks.',
+    color: 'bg-emerald-50 border-emerald-100 text-emerald-600',
   },
   {
     icon: <ShieldIcon />,
     title: 'Privacy First',
-    description:
-      'Your data stays yours. End-to-end encrypted sessions with zero human reviewers.',
+    description: 'Your data stays yours. End-to-end encrypted sessions with zero human reviewers.',
+    color: 'bg-amber-50 border-amber-100 text-amber-600',
   },
 ];
 
-const FeaturesSection: React.FC<FeaturesSectionProps> = ({
-  title = 'Everything you need to ace your next role',
-  subtitle = 'InterXAI combines cutting-edge AI with career intelligence.',
-  features = defaultFeatures,
-}) => (
+const FeaturesSection: React.FC = () => (
   <section
     id="how-it-works"
-    className="bg-[#050e0a] py-24 px-6 md:px-16 lg:px-24"
-    aria-label="Features section"
+    className="py-24 px-6 md:px-16 bg-white"
   >
-    {/* Header */}
-    <div className="text-center mb-16">
-      <span className="text-[#3ddc84] text-xs uppercase tracking-widest font-semibold mb-3 block">
-        Features
-      </span>
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{title}</h2>
-      <p className="text-white/50 max-w-xl mx-auto text-base">{subtitle}</p>
-    </div>
+    <div className="max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="text-center mb-16">
+        <span className="inline-block text-blue-600 text-xs uppercase tracking-widest font-semibold mb-3
+          bg-blue-50 border border-blue-100 rounded-full px-3 py-1">
+          Features
+        </span>
+        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+          Everything you need to ace your next role
+        </h2>
+        <p className="text-slate-500 max-w-xl mx-auto text-base">
+          InterXAI combines cutting-edge AI with career intelligence.
+        </p>
+      </div>
 
-    {/* Grid */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-      {features.map((feature, i) => (
-        <FeatureCard key={i} feature={feature} />
-      ))}
+      {/* Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {features.map((f, i) => (
+          <div
+            key={i}
+            className="group rounded-2xl border border-slate-100 bg-white p-6 hover:shadow-xl
+              hover:shadow-blue-100/50 hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className={`w-11 h-11 rounded-xl border flex items-center justify-center mb-5 ${f.color}`}>
+              {f.icon}
+            </div>
+            <h3 className="text-slate-900 font-semibold text-base mb-2">{f.title}</h3>
+            <p className="text-slate-500 text-sm leading-relaxed">{f.description}</p>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 );
 
-const FeatureCard: React.FC<{ feature: Feature }> = ({ feature }) => (
-  <div
-    className="group relative rounded-2xl border border-white/8 bg-white/4 backdrop-blur-sm p-6
-      hover:border-[#3ddc84]/30 hover:bg-white/8 transition-all duration-300 cursor-default"
-  >
-    {/* Glow on hover */}
-    <div className="absolute inset-0 rounded-2xl bg-[#3ddc84]/0 group-hover:bg-[#3ddc84]/5 transition-all duration-300" />
-
-    <div className="relative z-10">
-      <div
-        className="w-11 h-11 rounded-xl bg-[#3ddc84]/10 border border-[#3ddc84]/20 flex items-center
-          justify-center mb-5 text-[#3ddc84] group-hover:bg-[#3ddc84]/20 transition-colors"
-      >
-        {feature.icon}
-      </div>
-      <h3 className="text-white font-semibold text-base mb-2">{feature.title}</h3>
-      <p className="text-white/50 text-sm leading-relaxed">{feature.description}</p>
-    </div>
-  </div>
-);
-
-/* Icon components */
 function MicIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -102,13 +80,8 @@ function MicIcon() {
 function BrainIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path
-        d="M10 3C7.24 3 5 5.24 5 8c0 1.66.8 3.12 2.04 4.05A3 3 0 0010 17a3 3 0 002.96-4.95A4.996 4.996 0 0015 8c0-2.76-2.24-5-5-5z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-      <line x1="10" y1="8" x2="10" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M10 3C7.24 3 5 5.24 5 8c0 1.66.8 3.12 2.04 4.05A3 3 0 0010 17a3 3 0 002.96-4.95A4.996 4.996 0 0015 8c0-2.76-2.24-5-5-5z"
+        stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -126,12 +99,8 @@ function ChartIcon() {
 function ShieldIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path
-        d="M10 2L4 5v5c0 3.87 2.57 7.49 6 8.93C13.43 17.49 16 13.87 16 10V5L10 2z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
+      <path d="M10 2L4 5v5c0 3.87 2.57 7.49 6 8.93C13.43 17.49 16 13.87 16 10V5L10 2z"
+        stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
       <path d="M7 10l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );

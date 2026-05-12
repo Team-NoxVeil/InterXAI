@@ -2,31 +2,28 @@ import React from 'react';
 
 interface LogoProps {
   className?: string;
+  dark?: boolean;
 }
 
-const Logo: React.FC<LogoProps> = ({ className = '' }) => (
+const Logo: React.FC<LogoProps> = ({ className = '', dark = false }) => (
   <div className={`flex items-center gap-2 ${className}`}>
-    {/* Hexagon icon */}
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <polygon
-        points="16,2 28,9 28,23 16,30 4,23 4,9"
-        fill="none"
-        stroke="#3ddc84"
-        strokeWidth="2"
-      />
+    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="34" height="34" rx="8" fill={dark ? '#1e40af' : '#2563eb'} />
       <text
-        x="16"
-        y="21"
+        x="17"
+        y="23"
         textAnchor="middle"
-        fill="#3ddc84"
-        fontSize="13"
+        fill="white"
+        fontSize="14"
         fontWeight="bold"
-        fontFamily="monospace"
+        fontFamily="Inter, sans-serif"
       >
         X
       </text>
     </svg>
-    <span className="text-white font-bold text-lg tracking-wide">InterXAI</span>
+    <span className={`font-bold text-lg tracking-tight ${dark ? 'text-white' : 'text-slate-900'}`}>
+      InterXAI
+    </span>
   </div>
 );
 
