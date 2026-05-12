@@ -66,10 +66,15 @@ const Navbar: React.FC<NavbarProps> = ({
         ))}
       </ul>
 
-      {/* Desktop CTAs */}
-      <div className="hidden lg:flex items-center gap-2">
+      {/* CTA Buttons */}
+      <div className="hidden md:flex items-center gap-3">
         {orgCtaLabel && onOrgCtaClick && (
-          <Button variant="ghost" onClick={onOrgCtaClick} id="navbar-org-cta">
+          <Button
+            variant="ghost"
+            onClick={onOrgCtaClick}
+            id="navbar-org-cta"
+            className="text-white/70 hover:text-white text-sm"
+          >
             {orgCtaLabel}
           </Button>
         )}
