@@ -48,12 +48,26 @@ class JwtAuth(Authenticator):
 
         self.db_session.add(user)
 
-        await self.db_session.flush()
+        try:
+            await self.db_session.flush()
+        except Exception as e:
+            import traceback
+
+            traceback.print_exc()
+            print("FLUSH ERROR:", e)
+            raise
 
         profile = UserProfile(user_id=user.id)
         self.db_session.add(profile)
 
-        await self.db_session.commit()
+        try:
+            await self.db_session.commit()
+        except Exception as e:
+            import traceback
+
+            traceback.print_exc()
+            print("COMMIT ERROR:", e)
+            raise
 
         await self.db_session.refresh(user, attribute_names=["profile"])
 
@@ -79,12 +93,14 @@ class JwtAuth(Authenticator):
         )
 
         self.db_session.add(user)
+
         await self.db_session.flush()
 
         org = Organization(account_id=user.id)
         self.db_session.add(org)
 
         await self.db_session.commit()
+
         await self.db_session.refresh(user, attribute_names=["organization"])
 
         return user
@@ -94,8 +110,11 @@ class JwtAuth(Authenticator):
         return token
 
     async def authenticate(self, username: str, password: str) -> User:
+
         result = await self.db_session.execute(select(User).where(User.username == username))
+
         user = result.scalar_one_or_none()
+
         if not user:
             raise InvalidUserCredentialsError()
 
