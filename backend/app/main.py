@@ -24,7 +24,7 @@ from app.routers.interview import router as interview_router
 from app.routers.organization import router as organization_router
 from app.routers.user import router as user_router
 from app.utils.default_providers import default_worker_provider
-
+from fastapi.middleware.cors import CORSMiddleware
 logger = get_logger(__name__)
 
 
@@ -35,7 +35,19 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     await default_worker_provider().shutdown()
 
 
-app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG, lifespan=lifespan)
+app = FastAPI(
+    title=settings.APP_NAME,
+    debug=settings.DEBUG,
+    lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 register_auth_exception_handlers(app)
 register_common_exception_handlers(app)
 register_sql_alchemy_exception_handlers(app)
