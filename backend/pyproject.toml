@@ -23,6 +23,7 @@ dependencies = [
     "taskiq-redis>=0.5.0",
     "python-multipart>=0.0.27",
     "supabase>=2.30.0",
+    "cloudinary>=1.42.0",
 ]
 
 [dependency-groups]
