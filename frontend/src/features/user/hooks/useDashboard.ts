@@ -28,8 +28,11 @@ export function useDashboard(token: string): UseDashboardReturn {
 
   useEffect(() => {
     if (!token) return;
-    setIsLoading(true);
-    setError(null);
+
+    queueMicrotask(() => {
+      setIsLoading(true);
+      setError(null);
+    });
 
     Promise.all([fetchInterviews(token), fetchAppliedInterviews(token)])
       .then(([av, ap]) => {
