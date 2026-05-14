@@ -33,5 +33,14 @@ services:
     volumes:
       - redis_data:/data
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
 volumes:
   redis_data:
