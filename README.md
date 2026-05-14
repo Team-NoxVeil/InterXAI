@@ -16,34 +16,40 @@
 
 </div>
 
+---
 
 ## Overview
 
-InterXAI is an AI-powered interview automation platform designed to make technical hiring smarter, faster, and more scalable. It simulates real interview experiences by dynamically generating follow-up questions based on candidate responses, evaluating answers in real time using large language models, and maintaining a natural conversational flow throughout the entire interview process.
+InterXAI is an AI-powered interview automation platform designed to make technical hiring smarter, faster, and more scalable. It simulates real interview experiences by dynamically generating follow-up questions based on candidate responses, evaluating answers in real time using large language models, and maintaining a natural conversational flow throughout the interview process.
 
-Organizations create fully customized interviews with domain-specific questions and DSA challenges. Candidates apply by submitting their resumes, which are automatically evaluated and scored by an LLM agent against the job requirements - all without manual intervention. To ensure interview integrity, the platform integrates proctoring features including tab-switch detection, page-refresh monitoring, and OpenCV-based malpractice detection.
+Organizations can create fully customized interviews with domain-specific questions and DSA challenges. Candidates apply by submitting their resumes, which are automatically evaluated and scored by an LLM agent against the job requirements — all without any manual intervention. To ensure interview integrity, the platform includes proctoring features such as tab-switch detection, page-refresh monitoring, and OpenCV-based malpractice detection.
 
+---
 
 ## Features
 
 ### For Organizations
-- **Custom Interview Builder** - Create structured interviews with tailored questions, DSA topics, and evaluation criteria
-- **Automated Resume Screening** - LLM-powered analysis that scores and shortlists candidates automatically
-- **AI-Driven Evaluations** - Real-time answer evaluation with structured, unbiased scoring
-- **Candidate Dashboard** - Track all applications, review scores, and access AI-generated feedback reports
+
+- **Custom Interview Builder** — Create structured interviews with tailored questions, DSA topics, and evaluation criteria
+- **Automated Resume Screening** — LLM-powered analysis that scores and shortlists candidates automatically
+- **AI-Driven Evaluations** — Real-time answer evaluation with structured, unbiased scoring
+- **Candidate Dashboard** — Track all applications, review scores, and access AI-generated feedback reports
 
 ### For Candidates
-- **Seamless Application Flow** - Upload your resume and let the AI evaluate your fit for the role
-- **Conversational Interviews** - Experience dynamic, follow-up-rich interviews that adapt to your responses
-- **Instant Feedback** - Receive structured feedback on your performance after each session
-- **Multi-Round Sessions** - Navigate through Q&A, DSA, and resume-based rounds in a single interview
+
+- **Seamless Application Flow** — Upload your resume and let the AI evaluate your fit for the role
+- **Conversational Interviews** — Experience dynamic, follow-up-rich interviews that adapt to your responses
+- **Instant Feedback** — Receive structured feedback on your performance after each session
+- **Multi-Round Sessions** — Navigate through Q&A, DSA, and resume-based rounds in a single interview
 
 ### Platform Intelligence
-- **Dynamic Question Generation** - LLMs generate context-aware follow-up questions based on candidate answers
-- **Resume Intelligence** - Extracts, standardizes, and evaluates resume content against job requirements
-- **Interview Proctoring** - Tab-switch detection, page-refresh monitoring, and OpenCV-based malpractice detection ensure integrity
-- **Event-Driven Processing** - Asynchronous background jobs via TaskIQ + Redis ensure interviews scale without bottlenecks
 
+- **Dynamic Question Generation** — LLMs generate context-aware follow-up questions based on candidate answers
+- **Resume Intelligence** — Extracts, standardizes, and evaluates resume content against job requirements
+- **Interview Proctoring** — Tab-switch detection, page-refresh monitoring, and OpenCV-based malpractice detection to ensure integrity
+- **Event-Driven Processing** — Asynchronous background jobs via TaskIQ + Redis ensure interviews scale without bottlenecks
+
+---
 
 ## Tech Stack
 
@@ -61,47 +67,48 @@ Organizations create fully customized interviews with domain-specific questions 
 | **Package Manager** | `uv` (backend), `npm` (frontend) |
 | **Containerization** | Docker, Docker Compose |
 
+---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                          Client (React)                         │
-│          React Query · Zustand · React Hook Form · Zod          │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │ REST / JSON
-┌───────────────────────────▼─────────────────────────────────────┐
-│                       FastAPI Backend                           │
-│   /users  /organizations  /interviews  /applications  /health   │
-│                                                                 │
-│   ┌────────────────┐  ┌──────────────────┐  ┌────────────────┐  │
-│   │  Auth (JWT +   │  │  Routers /       │  │  Exception     │  │
-│   │  bcrypt)       │  │  Business Logic  │  │  Handlers      │  │
-│   └────────────────┘  └────────┬─────────┘  └────────────────┘  │
-└────────────────────────────────┼────────────────────────────────┘
-                                 │
-               ┌─────────────────┼──────────────────┐
-               │                 │                  │
-    ┌──────────▼───────┐ ┌───────▼──────────┐ ┌────▼────────────┐
-    │   PostgreSQL /   │ │  TaskIQ + Redis  │ │ Supabase Storage│
-    │   SQLite         │ │  Worker          │ │ (Resume PDFs)   │
-    │ (SQLAlchemy ORM) │ └───────┬──────────┘ └─────────────────┘
-    └──────────────────┘         │
-                        ┌────────▼────────┐
-                        │  LLM Pipeline   │
-                        │  LiteLLM/Groq   │
-                        │  LangChain      │
-                        │  ResumeEvaluator│
-                        └─────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                          Client (React)                          │
+│           React Query · Zustand · React Hook Form · Zod          │
+└────────────────────────────┬─────────────────────────────────────┘
+                             │ REST / JSON
+┌────────────────────────────▼─────────────────────────────────────┐
+│                        FastAPI Backend                           │
+│    /users  /organizations  /interviews  /applications  /health   │
+│                                                                  │
+│  ┌─────────────────┐  ┌──────────────────┐  ┌────────────────┐  │
+│  │  Auth (JWT +    │  │  Routers /       │  │  Exception     │  │
+│  │  bcrypt)        │  │  Business Logic  │  │  Handlers      │  │
+│  └─────────────────┘  └────────┬─────────┘  └────────────────┘  │
+└───────────────────────────────┬──────────────────────────────────┘
+                                │
+              ┌─────────────────┼───────────────────┐
+              │                 │                   │
+   ┌──────────▼────────┐ ┌──────▼───────────┐ ┌────▼─────────────┐
+   │   PostgreSQL /    │ │  TaskIQ + Redis  │ │ Supabase Storage │
+   │   SQLite          │ │  Worker          │ │ (Resume PDFs)    │
+   │ (SQLAlchemy ORM)  │ └──────┬───────────┘ └──────────────────┘
+   └───────────────────┘        │
+                       ┌────────▼─────────┐
+                       │   LLM Pipeline   │
+                       │  LiteLLM / Groq  │
+                       │   LangChain      │
+                       │  ResumeEvaluator │
+                       └──────────────────┘
 ```
 
 ### Request Lifecycle
 
-1. The client sends a request with a JWT `Authorization` header
-2. FastAPI validates the token via `get_current_user()` dependency injection
-3. Router functions execute business logic using async SQLAlchemy sessions
-4. For resume applications, a TaskIQ task is dispatched and the HTTP response returns immediately (202)
-5. The background worker uploads the PDF to Supabase, extracts text, calls the LLM evaluator, and writes results back to the database
+1. The client sends a request with a JWT `Authorization` header.
+2. FastAPI validates the token via the `get_current_user()` dependency injection.
+3. Router functions execute business logic using async SQLAlchemy sessions.
+4. For resume applications, a TaskIQ task is dispatched and the HTTP response returns immediately (202).
+5. The background worker uploads the PDF to Supabase, extracts the text, calls the LLM evaluator, and writes the results back to the database.
 
 ### Resume Processing Pipeline
 
@@ -117,18 +124,19 @@ TaskIQ Worker (async):
         ├── Extract text (PyPDF2)
         ├── ResumeEvaluator.evaluate()
         │       ├── Build ChatPromptTemplate
-        │       ├── Call LiteLLM/Groq
+        │       ├── Call LiteLLM / Groq
         │       └── Parse structured JSON response
         │             score · shortlisting_decision · feedback
         └── Update Application record with evaluation results
               (Delete Application on failure)
 ```
 
+---
 
 ## Project Structure
 
 ```
-InterXAI-re/
+InterXAI/
 ├── backend/                    # FastAPI application
 │   ├── app/
 │   │   ├── ai/                 # LLM agents and prompt templates
@@ -161,40 +169,45 @@ InterXAI-re/
     └── backend_lint            # One-shot ruff + mypy quality check
 ```
 
+---
 
 ## Getting Started
 
 ### Prerequisites
 
+Make sure you have the following installed before running the project:
+
 - Python 3.12+
 - Node.js 20+
 - Redis (or run everything via Docker)
-- [`uv`](https://github.com/astral-sh/uv) - fast Python package manager
+- [`uv`](https://github.com/astral-sh/uv) — fast Python package manager
 
 ### Environment Variables
 
-Create a `.env` file inside the `backend/` directory:
+Create a `.env` file inside the `backend/` directory by copying the example file:
 
 ```bash
 cp backend/.env.example backend/.env
 ```
 
+Then fill in the required values:
+
 | Variable | Default | Description |
 |---|---|---|
 | `DATABASE_URL` | `sqlite+aiosqlite:///./dev.db` | PostgreSQL URL for production |
 | `REDIS_URL` | `redis://localhost:6379/0` | TaskIQ broker + result backend |
-| `SECRET_KEY` | `secret` | JWT signing key - **change in production** |
+| `SECRET_KEY` | `secret` | JWT signing key — **change this in production** |
 | `ALGORITHM` | `HS256` | JWT signing algorithm |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | `30000` | Token lifetime |
-| `GROQ_API_KEY` | - | Required for LLM inference |
-| `SUPABASE_URL` | - | Supabase project URL |
-| `SUPABASE_KEY` | - | Supabase service role key |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `30000` | Token lifetime in minutes |
+| `GROQ_API_KEY` | — | Required for LLM inference |
+| `SUPABASE_URL` | — | Supabase project URL |
+| `SUPABASE_KEY` | — | Supabase service role key |
 | `SUPABASE_BUCKET_NAME` | `resumes` | Storage bucket for resume PDFs |
 | `LLM_MODEL_NAME` | `groq/openai/gpt-oss-120b` | LiteLLM model string |
 
-### Option A - Docker (Recommended)
+### Option A — Docker (Recommended)
 
-The Docker Compose file starts the API server, TaskIQ worker, and Redis in one command:
+The Docker Compose file starts the API server, TaskIQ worker, and Redis in a single command:
 
 ```bash
 docker-compose up --build
@@ -202,7 +215,7 @@ docker-compose up --build
 
 The API will be available at `http://localhost:8000`.
 
-### Option B - Local Development
+### Option B — Local Development
 
 **1. Backend:**
 
@@ -215,11 +228,11 @@ uv sync --dev
 # Apply database migrations
 uv run alembic upgrade head
 
-# Start the API server (with hot-reload)
+# Start the API server with hot-reload
 uv run uvicorn app.main:app --reload
 ```
 
-**2. TaskIQ Worker** (in a separate terminal):
+**2. TaskIQ Worker** (open a separate terminal):
 
 ```bash
 cd backend
@@ -236,10 +249,11 @@ npm run dev
 
 The frontend dev server runs at `http://localhost:5173`.
 
+---
 
 ## API Reference
 
-FastAPI auto-generates interactive documentation:
+FastAPI auto-generates interactive API documentation at the following URLs (when the server is running):
 
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
@@ -248,22 +262,23 @@ FastAPI auto-generates interactive documentation:
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `GET` | `/health` | - | Health check |
-| `POST` | `/users/signup` | - | Register a candidate account |
-| `POST` | `/users/login` | - | Authenticate and receive JWT |
+| `GET` | `/health` | — | Health check |
+| `POST` | `/users/signup` | — | Register a candidate account |
+| `POST` | `/users/login` | — | Authenticate and receive a JWT |
 | `GET` | `/users/{user_id}` | User | Get user profile |
 | `PUT` | `/users/{user_id}` | User | Update user profile |
 | `DELETE` | `/users/{user_id}` | User | Delete user account |
-| `POST` | `/organizations/signup` | - | Register an organization |
+| `POST` | `/organizations/signup` | — | Register an organization |
 | `GET` | `/organizations/{org_id}` | Org | Get organization details |
-| `PUT` | `/organizations/{org_id}` | Org | Update organization |
+| `PUT` | `/organizations/{org_id}` | Org | Update organization details |
 | `POST` | `/interviews/` | Org | Create a new interview |
-| `GET` | `/interviews/` | Any | List interviews |
-| `GET` | `/interviews/applied` | User | Get applied interviews |
+| `GET` | `/interviews/` | Any | List all interviews |
+| `GET` | `/interviews/applied` | User | Get interviews the user has applied to |
 | `GET` | `/interviews/{interview_id}` | Org | Get full interview details |
-| `POST` | `/applications/{interview_id}` | User | Apply with resume (PDF) |
-| `GET` | `/applications/{interview_id}` | Org | Get all applications |
+| `POST` | `/applications/{interview_id}` | User | Apply with a resume (PDF) |
+| `GET` | `/applications/{interview_id}` | Org | Get all applications for an interview |
 
+---
 
 ## Data Models
 
@@ -289,6 +304,7 @@ InterviewSession
 
 **Round Types:** `QUESTIONS` · `DSA` · `RESUME`
 
+---
 
 ## Development
 
@@ -300,7 +316,7 @@ cd backend
 # Run all checks at once (ruff fix + format + mypy)
 ./tools/backend_lint
 
-# Run individual tools
+# Or run individual tools
 uv run ruff check --fix .
 uv run ruff format .
 uv run mypy .
@@ -314,34 +330,35 @@ cd backend
 # Apply all pending migrations
 uv run alembic upgrade head
 
-# Auto-generate a new migration after model changes
+# Auto-generate a new migration after making model changes
 uv run alembic revision --autogenerate -m "add column to applications"
 ```
 
+---
 
 ## Contributing
 
-Contributions are welcome. Please follow these steps:
+Contributions are welcome! Please follow these steps:
 
-1. **Fork** the repository and clone your fork
+1. **Fork** the repository and clone your fork locally
 2. **Create** a feature branch: `git checkout -b feature/your-feature-name`
 3. **Make** your changes and ensure all quality checks pass: `./tools/backend_lint`
-4. **Commit** with a descriptive message following [Conventional Commits](https://www.conventionalcommits.org/)
+4. **Commit** with a clear message following [Conventional Commits](https://www.conventionalcommits.org/)
 5. **Push** to your fork and **open a Pull Request**
 
 ### Code Guidelines
 
-- Business logic lives inline in routers - no separate service layer yet
-- New abstractions go in `app/interfaces/`, implementations in `app/utils/`
+- Business logic lives inline in routers — no separate service layer yet
+- New abstractions go in `app/interfaces/`, concrete implementations go in `app/utils/`
 - All environment variables must be declared in `app/config.py` via `pydantic-settings`
-- Type annotations are mandatory - `mypy --strict` must pass without errors
-- Line length: 100 characters (enforced by Ruff)
+- Type annotations are mandatory — `mypy --strict` must pass without errors
+- Line length is 100 characters, enforced by Ruff
 
+---
 
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
 
 <div align="center">
   Built with FastAPI, React, and LangChain
