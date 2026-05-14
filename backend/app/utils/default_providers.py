@@ -9,6 +9,11 @@ def default_storage_provider() -> StorageProviderInterface:
 
         return SupabaseStorageProvider()
 
+    if settings.STORAGE_PROVIDER == "vercel":
+        from app.utils.vercel_blob_provider import VercelBlobStorageProvider
+
+        return VercelBlobStorageProvider()
+
     raise ValueError(f"Unknown storage provider: '{settings.STORAGE_PROVIDER}'")
 
 

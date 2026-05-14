@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     SUPABASE_KEY: str = ""
     SUPABASE_BUCKET_NAME: str = "resumes"
 
+    # Vercel Blob
+    BLOB_READ_WRITE_TOKEN: str = ""
+    VERCEL_BLOB_API_URL: str = "https://blob.vercel-storage.com"
+
     # Providers
     STORAGE_PROVIDER: str = "supabase"
     BACKGROUND_WORKER: str = "taskiq"
