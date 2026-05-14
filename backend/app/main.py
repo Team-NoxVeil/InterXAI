@@ -2,6 +2,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.exceptions.auth import register_auth_exception_handlers
@@ -24,7 +25,7 @@ from app.routers.interview import router as interview_router
 from app.routers.organization import router as organization_router
 from app.routers.user import router as user_router
 from app.utils.default_providers import default_worker_provider
-from fastapi.middleware.cors import CORSMiddleware
+
 logger = get_logger(__name__)
 
 

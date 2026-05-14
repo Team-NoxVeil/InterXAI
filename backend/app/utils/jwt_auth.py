@@ -30,15 +30,11 @@ class JwtAuth(Authenticator):
 
     async def create_user(self, username: str, password: str, email: str) -> User:
 
-        existing_user = await self.db_session.execute(
-            select(User).where(User.username == username)
-        )
+        existing_user = await self.db_session.execute(select(User).where(User.username == username))
         if existing_user.scalar_one_or_none():
             raise UserAlreadyExistsError(username)
 
-        existing_email = await self.db_session.execute(
-            select(User).where(User.email == email)
-        )
+        existing_email = await self.db_session.execute(select(User).where(User.email == email))
         if existing_email.scalar_one_or_none():
             raise EmailAlreadyExistsError(email)
 
@@ -56,6 +52,7 @@ class JwtAuth(Authenticator):
             await self.db_session.flush()
         except Exception as e:
             import traceback
+
             traceback.print_exc()
             print("FLUSH ERROR:", e)
             raise
@@ -67,6 +64,7 @@ class JwtAuth(Authenticator):
             await self.db_session.commit()
         except Exception as e:
             import traceback
+
             traceback.print_exc()
             print("COMMIT ERROR:", e)
             raise
@@ -77,15 +75,11 @@ class JwtAuth(Authenticator):
 
     async def create_organization(self, username: str, password: str, email: str) -> User:
 
-        existing_user = await self.db_session.execute(
-            select(User).where(User.username == username)
-        )
+        existing_user = await self.db_session.execute(select(User).where(User.username == username))
         if existing_user.scalar_one_or_none():
             raise UserAlreadyExistsError(username)
 
-        existing_email = await self.db_session.execute(
-            select(User).where(User.email == email)
-        )
+        existing_email = await self.db_session.execute(select(User).where(User.email == email))
         if existing_email.scalar_one_or_none():
             raise EmailAlreadyExistsError(email)
 
@@ -112,16 +106,12 @@ class JwtAuth(Authenticator):
         return user
 
     async def generate_token(self, user: User) -> str:
-        token = self.encrypter.encrypt(
-            {"user_id": user.id, "username": user.username}
-        )
+        token = self.encrypter.encrypt({"user_id": user.id, "username": user.username})
         return token
 
     async def authenticate(self, username: str, password: str) -> User:
 
-        result = await self.db_session.execute(
-            select(User).where(User.username == username)
-        )
+        result = await self.db_session.execute(select(User).where(User.username == username))
 
         user = result.scalar_one_or_none()
 
