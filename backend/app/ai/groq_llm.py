@@ -79,4 +79,3 @@ class GroqProvider(LLMProviderInterface):
             else:
                 logger.error("Error generating Groq response: %s", str(e), exc_info=True)
                 raise AIError(f"Unexpected generation error: {str(e)}") from e
-            
