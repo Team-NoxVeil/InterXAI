@@ -1,4 +1,5 @@
 from datetime import datetime
+# InterviewStatus updated to subclass StrEnum for clearer enum handling
 from enum import StrEnum
 
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, func
