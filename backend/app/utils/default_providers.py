@@ -13,13 +13,15 @@ def default_storage_provider() -> StorageProviderInterface:
 
 
 class DebugWorker(BackgroundWorkerInterface):
-    async def startup(self):
+    async def startup(self) -> None:
         return None
 
-    async def shutdown(self):
+    async def shutdown(self) -> None:
         return None
 
-    async def process_resume_task(self, file_bytes_b64: str, file_name: str, application_id: int) -> None:
+    async def process_resume_task(
+        self, _file_bytes_b64: str, _file_name: str, _application_id: int
+    ) -> None:
         """No‑op implementation used in DEBUG mode."""
         return None
 
