@@ -1,5 +1,5 @@
 from datetime import datetime
-from enum import StrEnum
+from enum import Enum
 
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import BaseTable
 
 
-class InterviewStatus(StrEnum):
+class InterviewStatus(str, Enum):
     SCHEDULED = "scheduled"
     COMPLETED = "completed"
     CANCELLED = "cancelled"
@@ -15,7 +15,7 @@ class InterviewStatus(StrEnum):
     ONGOING = "ongoing"
 
 
-class CurrentRound(StrEnum):
+class CurrentRound(str, Enum):
     QUESTIONS = "questions"
     DSA = "dsa"
     RESUME = "resume"
