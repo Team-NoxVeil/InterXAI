@@ -19,9 +19,10 @@ export interface NavbarProps {
 
 const defaultNavItems: NavItem[] = [
   { label: 'Solutions', href: '#solutions', hasDropdown: true },
-  { label: 'How It Works', href: '#how-it-works' },
+  { label: 'How It Works', href: '#features' },
   { label: 'For Users', href: '#for-users' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Pricing', href: '#pricing' },
+  { label: 'Resources', href: '#resources', hasDropdown: true },
 ];
 
 const Navbar: React.FC<NavbarProps> = ({
