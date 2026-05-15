@@ -12,25 +12,23 @@ def default_storage_provider() -> StorageProviderInterface:
     raise ValueError(f"Unknown storage provider: '{settings.STORAGE_PROVIDER}'")
 
 
+class DebugWorker(BackgroundWorkerInterface):
+    async def startup(self):
+        return None
+
+    async def shutdown(self):
+        return None
+
+    async def process_resume_task(self, file_bytes_b64: str, file_name: str, application_id: int) -> None:
+        """No‑op implementation used in DEBUG mode."""
+        return None
+
+
 def default_worker_provider() -> BackgroundWorkerInterface:
     # In DEBUG mode we skip starting the TaskIQ worker to avoid external dependencies.
     if settings.DEBUG:
-        class DummyWorker(BackgroundWorkerInterface):
-            async def startup(self):
-                return None
 
-            async def shutdown(self):
-                return None
-
-            async def process_resume_task(self, file_bytes_b64: str, file_name: str, application_id: int) -> None:
-                """Debug‑mode no‑op implementation.
-
-                The real background worker processes resume files; in DEBUG mode we simply
-                ignore the request.
-                """
-                return None
-
-        return DummyWorker()
+        return DebugWorker()
     if settings.BACKGROUND_WORKER == "taskiq":
         from app.background.taskiq.worker import worker
         return worker
