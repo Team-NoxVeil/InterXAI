@@ -15,7 +15,7 @@ def default_storage_provider() -> StorageProviderInterface:
 def default_worker_provider() -> BackgroundWorkerInterface:
     # In DEBUG mode we skip starting the TaskIQ worker to avoid external dependencies.
     if settings.DEBUG:
-        class DummyWorker:
+        class DummyWorker(BackgroundWorkerInterface):
             async def startup(self):
                 return None
 
