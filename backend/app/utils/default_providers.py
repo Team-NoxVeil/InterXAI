@@ -29,9 +29,9 @@ class DebugWorker(BackgroundWorkerInterface):
 def default_worker_provider() -> BackgroundWorkerInterface:
     # In DEBUG mode we skip starting the TaskIQ worker to avoid external dependencies.
     if settings.DEBUG:
-
         return DebugWorker()
     if settings.BACKGROUND_WORKER == "taskiq":
         from app.background.taskiq.worker import worker
+
         return worker
     raise ValueError(f"Unknown background worker: '{settings.BACKGROUND_WORKER}'")
