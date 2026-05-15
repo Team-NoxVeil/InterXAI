@@ -6,10 +6,6 @@ interface Stat {
   l: string;
 }
 
-interface WaveBar {
-  delay: number;
-}
-
 const NAV_LINKS: string[] = ["Solutions", "How It Works", "For Users", "Pricing", "Resources"];
 
 const STATS: Stat[] = [
