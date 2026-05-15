@@ -22,6 +22,14 @@ def default_worker_provider() -> BackgroundWorkerInterface:
             async def shutdown(self):
                 return None
 
+            async def process_resume_task(self, file_bytes_b64: str, file_name: str, application_id: int) -> None:
+                """Debug‑mode no‑op implementation.
+
+                The real background worker processes resume files; in DEBUG mode we simply
+                ignore the request.
+                """
+                return None
+
         return DummyWorker()
     if settings.BACKGROUND_WORKER == "taskiq":
         from app.background.taskiq.worker import worker
