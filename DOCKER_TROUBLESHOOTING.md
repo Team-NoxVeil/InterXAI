@@ -374,12 +374,14 @@ PermissionError: [Errno 13] Permission denied: '/app/dev.db'
 PermissionError: [Errno 13] Permission denied: '/app/pyproject.toml'
 ```
 
-**Why it happens:** The `docker-compose.yml` mounts `./backend:/app` as a bind volume. On Linux, the container runs as root by default, but the host files may have restrictive permissions.
+**Why it happens:** The `docker-compose.yml` mounts `./backend:/app` as a bind volume. On Linux, the container runs as root by default, so previous container runs may leave files in `backend/` owned by `root`, which can prevent your host user from writing to them.
 
 **Fix:**
 
 ```bash
-# Ensure your user owns the backend directory
+# Reclaim ownership of the bind-mounted backend directory for your user
+sudo chown -R "$(id -u)":"$(id -g)" backend/
+# Ensure the owner can read and write the files
 chmod -R u+rw backend/
 ```
 
