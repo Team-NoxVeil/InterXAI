@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AuthCard } from "@/components/auth/auth-card";
 import { AuthInput } from "@/components/auth/auth-input";
 import { SocialLogins } from "@/components/auth/social-logins";
-import { User, Mail, Lock, Loader2 } from "lucide-react";
+// No longer using these icons here, removed to fix lint warnings
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";

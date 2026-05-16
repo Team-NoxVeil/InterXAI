@@ -44,8 +44,20 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  href,
   ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants> & { href?: string }) {
+  if (href) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { ...anchorProps } = props as any;
+    return (
+      <a
+        href={href}
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...anchorProps}
+      />
+    )
+  }
   return (
     <ButtonPrimitive
       data-slot="button"
