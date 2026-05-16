@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import BaseTable
 
 
-class InterviewStatus(str, Enum):
+class InterviewStatus(str, Enum):  # noqa: UP042
     SCHEDULED = "scheduled"
     COMPLETED = "completed"
     CANCELLED = "cancelled"
@@ -15,7 +15,7 @@ class InterviewStatus(str, Enum):
     ONGOING = "ongoing"
 
 
-class CurrentRound(str, Enum):
+class CurrentRound(str, Enum):  # noqa: UP042
     QUESTIONS = "questions"
     DSA = "dsa"
     RESUME = "resume"
