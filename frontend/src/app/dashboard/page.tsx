@@ -33,7 +33,7 @@ export default function DashboardHome() {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-heading font-bold mb-2">Welcome back, Alex</h1>
-          <p className="text-muted-foreground">You're making great progress! Keep it up.</p>
+          <p className="text-muted-foreground">You&apos;re making great progress! Keep it up.</p>
         </div>
         <Link href="/dashboard/interview">
           <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 glow-effect rounded-full px-6 h-12">

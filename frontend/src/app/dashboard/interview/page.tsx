@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Mic, MicOff, Lightbulb, Pause, Square, MessageSquare, Target } from "lucide-react";
+import { Mic, Lightbulb, Pause, Square, MessageSquare, Target } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function InterviewPage() {
@@ -68,7 +68,7 @@ export default function InterviewPage() {
               {/* Current Question */}
               <div className="text-center max-w-lg mb-8">
                 <h3 className="text-2xl font-bold mb-4 text-foreground leading-tight">
-                  "Can you explain the differences between React Server Components and traditional client-side components?"
+                  &quot;Can you explain the differences between React Server Components and traditional client-side components?&quot;
                 </h3>
                 <div className="flex justify-center gap-2">
                   <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">React</span>
@@ -85,7 +85,7 @@ export default function InterviewPage() {
                       key={i}
                       animate={{
                         height: isRecording 
-                          ? ["20%", "80%", "40%", "100%", "20%"][Math.floor(Math.random() * 5)]
+                          ? ["20%", "80%", "40%", "100%", "20%"][i % 5]
                           : "20%"
                       }}
                       transition={{ 
@@ -133,7 +133,7 @@ export default function InterviewPage() {
             </div>
             <div className="flex-1 p-4 overflow-y-auto space-y-4 text-sm">
               <div className="bg-primary/5 rounded-2xl rounded-tl-none p-4 w-[85%] border border-primary/10">
-                <p className="text-foreground">Let's move on to the next topic. Can you explain the differences between React Server Components and traditional client-side components?</p>
+                <p className="text-foreground">Let&apos;s move on to the next topic. Can you explain the differences between React Server Components and traditional client-side components?</p>
               </div>
               
               {isRecording && (

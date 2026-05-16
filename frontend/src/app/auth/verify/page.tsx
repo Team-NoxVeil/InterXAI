@@ -14,7 +14,7 @@ export default function VerifyEmailPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold font-heading mb-2">Check your email</h1>
         <p className="text-sm text-muted-foreground mb-4">
-          We've sent a verification link to <span className="font-semibold text-foreground">you@example.com</span>
+          We&apos;ve sent a verification link to <span className="font-semibold text-foreground">you@example.com</span>
         </p>
       </div>
 
