@@ -110,12 +110,13 @@ class JwtAuth(Authenticator):
         return token
 
     async def authenticate(self, username: str, password: str) -> User:
-
         result = await self.db_session.execute(select(User).where(User.username == username))
-
         user = result.scalar_one_or_none()
 
         if not user:
+            raise InvalidUserCredentialsError()
+
+        if not user.password_hash:
             raise InvalidUserCredentialsError()
 
         if not self.hasher.verify(password, user.password_hash):

@@ -23,6 +23,9 @@ dependencies = [
     "taskiq-redis>=0.5.0",
     "python-multipart>=0.0.27",
     "supabase>=2.30.0",
+    "authlib>=1.7.2",
+    "httpx>=0.28.1",
+    "itsdangerous>=2.2.0",
 ]
 
 [dependency-groups]
