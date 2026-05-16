@@ -28,7 +28,7 @@ export default function SignUpPage() {
       <AuthCard>
         <div className="text-center mb-8">
           <h1 className="text-[26px] font-bold text-[#191c1e] mb-2 tracking-tight">Create your account</h1>
-          <p className="text-[15px] text-gray-500 font-medium">Start your journey with AI-powered interviews.</p>
+          <p className="text-[15px] text-gray-500 font-medium">Join thousands of teams building the future with InterXAI.</p>
         </div>
 
         <SocialLogins />

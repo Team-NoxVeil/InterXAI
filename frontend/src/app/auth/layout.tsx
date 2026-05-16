@@ -39,7 +39,13 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         style={{ animationDelay: "-10s" }}
       />
 
-      <main className="relative z-10 w-full max-w-[520px]">
+      <main className="relative z-10 w-full max-w-[520px] flex flex-col items-center">
+        {/* Brand Logo */}
+        <div className="flex items-center gap-2 mb-10">
+          <span className="material-symbols-outlined text-primary text-4xl">blur_on</span>
+          <span className="font-bold text-3xl tracking-tighter text-primary">InterXAI</span>
+        </div>
+        
         {children}
       </main>
     </div>

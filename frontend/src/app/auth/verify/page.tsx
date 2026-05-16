@@ -11,9 +11,8 @@ export default function VerifyPage() {
       <AuthCard>
         <div className="text-center">
           <h1 className="text-[26px] font-bold text-[#191c1e] mb-2 tracking-tight">Verify your email</h1>
-          <p className="text-[15px] text-gray-500 font-medium mb-8 leading-relaxed">
-            We&apos;ve sent a verification link to<br />
-            <span className="font-bold text-[#191c1e]">john.doe@email.com</span>
+          <p className="text-[15px] text-gray-500 font-medium mb-8 leading-relaxed max-w-[320px] mx-auto">
+            We&apos;ve sent a verification link to your email. Please click the link to confirm your account.
           </p>
 
           <div className="relative w-full aspect-[4/3] max-w-[300px] mx-auto mb-6 flex items-center justify-center">

@@ -26,8 +26,8 @@ export default function SignInPage() {
     <div className="w-full">
       <AuthCard>
         <div className="text-center mb-8">
-          <h1 className="text-[26px] font-bold text-[#191c1e] mb-2 tracking-tight">Welcome back</h1>
-          <p className="text-[15px] text-gray-500 font-medium">Sign in to your account to continue.</p>
+          <h1 className="text-[26px] font-bold text-[#191c1e] mb-2 tracking-tight">Welcome Back</h1>
+          <p className="text-[15px] text-gray-500 font-medium">Elevate your workflow with InterXAI.</p>
         </div>
 
         <SocialLogins />
