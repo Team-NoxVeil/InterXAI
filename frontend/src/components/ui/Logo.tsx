@@ -1,30 +1,17 @@
-import React from 'react';
+"use client";
 
-interface LogoProps {
-  className?: string;
-  dark?: boolean;
+import { motion } from "framer-motion";
+
+export function Logo() {
+  return (
+    <motion.div 
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      className="flex items-center justify-center mb-6"
+    >
+      <div className="w-12 h-12 rounded-[14px] border-[1px] border-gray-300 flex items-center justify-center bg-white shadow-sm">
+        <span className="text-[#191c1e] text-2xl font-light">X</span>
+      </div>
+    </motion.div>
+  );
 }
-
-const Logo: React.FC<LogoProps> = ({ className = '', dark = false }) => (
-  <div className={`flex items-center gap-2 ${className}`}>
-    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="34" height="34" rx="8" fill={dark ? '#1e40af' : '#2563eb'} />
-      <text
-        x="17"
-        y="23"
-        textAnchor="middle"
-        fill="white"
-        fontSize="14"
-        fontWeight="bold"
-        fontFamily="Inter, sans-serif"
-      >
-        X
-      </text>
-    </svg>
-    <span className={`font-bold text-lg tracking-tight ${dark ? 'text-white' : 'text-slate-900'}`}>
-      InterXAI
-    </span>
-  </div>
-);
-
-export default Logo;
