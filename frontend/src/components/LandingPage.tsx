@@ -7,21 +7,41 @@ interface Stat {
   l: string;
 }
 
-const NAV_LINKS: string[] = ["Solutions", "How It Works", "For Users", "Pricing", "Resources"];
+const NAV_LINKS: string[] = [
+  "Solutions",
+  "How It Works",
+  "For Users",
+  "Pricing",
+  "Resources",
+];
 
 const STATS: Stat[] = [
   { e: "👥", v: "10,000+", l: "Interviews Run" },
-  { e: "📈", v: "82%",     l: "Avg. Confidence Score" },
-  { e: "⭐", v: "4.9/5",   l: "User Rating" },
+  { e: "📈", v: "82%", l: "Avg. Confidence Score" },
+  { e: "⭐", v: "4.9/5", l: "User Rating" },
 ];
 
-const FEEDBACK_ITEMS: string[] = ["Clear Answers", "Good Structure", "Relevant Examples", "Keep Improving"];
+const FEEDBACK_ITEMS: string[] = [
+  "Clear Answers",
+  "Good Structure",
+  "Relevant Examples",
+  "Keep Improving",
+];
 const FEEDBACK_COLORS: string[] = ["#3b82f6", "#60a5fa", "#93c5fd", "#bfdbfe"];
 
-const SKILL_ITEMS: string[] = ["Problem Solving", "Communication", "Leadership", "Adaptability"];
+const SKILL_ITEMS: string[] = [
+  "Problem Solving",
+  "Communication",
+  "Leadership",
+  "Adaptability",
+];
 
-const WAVE_DELAYS_CARD: number[] = [0.0, 0.14, 0.06, 0.20, 0.09, 0.17, 0.04, 0.13, 0.08];
-const WAVE_DELAYS_EYE: number[]  = [0.00, 0.13, 0.05, 0.19, 0.08, 0.22, 0.10, 0.16, 0.04];
+const WAVE_DELAYS_CARD: number[] = [
+  0.0, 0.14, 0.06, 0.2, 0.09, 0.17, 0.04, 0.13, 0.08,
+];
+const WAVE_DELAYS_EYE: number[] = [
+  0.0, 0.13, 0.05, 0.19, 0.08, 0.22, 0.1, 0.16, 0.04,
+];
 
 export default function InterXAI(): JSX.Element {
   useEffect(() => {
@@ -97,9 +117,27 @@ export default function InterXAI(): JSX.Element {
               border: "1.5px solid rgba(255,255,255,0.35)",
             }}
           >
-            <span style={{ color: "#fff", fontWeight: 800, fontSize: 14, letterSpacing: "-0.5px" }}>X</span>
+            <span
+              style={{
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 14,
+                letterSpacing: "-0.5px",
+              }}
+            >
+              X
+            </span>
           </div>
-          <span style={{ fontWeight: 800, fontSize: 17, color: "#0f172a", letterSpacing: "-0.4px" }}>InterXAI</span>
+          <span
+            style={{
+              fontWeight: 800,
+              fontSize: 17,
+              color: "#0f172a",
+              letterSpacing: "-0.4px",
+            }}
+          >
+            InterXAI
+          </span>
         </div>
 
         {/* Nav links */}
@@ -121,7 +159,12 @@ export default function InterXAI(): JSX.Element {
               {link}
               {(link === "Solutions" || link === "Resources") && (
                 <svg width="10" height="7" viewBox="0 0 10 7" fill="none">
-                  <path d="M1 1.5l4 4 4-4" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" />
+                  <path
+                    d="M1 1.5l4 4 4-4"
+                    stroke="#9ca3af"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
                 </svg>
               )}
             </a>
@@ -130,7 +173,15 @@ export default function InterXAI(): JSX.Element {
 
         {/* CTA */}
         <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-          <a href="#" style={{ color: "#4b5563", fontSize: 14, fontWeight: 500, textDecoration: "none" }}>
+          <a
+            href="#"
+            style={{
+              color: "#4b5563",
+              fontSize: 14,
+              fontWeight: 500,
+              textDecoration: "none",
+            }}
+          >
             Sign In
           </a>
           <button
@@ -151,7 +202,13 @@ export default function InterXAI(): JSX.Element {
           >
             Get Started
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M2 7h10M8 3l4 4-4 4"
+                stroke="white"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </div>
@@ -189,7 +246,14 @@ export default function InterXAI(): JSX.Element {
             <svg width="12" height="12" viewBox="0 0 12 12" fill="#3b82f6">
               <path d="M6 0l1.3 3.7 3.7.3-2.7 2.6.8 3.6L6 8.3l-3.1 1.9.8-3.6L1 4.1l3.7-.4z" />
             </svg>
-            <span style={{ fontSize: 12, fontWeight: 600, color: "#1d4ed8", letterSpacing: "0.05px" }}>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#1d4ed8",
+                letterSpacing: "0.05px",
+              }}
+            >
               AI-Powered Interview Platform
             </span>
           </div>
@@ -230,7 +294,14 @@ export default function InterXAI(): JSX.Element {
           </p>
 
           {/* Buttons */}
-          <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 44 }}>
+          <div
+            style={{
+              display: "flex",
+              gap: 16,
+              alignItems: "center",
+              marginBottom: 44,
+            }}
+          >
             <button
               style={{
                 background: "linear-gradient(135deg,#3b82f6,#1d4ed8)",
@@ -260,7 +331,13 @@ export default function InterXAI(): JSX.Element {
                 }}
               >
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M1 6h10M7 2l4 4-4 4" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  <path
+                    d="M1 6h10M7 2l4 4-4 4"
+                    stroke="white"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </span>
             </button>
@@ -301,13 +378,27 @@ export default function InterXAI(): JSX.Element {
           {/* Stats */}
           <div style={{ display: "flex", gap: 36 }}>
             {STATS.map((stat: Stat) => (
-              <div key={stat.l} style={{ display: "flex", alignItems: "center", gap: 9 }}>
+              <div
+                key={stat.l}
+                style={{ display: "flex", alignItems: "center", gap: 9 }}
+              >
                 <span style={{ fontSize: 19 }}>{stat.e}</span>
                 <div>
-                  <div style={{ fontWeight: 800, fontSize: 14, color: "#0f172a", letterSpacing: "-0.3px" }}>
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      fontSize: 14,
+                      color: "#0f172a",
+                      letterSpacing: "-0.3px",
+                    }}
+                  >
                     {stat.v}
                   </div>
-                  <div style={{ fontSize: 11.5, color: "#9ca3af", marginTop: 1 }}>{stat.l}</div>
+                  <div
+                    style={{ fontSize: 11.5, color: "#9ca3af", marginTop: 1 }}
+                  >
+                    {stat.l}
+                  </div>
                 </div>
               </div>
             ))}
@@ -327,9 +418,22 @@ export default function InterXAI(): JSX.Element {
           {/* AIInterviewer card – top left */}
           <div
             className="float"
-            style={{ ...cardBase, top: 18, left: 16, minWidth: 158, animationDelay: "0s" }}
+            style={{
+              ...cardBase,
+              top: 18,
+              left: 16,
+              minWidth: 158,
+              animationDelay: "0s",
+            }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                marginBottom: 7,
+              }}
+            >
               <div
                 style={{
                   width: 22,
@@ -347,30 +451,63 @@ export default function InterXAI(): JSX.Element {
                   <path d="M1 11c0-2.76 2.24-5 5-5s5 2.24 5 5" fill="#3b82f6" />
                 </svg>
               </div>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#1e40af" }}>AIInterviewer</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#1e40af" }}>
+                AIInterviewer
+              </span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
               <div
                 className="pglow"
-                style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 5px #22c55e" }}
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: "50%",
+                  background: "#22c55e",
+                  boxShadow: "0 0 5px #22c55e",
+                }}
               />
-              <span style={{ fontSize: 12, color: "#6b7280" }}>Listening...</span>
+              <span style={{ fontSize: 12, color: "#6b7280" }}>
+                Listening...
+              </span>
             </div>
           </div>
 
           {/* Feedback card – top right */}
           <div
             className="float"
-            style={{ ...cardBase, top: 8, right: 4, minWidth: 148, animationDelay: "0.55s" }}
+            style={{
+              ...cardBase,
+              top: 8,
+              right: 4,
+              minWidth: 148,
+              animationDelay: "0.55s",
+            }}
           >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 9 }}>
-              <span style={{ fontSize: 12, fontWeight: 800, color: "#1e293b" }}>Feedback</span>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 9,
+              }}
+            >
+              <span style={{ fontSize: 12, fontWeight: 800, color: "#1e293b" }}>
+                Feedback
+              </span>
               <svg width="11" height="11" viewBox="0 0 12 12" fill="#fbbf24">
                 <path d="M6 1l1.1 2.9 3 .3-2.2 2 .7 3L6 7.8l-2.6 1.4.7-3L1.9 4.2l3-.3z" />
               </svg>
             </div>
             {FEEDBACK_ITEMS.map((item: string, i: number) => (
-              <div key={item} style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 5 }}>
+              <div
+                key={item}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 7,
+                  marginBottom: 5,
+                }}
+              >
                 <div
                   style={{
                     width: 7,
@@ -390,13 +527,28 @@ export default function InterXAI(): JSX.Element {
             className="float"
             style={{ ...cardBase, bottom: 68, left: 8, animationDelay: "1.1s" }}
           >
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", display: "block", marginBottom: 9 }}>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: "#1e293b",
+                display: "block",
+                marginBottom: 9,
+              }}
+            >
               Confidence Score
             </span>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               {/* Donut gauge */}
               <svg width="72" height="72" viewBox="0 0 72 72">
-                <circle cx="36" cy="36" r="28" fill="none" stroke="#dbeafe" strokeWidth="7" />
+                <circle
+                  cx="36"
+                  cy="36"
+                  r="28"
+                  fill="none"
+                  stroke="#dbeafe"
+                  strokeWidth="7"
+                />
                 <circle
                   cx="36"
                   cy="36"
@@ -408,18 +560,39 @@ export default function InterXAI(): JSX.Element {
                   strokeLinecap="round"
                   transform="rotate(-90 36 36)"
                 />
-                <text x="36" y="41" textAnchor="middle" fontSize="14" fontWeight="800" fill="#1d4ed8">
+                <text
+                  x="36"
+                  y="41"
+                  textAnchor="middle"
+                  fontSize="14"
+                  fontWeight="800"
+                  fill="#1d4ed8"
+                >
                   82%
                 </text>
                 <defs>
-                  <linearGradient id="cGrad" x1="0" y1="0" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+                  <linearGradient
+                    id="cGrad"
+                    x1="0"
+                    y1="0"
+                    x2="72"
+                    y2="72"
+                    gradientUnits="userSpaceOnUse"
+                  >
                     <stop stopColor="#60a5fa" />
                     <stop offset="1" stopColor="#1d4ed8" />
                   </linearGradient>
                 </defs>
               </svg>
               {/* Waveform bars */}
-              <div style={{ display: "flex", alignItems: "center", gap: 2.5, height: 32 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2.5,
+                  height: 32,
+                }}
+              >
                 {WAVE_DELAYS_CARD.map((d: number, i: number) => (
                   <span
                     key={i}
@@ -441,23 +614,48 @@ export default function InterXAI(): JSX.Element {
           {/* Skills Detected card – bottom right */}
           <div
             className="float"
-            style={{ ...cardBase, bottom: 58, right: 4, minWidth: 138, animationDelay: "1.5s" }}
+            style={{
+              ...cardBase,
+              bottom: 58,
+              right: 4,
+              minWidth: 138,
+              animationDelay: "1.5s",
+            }}
           >
-            <span style={{ fontSize: 12, fontWeight: 800, color: "#1e293b", display: "block", marginBottom: 9 }}>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 800,
+                color: "#1e293b",
+                display: "block",
+                marginBottom: 9,
+              }}
+            >
               Skills Detected
             </span>
             {SKILL_ITEMS.map((skill: string) => (
-              <div key={skill} style={{ fontSize: 11, color: "#4b5563", marginBottom: 5 }}>
+              <div
+                key={skill}
+                style={{ fontSize: 11, color: "#4b5563", marginBottom: 5 }}
+              >
                 {skill}
               </div>
             ))}
-            <div style={{ fontSize: 11, color: "#2563eb", fontWeight: 700 }}>+12</div>
+            <div style={{ fontSize: 11, color: "#2563eb", fontWeight: 700 }}>
+              +12
+            </div>
           </div>
 
           {/* ─── SPHERE ─── */}
           <div
             className="float"
-            style={{ position: "relative", width: 252, height: 252, animationDelay: "0.28s", zIndex: 5 }}
+            style={{
+              position: "relative",
+              width: 252,
+              height: 252,
+              animationDelay: "0.28s",
+              zIndex: 5,
+            }}
           >
             {/* Ambient glow */}
             <div
@@ -493,11 +691,55 @@ export default function InterXAI(): JSX.Element {
                 </radialGradient>
               </defs>
               <ellipse cx="180" cy="46" rx="168" ry="34" fill="url(#pDisc)" />
-              <ellipse cx="180" cy="46" rx="168" ry="34" fill="none" stroke="#7bc0f7" strokeWidth="1" opacity="0.55" />
-              <ellipse cx="180" cy="46" rx="128" ry="25" fill="none" stroke="#a8d8f8" strokeWidth="1" opacity="0.65" />
-              <ellipse cx="180" cy="46" rx="90"  ry="17" fill="none" stroke="#c3e6fc" strokeWidth="1" opacity="0.75" />
-              <ellipse cx="180" cy="46" rx="52"  ry="10" fill="none" stroke="#ddf0ff" strokeWidth="1" opacity="0.85" />
-              <ellipse cx="180" cy="46" rx="24"  ry="5"  fill="#5eaef0" opacity="0.7" className="pglow" />
+              <ellipse
+                cx="180"
+                cy="46"
+                rx="168"
+                ry="34"
+                fill="none"
+                stroke="#7bc0f7"
+                strokeWidth="1"
+                opacity="0.55"
+              />
+              <ellipse
+                cx="180"
+                cy="46"
+                rx="128"
+                ry="25"
+                fill="none"
+                stroke="#a8d8f8"
+                strokeWidth="1"
+                opacity="0.65"
+              />
+              <ellipse
+                cx="180"
+                cy="46"
+                rx="90"
+                ry="17"
+                fill="none"
+                stroke="#c3e6fc"
+                strokeWidth="1"
+                opacity="0.75"
+              />
+              <ellipse
+                cx="180"
+                cy="46"
+                rx="52"
+                ry="10"
+                fill="none"
+                stroke="#ddf0ff"
+                strokeWidth="1"
+                opacity="0.85"
+              />
+              <ellipse
+                cx="180"
+                cy="46"
+                rx="24"
+                ry="5"
+                fill="#5eaef0"
+                opacity="0.7"
+                className="pglow"
+              />
             </svg>
 
             {/* Sphere shell */}
@@ -527,7 +769,8 @@ export default function InterXAI(): JSX.Element {
                   width: "38%",
                   height: "24%",
                   borderRadius: "60% 40% 50% 50%",
-                  background: "radial-gradient(ellipse, rgba(255,255,255,0.62) 0%, transparent 80%)",
+                  background:
+                    "radial-gradient(ellipse, rgba(255,255,255,0.62) 0%, transparent 80%)",
                   filter: "blur(5px)",
                   transform: "rotate(-15deg)",
                 }}
@@ -562,7 +805,8 @@ export default function InterXAI(): JSX.Element {
                     width: 88,
                     height: 88,
                     borderRadius: "50%",
-                    background: "radial-gradient(circle at 40% 36%, #1e3a8a 0%, #0f1f5c 40%, #060e2e 100%)",
+                    background:
+                      "radial-gradient(circle at 40% 36%, #1e3a8a 0%, #0f1f5c 40%, #060e2e 100%)",
                     boxShadow:
                       "0 0 0 2px rgba(96,165,250,0.22), 0 0 28px rgba(30,58,138,0.9), 0 0 55px rgba(59,130,246,0.35)",
                     display: "flex",
@@ -580,7 +824,15 @@ export default function InterXAI(): JSX.Element {
                     }}
                   />
                   {/* Eye waveform */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 2, height: 26, zIndex: 4 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 2,
+                      height: 26,
+                      zIndex: 4,
+                    }}
+                  >
                     {WAVE_DELAYS_EYE.map((d: number, i: number) => (
                       <span
                         key={i}

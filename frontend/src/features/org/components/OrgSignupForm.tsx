@@ -3,11 +3,11 @@
  * Pure UI form for organisation signup — no business logic.
  */
 
-import React from 'react';
-import FormInput from '../../../components/ui/FormInput';
-import Button from '../../../components/ui/Button';
-import AlertBanner from '../../../components/ui/AlertBanner';
-import type { OrgSignupFormState } from '../hooks/useOrgSignup';
+import React from "react";
+import FormInput from "../../../components/ui/FormInput";
+import Button from "../../../components/ui/Button";
+import AlertBanner from "../../../components/ui/AlertBanner";
+import type { OrgSignupFormState } from "../hooks/useOrgSignup";
 
 export interface OrgSignupFormProps {
   form: OrgSignupFormState;
@@ -26,7 +26,12 @@ const OrgSignupForm: React.FC<OrgSignupFormProps> = ({
   onSubmit,
   onLoginClick,
 }) => (
-  <form id="org-signup-form" onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
+  <form
+    id="org-signup-form"
+    onSubmit={onSubmit}
+    noValidate
+    className="flex flex-col gap-5"
+  >
     {error && <AlertBanner message={error} variant="error" />}
 
     <FormInput
@@ -90,7 +95,13 @@ const OrgSignupForm: React.FC<OrgSignupFormProps> = ({
       className="w-full justify-center py-3.5 text-sm mt-1"
       disabled={isLoading}
     >
-      {isLoading ? <><SpinnerIcon /> Creating account…</> : 'Create Organisation Account'}
+      {isLoading ? (
+        <>
+          <SpinnerIcon /> Creating account…
+        </>
+      ) : (
+        "Create Organisation Account"
+      )}
     </Button>
 
     <div className="flex items-center gap-3">
@@ -100,7 +111,7 @@ const OrgSignupForm: React.FC<OrgSignupFormProps> = ({
     </div>
 
     <p className="text-center text-sm text-white/50">
-      Already have an account?{' '}
+      Already have an account?{" "}
       <button
         type="button"
         onClick={onLoginClick}
@@ -113,9 +124,27 @@ const OrgSignupForm: React.FC<OrgSignupFormProps> = ({
 );
 
 const SpinnerIcon = () => (
-  <svg className="animate-spin" width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" strokeOpacity="0.25" />
-    <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  <svg
+    className="animate-spin"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+  >
+    <circle
+      cx="8"
+      cy="8"
+      r="6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeOpacity="0.25"
+    />
+    <path
+      d="M14 8a6 6 0 00-6-6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
   </svg>
 );
 

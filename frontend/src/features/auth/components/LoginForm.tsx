@@ -4,11 +4,11 @@
  * Zero business logic; just renders inputs and delegates events upward.
  */
 
-import React from 'react';
-import FormInput from '../../../components/ui/FormInput';
-import Button from '../../../components/ui/Button';
-import AlertBanner from '../../../components/ui/AlertBanner';
-import type { LoginFormState } from '../hooks/useLogin';
+import React from "react";
+import FormInput from "../../../components/ui/FormInput";
+import Button from "../../../components/ui/Button";
+import AlertBanner from "../../../components/ui/AlertBanner";
+import type { LoginFormState } from "../hooks/useLogin";
 
 export interface LoginFormProps {
   form: LoginFormState;
@@ -67,7 +67,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
     {/* Forgot password link */}
     <div className="flex justify-end -mt-2">
-      <a href="#forgot" className="text-xs text-[#3ddc84]/70 hover:text-[#3ddc84] transition-colors">
+      <a
+        href="#forgot"
+        className="text-xs text-[#3ddc84]/70 hover:text-[#3ddc84] transition-colors"
+      >
         Forgot password?
       </a>
     </div>
@@ -86,7 +89,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           Signing in…
         </>
       ) : (
-        'Sign In'
+        "Sign In"
       )}
     </Button>
 
@@ -99,7 +102,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
     {/* Sign up link */}
     <p className="text-center text-sm text-white/50">
-      Don't have an account?{' '}
+      Don't have an account?{" "}
       <button
         type="button"
         onClick={onSignupClick}
@@ -119,8 +122,20 @@ const SpinnerIcon = () => (
     viewBox="0 0 16 16"
     fill="none"
   >
-    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" strokeOpacity="0.25" />
-    <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <circle
+      cx="8"
+      cy="8"
+      r="6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeOpacity="0.25"
+    />
+    <path
+      d="M14 8a6 6 0 00-6-6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
   </svg>
 );
 

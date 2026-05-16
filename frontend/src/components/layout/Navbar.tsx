@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import Logo from '../ui/Logo';
-import Button from '../ui/Button';
+import React, { useState } from "react";
+import Logo from "../ui/Logo";
+import Button from "../ui/Button";
 
 export interface NavItem {
   label: string;
@@ -18,15 +18,15 @@ export interface NavbarProps {
 }
 
 const defaultNavItems: NavItem[] = [
-  { label: 'Solutions', href: '#solutions', hasDropdown: true },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'For Users', href: '#for-users' },
-  { label: 'Contact', href: '#contact' },
+  { label: "Solutions", href: "#solutions", hasDropdown: true },
+  { label: "How It Works", href: "#how-it-works" },
+  { label: "For Users", href: "#for-users" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const Navbar: React.FC<NavbarProps> = ({
   items = defaultNavItems,
-  ctaLabel = 'Get Started',
+  ctaLabel = "Get Started",
   ctaHref,
   onCtaClick,
   orgCtaLabel,
@@ -60,7 +60,12 @@ const Navbar: React.FC<NavbarProps> = ({
                   fill="none"
                   className="opacity-60"
                 >
-                  <path d="M3 4.5L6 7.5L9 4.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                  <path
+                    d="M3 4.5L6 7.5L9 4.5"
+                    stroke="white"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
                 </svg>
               )}
             </a>
@@ -99,13 +104,13 @@ const Navbar: React.FC<NavbarProps> = ({
       >
         <div className="flex flex-col gap-1.5">
           <span
-            className={`block h-0.5 w-6 bg-white transition-transform duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`}
+            className={`block h-0.5 w-6 bg-white transition-transform duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`}
           />
           <span
-            className={`block h-0.5 w-6 bg-white transition-opacity duration-300 ${menuOpen ? 'opacity-0' : ''}`}
+            className={`block h-0.5 w-6 bg-white transition-opacity duration-300 ${menuOpen ? "opacity-0" : ""}`}
           />
           <span
-            className={`block h-0.5 w-6 bg-white transition-transform duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`}
+            className={`block h-0.5 w-6 bg-white transition-transform duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`}
           />
         </div>
       </button>

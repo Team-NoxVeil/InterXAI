@@ -4,7 +4,7 @@
  * Mirrors the backend schemas in app/schemas/user.py
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
+const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 // ── Request / Response types (mirrors backend schemas) ──────────────────────
 
@@ -40,14 +40,16 @@ export class AuthServiceError extends Error {
   constructor(statusCode: number, message: string) {
     super(message);
     this.statusCode = statusCode;
-    this.name = 'AuthServiceError';
+    this.name = "AuthServiceError";
   }
 }
 
-export async function loginUser(credentials: LoginRequest): Promise<TokenResponse> {
+export async function loginUser(
+  credentials: LoginRequest,
+): Promise<TokenResponse> {
   const response = await fetch(`${BASE_URL}/users/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(credentials),
   });
 
@@ -55,7 +57,7 @@ export async function loginUser(credentials: LoginRequest): Promise<TokenRespons
     const data = await response.json().catch(() => ({}));
     throw new AuthServiceError(
       response.status,
-      data?.detail ?? 'Login failed. Please check your credentials.',
+      data?.detail ?? "Login failed. Please check your credentials.",
     );
   }
 
