@@ -1,0 +1,291 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# issue-automation.yml
+#
+# Runs on every newly opened (or reopened) GitHub issue and does three things:
+#
+#  1. Label triage
+#     • Always adds:  gssoc2026
+#     • Adds backend  if the title/body mentions keywords like backend, api,
+#       fastapi, python, database, router, schema, model, etc.
+#     • Adds frontend if the title/body mentions keywords like frontend, ui,
+#       react, vite, typescript, css, component, page, etc.
+#     • Falls back to "needs-triage" when neither backend nor frontend matches.
+#
+#  2. Welcome comment
+#     • Tags the issue author.
+#     • Explains the clean-commit-history convention (conventional commits,
+#       feature branches, no force-push to main).
+#     • Lists open issues so the contributor can see if similar work exists
+#       and avoid duplicates or conflicts.
+#
+#  3. Duplicate / related-issue check
+#     • Fetches all other open issues and posts a short list (up to 5) of
+#       issues that share at least one word with the new issue title,
+#       encouraging the author to check for overlaps.
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: Issue Automation
+
+on:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  issues: write        # add labels + post comments
+  contents: read       # read repo content if needed
+
+jobs:
+  triage-and-welcome:
+    name: Label, Greet & Cross-link
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Determine labels ─────────────────────────────────────────────────
+      - name: Detect component (backend / frontend)
+        id: detect
+        env:
+          TITLE: ${{ github.event.issue.title }}
+          BODY:  ${{ github.event.issue.body }}
+        run: |
+          TEXT="${TITLE,,} ${BODY,,}"   # lowercase everything
+
+          is_backend=false
+          is_frontend=false
+
+          # Backend keywords
+          if echo "$TEXT" | grep -qE \
+            'backend|fastapi|python|sqlalchemy|database|db|router|schema|model|migration|alembic|api|endpoint|uvicorn|pydantic|uv|ruff|mypy|jwt|auth|bcrypt'; then
+            is_backend=true
+          fi
+
+          # Frontend keywords
+          if echo "$TEXT" | grep -qE \
+            'frontend|react|vite|typescript|tsx|jsx|css|tailwind|component|page|ui|ux|navbar|dashboard|login|signup|form|hook|service|style|button|icon|animation'; then
+            is_frontend=true
+          fi
+
+          echo "is_backend=$is_backend"   >> $GITHUB_OUTPUT
+          echo "is_frontend=$is_frontend" >> $GITHUB_OUTPUT
+
+      # ── 2. Add gssoc2026 label (always) ────────────────────────────────────
+      - name: Add gssoc2026 label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Ensure the label exists; create it if it doesn't
+            const labels = ['gssoc2026'];
+            for (const label of labels) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo:  context.repo.repo,
+                  name:  label,
+                });
+              } catch {
+                await github.rest.issues.createLabel({
+                  owner:       context.repo.owner,
+                  repo:        context.repo.repo,
+                  name:        label,
+                  color:       'e11d48',
+                  description: 'GSSoC 2026 contribution',
+                });
+              }
+            }
+            await github.rest.issues.addLabels({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: context.issue.number,
+              labels,
+            });
+
+      # ── 3. Add backend label ────────────────────────────────────────────────
+      - name: Add backend label
+        if: steps.detect.outputs.is_backend == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'backend';
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                name:  label,
+              });
+            } catch {
+              await github.rest.issues.createLabel({
+                owner:       context.repo.owner,
+                repo:        context.repo.repo,
+                name:        label,
+                color:       '7c3aed',
+                description: 'Related to the FastAPI / Python backend',
+              });
+            }
+            await github.rest.issues.addLabels({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: context.issue.number,
+              labels:       [label],
+            });
+
+      # ── 4. Add frontend label ───────────────────────────────────────────────
+      - name: Add frontend label
+        if: steps.detect.outputs.is_frontend == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'frontend';
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                name:  label,
+              });
+            } catch {
+              await github.rest.issues.createLabel({
+                owner:       context.repo.owner,
+                repo:        context.repo.repo,
+                name:        label,
+                color:       '0ea5e9',
+                description: 'Related to the React / TypeScript frontend',
+              });
+            }
+            await github.rest.issues.addLabels({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: context.issue.number,
+              labels:       [label],
+            });
+
+      # ── 5. Add needs-triage label (fallback) ────────────────────────────────
+      - name: Add needs-triage label (fallback)
+        if: steps.detect.outputs.is_backend == 'false' && steps.detect.outputs.is_frontend == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'needs-triage';
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                name:  label,
+              });
+            } catch {
+              await github.rest.issues.createLabel({
+                owner:       context.repo.owner,
+                repo:        context.repo.repo,
+                name:        label,
+                color:       'f59e0b',
+                description: 'Needs component classification by a maintainer',
+              });
+            }
+            await github.rest.issues.addLabels({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: context.issue.number,
+              labels:       [label],
+            });
+
+      # ── 6. Post welcome comment + related-issue list ────────────────────────
+      - name: Post welcome comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const author      = context.payload.issue.user.login;
+            const issueTitle  = context.payload.issue.title;
+            const issueNumber = context.issue.number;
+
+            // ── Fetch all other open issues ──────────────────────────────────
+            const { data: allIssues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            // Exclude the newly created issue itself
+            const otherIssues = allIssues.filter(i => i.number !== issueNumber && !i.pull_request);
+
+            // ── Find related issues by shared title words (≥5 chars) ─────────
+            const words = issueTitle
+              .toLowerCase()
+              .split(/\W+/)
+              .filter(w => w.length >= 5);
+
+            const related = otherIssues.filter(i =>
+              words.some(w => i.title.toLowerCase().includes(w))
+            ).slice(0, 5);
+
+            // ── Build related-issues section ─────────────────────────────────
+            let relatedSection = '';
+            if (related.length > 0) {
+              const lines = related.map(i => {
+                const assignees = i.assignees.length
+                  ? i.assignees.map(a => `@${a.login}`).join(', ')
+                  : '_unassigned_';
+                return `- #${i.number} — **${i.title}** (assigned to: ${assignees})`;
+              }).join('\n');
+              relatedSection = `
+            ### 🔍 Possibly Related Open Issues
+            These open issues share keywords with yours — please check them before starting work to avoid duplicate effort:
+
+            ${lines}
+
+            > If your issue overlaps with an assigned one, consider commenting there instead of opening a new issue.
+            `;
+            }
+
+            // ── Build full comment ───────────────────────────────────────────
+            const body = `
+            ## 👋 Hey @${author}, thanks for raising this issue!
+
+            A maintainer will review it shortly. While you wait, here are a few things to keep in mind if you'd like to contribute a fix:
+
+            ---
+
+            ### ✅ Clean Commit History — Required for All PRs
+
+            We follow **Conventional Commits** to keep the Git history readable:
+
+            | Prefix | When to use |
+            |--------|-------------|
+            | \`feat:\`    | New feature |
+            | \`fix:\`     | Bug fix |
+            | \`chore:\`   | Tooling / config / deps |
+            | \`docs:\`    | Documentation only |
+            | \`refactor:\`| Code change that isn't a fix or feature |
+            | \`test:\`    | Adding or fixing tests |
+
+            **Examples:**
+            \`\`\`
+            feat: add confidence-score gauge to dashboard
+            fix: resolve CORS error on /users/login
+            chore: upgrade vite to v8
+            \`\`\`
+
+            **Branch naming:** \`feat/<short-description>\` · \`fix/<short-description>\`
+
+            **Golden rules:**
+            - 🚫 No force-push to \`main\` or other shared branches
+            - 🚫 No merge commits inside your feature branch — rebase instead
+            - ✅ One logical change per commit
+            - ✅ PR description must reference this issue: \`Closes #${issueNumber}\`
+
+            ---
+
+            ### 🏷️ Labels Applied Automatically
+            - **gssoc2026** — marks this as a GSSoC 2026 contribution
+            - **backend** / **frontend** — detected from the issue title & body
+
+            ${relatedSection}
+
+            ---
+
+            Happy contributing! 🚀 Feel free to ask questions in this thread.
+            `.trim();
+
+            await github.rest.issues.createComment({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: issueNumber,
+              body,
+            });
