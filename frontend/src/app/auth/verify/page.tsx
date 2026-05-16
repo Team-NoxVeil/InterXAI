@@ -1,40 +1,60 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { AuthCard } from "@/components/auth/auth-card";
+import { motion } from "framer-motion";
 
-export default function VerifyEmailPage() {
+export default function VerifyPage() {
   return (
-    <div className="glass-card p-8 bg-white/60 text-center">
-      <div className="mb-6 flex justify-center">
-        <div className="relative w-32 h-32 flex items-center justify-center">
-          <Image src="/verify-email.png" alt="Verify Email" fill className="object-contain drop-shadow-lg z-10" priority />
+    <div className="w-full">
+      <AuthCard>
+        <div className="text-center">
+          <h1 className="text-[26px] font-bold text-[#191c1e] mb-2 tracking-tight">Verify your email</h1>
+          <p className="text-[15px] text-gray-500 font-medium mb-8 leading-relaxed">
+            We&apos;ve sent a verification link to<br />
+            <span className="font-bold text-[#191c1e]">john.doe@email.com</span>
+          </p>
+
+          <div className="relative w-full aspect-[4/3] max-w-[300px] mx-auto mb-6 flex items-center justify-center">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="relative w-full h-full mix-blend-darken"
+            >
+              <Image 
+                src="/icy-envelope.png" 
+                alt="Verification Email" 
+                fill
+                className="object-contain"
+                priority
+              />
+            </motion.div>
+          </div>
+
+
+          <div className="space-y-6 mt-4">
+            <div className="space-y-1">
+              <p className="text-[14px] text-gray-500 font-medium">
+                Didn&apos;t receive the email?
+              </p>
+              <button className="text-gray-400 font-medium text-[14px] hover:text-gray-600 transition-all">
+                Resend link (56s)
+              </button>
+            </div>
+
+            <div className="pt-4">
+              <Link 
+                href="/auth/signin"
+                className="w-full bg-[#f8fafc] border border-gray-100 text-[#191c1e] py-4 rounded-full text-[16px] font-bold hover:bg-gray-100 active:scale-[0.98] transition-all flex items-center justify-center shadow-sm"
+              >
+                Back to Sign In
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
-      
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold font-heading mb-2">Check your email</h1>
-        <p className="text-sm text-muted-foreground mb-4">
-          We&apos;ve sent a verification link to <span className="font-semibold text-foreground">you@example.com</span>
-        </p>
-      </div>
-
-      <div className="space-y-4">
-        <Link href="/dashboard" className="block">
-          <Button className="w-full bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 glow-effect h-12">
-            Go to Dashboard
-          </Button>
-        </Link>
-        <Button variant="outline" className="w-full bg-white/50 h-12">
-          Resend Email
-        </Button>
-      </div>
-
-      <p className="mt-8 text-sm text-muted-foreground">
-        Back to{" "}
-        <Link href="/auth/signin" className="text-primary hover:underline font-semibold">
-          Sign in
-        </Link>
-      </p>
+      </AuthCard>
     </div>
   );
 }
