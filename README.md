@@ -343,6 +343,8 @@ Contributions are welcome. Please follow these steps:
 4. **Commit** with a descriptive message following [Conventional Commits](https://www.conventionalcommits.org/)
 5. **Push** to your fork and **open a Pull Request**
 
+**For detailed instructions on local development setups, environment configurations, and workflow conventions, please refer to our dedicated [Contributing Guide](./CONTRIBUTING.md).**
+
 ### Code Guidelines
 
 - Business logic lives inline in routers - no separate service layer yet
