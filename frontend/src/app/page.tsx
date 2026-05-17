@@ -298,7 +298,7 @@ export default function LandingPage() {
                             key={i}
                             animate={{ height: [10, 36, 10] }}
                             transition={{
-                              duration: 0.7 + Math.random() * 0.4,
+                              duration: 0.7 + ((i * 7) % 5) * 0.1,
                               repeat: Infinity,
                               ease: "easeInOut",
                               delay: i * 0.08,
