@@ -15,6 +15,7 @@ export interface NavbarProps {
   onCtaClick?: () => void;
   orgCtaLabel?: string;
   onOrgCtaClick?: () => void;
+  onItemClick?: (label: string) => void;
 }
 
 const defaultNavItems: NavItem[] = [
@@ -31,6 +32,7 @@ const Navbar: React.FC<NavbarProps> = ({
   onCtaClick,
   orgCtaLabel,
   onOrgCtaClick,
+  onItemClick,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -49,6 +51,14 @@ const Navbar: React.FC<NavbarProps> = ({
           <li key={item.label}>
             <a
               href={item.href}
+              onClick={
+                onItemClick
+                  ? (e) => {
+                      e.preventDefault();
+                      onItemClick(item.label);
+                    }
+                  : undefined
+              }
               className="text-white/80 hover:text-white text-sm transition-colors duration-200 flex items-center gap-1"
             >
               {item.label}
@@ -126,7 +136,13 @@ const Navbar: React.FC<NavbarProps> = ({
               key={item.label}
               href={item.href}
               className="text-white/80 hover:text-white text-sm transition-colors"
-              onClick={() => setMenuOpen(false)}
+              onClick={(e) => {
+                setMenuOpen(false);
+                if (onItemClick) {
+                  e.preventDefault();
+                  onItemClick(item.label);
+                }
+              }}
             >
               {item.label}
             </a>

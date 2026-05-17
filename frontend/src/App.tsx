@@ -5,6 +5,10 @@ import SignupPage from "./features/auth/SignupPage";
 import OrgAuthPage from "./features/org/OrgAuthPage";
 import ProfileSetupPage from "./features/user/ProfileSetupPage";
 import DashboardPage from "./features/user/DashboardPage";
+import ForUsersPage from "./features/user/ForUsersPage";
+import ContactPage from "./features/contact/ContactPage";
+import HowItWorksPage from "./features/HowItWorksPage";
+import PricingPage from "./features/PricingPage";
 import type { TokenResponse } from "./services/auth.service";
 import type { OrgSignupResponse } from "./services/organization.service";
 import type { UserResponse } from "./services/user.service";
@@ -23,7 +27,11 @@ type Page =
   | "org-auth"
   | "profile-setup"
   | "dashboard"
-  | "org-dashboard";
+  | "org-dashboard"
+  | "for-users"
+  | "how-it-works"
+  | "pricing"
+  | "contact";
 
 // ── Root component ────────────────────────────────────────────────────────────
 function App() {
@@ -119,6 +127,39 @@ function App() {
         />
       );
 
+    case "for-users":
+      return (
+        <ForUsersPage
+          onLoginClick={() => setPage("login")}
+          onSignupClick={() => setPage("signup")}
+          onBack={() => setPage("landing")}
+        />
+      );
+
+    case "how-it-works":
+      return (
+        <HowItWorksPage
+          onLoginClick={() => setPage("login")}
+          onBack={() => setPage("landing")}
+        />
+      );
+
+    case "pricing":
+      return (
+        <PricingPage
+          onLoginClick={() => setPage("login")}
+          onBack={() => setPage("landing")}
+        />
+      );
+
+    case "contact":
+      return (
+        <ContactPage
+          onLoginClick={() => setPage("login")}
+          onBack={() => setPage("landing")}
+        />
+      );
+
     case "org-dashboard":
       return (
         <Placeholder
@@ -132,6 +173,12 @@ function App() {
         <LandingPage
           onLoginClick={() => setPage("login")}
           onOrgLoginClick={() => setPage("org-auth")}
+          onNavItemClick={(label) => {
+            if (label === "For Users") setPage("for-users");
+            else if (label === "How It Works") setPage("how-it-works");
+            else if (label === "Pricing") setPage("pricing");
+            else if (label === "Contact") setPage("contact");
+          }}
         />
       );
   }
