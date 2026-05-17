@@ -6,20 +6,28 @@ As a **GSSoC 2026** development space, maintaining system configuration boundari
 
 ---
 
+# InterXAI Contribution & Development Guide 🚀
+
+This document details the configuration steps, system dependency frameworks, and codebase discipline metrics required to participate as a contributor to InterXAI. 
+
+Maintaining system configuration boundaries, typed structures, and historical git sanity is mandatory. Please confirm compliance with this outline before editing core elements.
+
+---
+
 ## 📋 Pre-Flight Technical Checklist
 
 Ensure your engine workspace satisfies these foundational environment boundaries:
 * **Python Engine:** Version `3.12+` managed runtime environment.
 * **Node.js Environment:** Minimum `20.19+` or `22.12+` Long Term Support runtime targets. *(Note: Execution tiers utilizing Node 18 or lower will crash during local compilation phases due to missing runtime CustomEvent primitives in Vite utilities).*
-* **Environment Package Management:** [**`uv`**](https://github.com/astral-sh/uv) (Python optimization tooling), alongside native `npm`.
-* **Broker Base:** Active local `Redis` service deployment or an alternate virtual container stack.
+* **Environment Package Management:** `uv` (Python optimization tooling), alongside native `npm`.
+* **Broker Base:** Active local message broker service deployment or an alternate virtual container stack.
 
 ---
 
 ## ⚙️ Setting Up Local Environments
 
 ### Option A: Fully Orchestrated Docker Blueprint (Recommended)
-This profile handles the deployment topology for API processes, execution layers, and Redis runtimes within an isolated architecture.
+This profile handles the deployment topology for API processes, execution layers, and message runtimes within an isolated architecture.
 
 1. Execute container runtime compilation directly from root path mappings:
    ```bash
@@ -36,30 +44,36 @@ This profile handles the deployment topology for API processes, execution layers
 1. Navigate into the backend directory:
 ```bash
 cd backend
+
 ```
+
 
 2. Sync the project space and install developer system components natively using `uv`:
 ```bash
 uv sync --dev
+
 ```
+
 
 3. Initialize a structural environment properties file using the provided boilerplate reference:
 ```bash
 cp .env.example .env
+
 ```
+
 
 4. Align existing storage states by tracking transactional structural upgrades via Alembic mappings:
 ```bash
 uv run alembic upgrade head
+
 ```
 
 
 5. Launch the live-monitoring server loop:
 ```bash
 uv run uvicorn app.main:app --reload
+
 ```
-
-
 
 #### 2. Background Processing Execution (TaskIQ Worker Tracking)
 
@@ -68,6 +82,7 @@ When auditing tasks interacting with resume files, async data ingestion, or stru
 ```bash
 cd backend
 uv run taskiq worker app.background.taskiq.taskiq:broker
+
 ```
 
 #### 3. Frontend Interface Operations (React Architecture)
@@ -75,16 +90,19 @@ uv run taskiq worker app.background.taskiq.taskiq:broker
 1. Allocate an independent shell frame pointing to the frontend path mapping:
 ```bash
 cd frontend
+
 ```
 
 2. Run clean installations of your local node modules definitions block:
 ```bash
 npm install
+
 ```
 
 3. Execute the development script loop to coordinate local Vite routing setups:
 ```bash
 npm run dev
+
 ```
 
 4. Interact directly with the local development web viewport hosted at `http://localhost:5173`.
@@ -104,7 +122,6 @@ npm run dev
 
 
 ---
-
 ## 🌿 Workspace Git Branch Isolation Rules
 
 Do not publish modification tracks straight to master branches. Structure development pathways using standardized prefix schemas to organize tracking profiles across asynchronous developer clusters:
@@ -172,15 +189,23 @@ node node_modules/vite/bin/vite.js
 
 ```
 
-
-
 ### 2. Missing Database Table Relational Errors on App Bootstrap
 
-* **Root Structural Cause:** The operational SQLite schema structure is out of alignment with newer data modeling objects declared in the backend routers.
+* **Root Structural Cause:** The operational local database schema structure is out of alignment with newer data modeling objects declared in the backend routers.
 * **Workaround Path:** Execute database component alignments inside the backend folder context:
 ```bash
 uv run alembic upgrade head
+
 ```
+
+### 3. Upstream Platform & Dependency Engine Errors
+
+For complex system installation setups, environment caching bugs, or infrastructure permission anomalies, please consult the respective official documentation frameworks:
+
+* **Docker/Containers:** For advanced daemon configurations or containerization bugs, review the [Official Docker Troubleshooting Guide](https://docs.docker.com/engine/security/rootless/troubleshoot/).
+* **Python/UV Setup:** For environment management or package resolution queries, check the [Official UV Integration Reference](https://docs.astral.sh/uv/).
+* **Node.js/NPM Runtime:** For syntax engine features or global dependency errors, refer to the [Official Node.js Documentation Portal](https://nodejs.org/en/docs/).
+
 ---
 
 ## 🔄 Pull Request Workflow
@@ -193,4 +218,22 @@ uv run alembic upgrade head
 6. Open a Pull Request against the `main` branch.
 7. Ensure all CI checks pass before requesting review.
 
+```
+
 ---
+
+## Step 3: Amend and Push your Commit
+
+Save your files inside VS Code. To clean up your Git tracking history before Sathwik views the updated PR, amend your previous local commit and force push it up to your profile:
+
+```bash
+# Stage the modified readme and corrected guide
+git add .
+
+# Overwrite your last local commit instead of making a new messy one
+git commit --amend --no-edit
+
+# Push it to update your active Pull Request automatically
+git push origin docs/add-contributing-guide --force
+
+```
