@@ -61,21 +61,23 @@ export function useDashboard(token: string): UseDashboardReturn {
 
   useEffect(() => {
     if (!token) return;
-    dispatch({ type: 'FETCH_START' });
 
-    Promise.all([fetchInterviews(token), fetchAppliedInterviews(token)])
-      .then(([av, ap]) => {
+    const load = async () => {
+      dispatch({ type: 'FETCH_START' });
+      try {
+        const [av, ap] = await Promise.all([fetchInterviews(token), fetchAppliedInterviews(token)]);
         dispatch({ type: 'FETCH_SUCCESS', available: av, applied: ap });
-      })
-      .catch((err) => {
+      } catch (err) {
         const message =
           err instanceof UserServiceError
             ? err.message
             : 'Failed to load interviews. Please refresh.';
         dispatch({ type: 'FETCH_ERROR', error: message });
-      });
-  }, [token, state.tick]);
+      }
+    };
 
+    load();
+  }, [token, state.tick]);
   const refetch = useCallback(() => dispatch({ type: 'REFETCH' }), []);
 
   return { available: state.available, applied: state.applied, isLoading: state.isLoading, error: state.error, refetch };
