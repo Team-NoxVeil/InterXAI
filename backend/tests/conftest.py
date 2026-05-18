@@ -45,12 +45,12 @@ _TestSessionLocal = async_sessionmaker(
 async def create_tables() -> AsyncGenerator[None, None]:
     """Create all ORM tables once per test session, drop them afterwards."""
     # Import all models so Base.metadata knows about them.
-    from app.database import Base  # noqa: F401 (side-effect import)
     import app.models.application  # noqa: F401
     import app.models.interaction  # noqa: F401
     import app.models.interview  # noqa: F401
     import app.models.organization  # noqa: F401
     import app.models.user  # noqa: F401
+    from app.database import Base  # noqa: F401 (side-effect import)
 
     async with _test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -100,9 +100,7 @@ async def client(app: Any) -> AsyncGenerator[AsyncClient, None]:
     Yield an async HTTP client that hits the FastAPI app directly (no
     real network socket) via ASGI transport.
     """
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
-    ) as ac:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         yield ac
 
 

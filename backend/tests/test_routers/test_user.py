@@ -8,16 +8,16 @@ conflicts (since JwtAuth.create_user commits directly to the shared session).
 """
 
 import uuid
+from typing import Any, cast
 
-import pytest
 from httpx import AsyncClient
-
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _unique_user() -> dict:
+
+def _unique_user() -> dict[str, Any]:
     """Generate a unique, valid user payload for each test invocation."""
     uid = uuid.uuid4().hex[:8]
     return {
@@ -27,16 +27,17 @@ def _unique_user() -> dict:
     }
 
 
-async def _signup(client: AsyncClient, payload: dict) -> dict:
+async def _signup(client: AsyncClient, payload: dict[str, Any]) -> dict[str, Any]:
     """Register a user and return the parsed JSON response."""
     response = await client.post("/users/signup", json=payload)
     assert response.status_code == 201, response.text
-    return response.json()
+    return cast(dict[str, Any], response.json())
 
 
 # ---------------------------------------------------------------------------
 # Signup tests
 # ---------------------------------------------------------------------------
+
 
 class TestUserSignup:
     """Integration tests for POST /users/signup."""
@@ -96,6 +97,7 @@ class TestUserSignup:
 # ---------------------------------------------------------------------------
 # Login tests
 # ---------------------------------------------------------------------------
+
 
 class TestUserLogin:
     """Integration tests for POST /users/login."""
@@ -163,6 +165,7 @@ class TestUserLogin:
 # Get user tests (protected)
 # ---------------------------------------------------------------------------
 
+
 class TestGetUser:
     """Integration tests for GET /users/{user_id}."""
 
@@ -204,7 +207,5 @@ class TestGetUser:
         payload = _unique_user()
         data = await _signup(client, payload)
         token = data["token"]
-        response = await client.get(
-            "/users/999999", headers={"Authorization": f"Bearer {token}"}
-        )
+        response = await client.get("/users/999999", headers={"Authorization": f"Bearer {token}"})
         assert response.status_code == 404

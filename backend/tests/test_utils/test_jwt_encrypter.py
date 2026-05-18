@@ -6,6 +6,7 @@ JWTEncrypter wraps PyJWT and implements the Encrypter interface.
 """
 
 import time
+from typing import Any
 
 import jwt
 import pytest
@@ -94,8 +95,12 @@ class TestJWTEncrypterDecrypt:
 
     def test_decrypt_raises_on_wrong_secret(self) -> None:
         """A token signed with a different secret must fail to decrypt."""
-        enc_a = JWTEncrypter(secret_key="secret-a", algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS)
-        enc_b = JWTEncrypter(secret_key="secret-b", algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS)
+        enc_a = JWTEncrypter(
+            secret_key="secret-a", algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS
+        )
+        enc_b = JWTEncrypter(
+            secret_key="secret-b", algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS
+        )
         token = enc_a.encrypt({"sub": "attacker"})
         with pytest.raises(jwt.exceptions.InvalidSignatureError):
             enc_b.decrypt(token)
@@ -117,12 +122,15 @@ class TestJWTEncrypterDecrypt:
         with pytest.raises(jwt.exceptions.ExpiredSignatureError):
             enc.decrypt(token)
 
-    @pytest.mark.parametrize("data", [
-        {"sub": "simple"},
-        {"sub": "nested", "meta": {"role": "admin"}},
-        {"sub": "numbers", "count": 0, "score": 9.99},
-    ])
-    def test_decrypt_round_trips_various_payloads(self, data: dict) -> None:
+    @pytest.mark.parametrize(
+        "data",
+        [
+            {"sub": "simple"},
+            {"sub": "nested", "meta": {"role": "admin"}},
+            {"sub": "numbers", "count": 0, "score": 9.99},
+        ],
+    )
+    def test_decrypt_round_trips_various_payloads(self, data: dict[str, Any]) -> None:
         """encrypt → decrypt round-trip preserves all payload values."""
         enc = JWTEncrypter(secret_key=_SECRET, algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS)
         token = enc.encrypt(data)

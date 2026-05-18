@@ -5,7 +5,6 @@ These tests exercise the full FastAPI routing stack against an in-memory
 SQLite database (see conftest.py). No external services are required.
 """
 
-import pytest
 from httpx import AsyncClient
 
 
