@@ -16,6 +16,7 @@ from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
+import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -40,7 +41,7 @@ _TestSessionLocal = async_sessionmaker(
 )
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest_asyncio.fixture(scope="session", loop_scope="session", autouse=True)
 async def create_tables() -> AsyncGenerator[None, None]:
     """Create all ORM tables once per test session, drop them afterwards."""
     # Import all models so Base.metadata knows about them.
@@ -58,7 +59,7 @@ async def create_tables() -> AsyncGenerator[None, None]:
         await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture()
 async def db_session() -> AsyncGenerator[AsyncSession, None]:
     """
     Yield a database session whose changes are rolled back after each test.
@@ -72,7 +73,7 @@ async def db_session() -> AsyncGenerator[AsyncSession, None]:
 # ---------------------------------------------------------------------------
 # FastAPI app with dependency overrides
 # ---------------------------------------------------------------------------
-@pytest.fixture()
+@pytest_asyncio.fixture()
 async def app(db_session: AsyncSession) -> Any:
     """
     Return the FastAPI application with `get_db` overridden to use the
@@ -93,7 +94,7 @@ async def app(db_session: AsyncSession) -> Any:
 # ---------------------------------------------------------------------------
 # HTTP test client
 # ---------------------------------------------------------------------------
-@pytest.fixture()
+@pytest_asyncio.fixture()
 async def client(app: Any) -> AsyncGenerator[AsyncClient, None]:
     """
     Yield an async HTTP client that hits the FastAPI app directly (no
