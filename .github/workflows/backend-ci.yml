@@ -50,3 +50,35 @@ jobs:
 
       - name: Run mypy (type checking)
         run: uv run mypy .
+
+  backend-test:
+    name: Unit & Integration Tests (pytest)
+    runs-on: ubuntu-latest
+    # Run tests only after lint/type-checks pass — fail fast on bad code.
+    needs: backend-lint
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies (incl. test libs)
+        run: uv sync --dev
+
+      - name: Run pytest
+        # -v: verbose test names in log
+        # --tb=short: concise tracebacks on failure
+        run: uv run pytest -v --tb=short
