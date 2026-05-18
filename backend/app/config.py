@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     # LLM
     LLM_MODEL_NAME: str = "groq/openai/gpt-oss-120b"
     GROQ_API_KEY: str = ""
+    CHATGROQ_API_KEY: str = ""
+    CHATGROQ_MODEL_NAME: str = "llama3-8b-8192"
 
     # Supabase
     SUPABASE_URL: str = ""
