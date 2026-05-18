@@ -30,6 +30,14 @@ class Settings(BaseSettings):
     STORAGE_PROVIDER: str = "supabase"
     BACKGROUND_WORKER: str = "taskiq"
 
+    # Goole Oauth
+    GOOGLE_CLIENT_ID: str = ""
+    GOOGLE_CLIENT_SECRET: str = ""
+    GOOGLE_REDIRECT_URI: str = ""
+
+    # Frontend
+    FRONTEND_URL: str = ""
+
     class Config:
         env_file = ".env"
         case_sensitive = True
