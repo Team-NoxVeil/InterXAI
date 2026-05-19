@@ -28,14 +28,10 @@ class VercelBlobStorageProvider(StorageProviderInterface):
         except Exception as e:
             logger.error("Vercel upload failed: %s", str(e), exc_info=True)
 
-            raise StorageUploadError(
-                f"Failed to upload file to storage: {str(e)}"
-            ) from e
+            raise StorageUploadError(f"Failed to upload file to storage: {str(e)}") from e
 
     async def delete(self, _file_name: str) -> None:
-        raise StorageDeleteError(
-        "Delete operation not implemented for Vercel Blob."
-    )
+        raise StorageDeleteError("Delete operation not implemented for Vercel Blob.")
 
     async def download(self, file_name: str) -> bytes:
         try:
@@ -49,6 +45,4 @@ class VercelBlobStorageProvider(StorageProviderInterface):
         except Exception as e:
             logger.error("Vercel download failed: %s", str(e), exc_info=True)
 
-            raise StorageDownloadError(
-                f"Failed to download file from storage: {str(e)}"
-            ) from e
+            raise StorageDownloadError(f"Failed to download file from storage: {str(e)}") from e
