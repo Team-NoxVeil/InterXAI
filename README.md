@@ -47,8 +47,11 @@ cd backend
 uv sync --dev
 uv run alembic upgrade head
 uv run uvicorn app.main:app --reload
+```
 
 ## Frontend setup
+
+```bash
 cd frontend
 npm install
 npm run dev
@@ -96,34 +99,36 @@ npm run dev
 ## Architecture
 
 ```
+
 ┌─────────────────────────────────────────────────────────────────┐
-│                          Client (React)                         │
-│          React Query · Zustand · React Hook Form · Zod          │
+│ Client (React) │
+│ React Query · Zustand · React Hook Form · Zod │
 └───────────────────────────┬─────────────────────────────────────┘
-                            │ REST / JSON
+│ REST / JSON
 ┌───────────────────────────▼─────────────────────────────────────┐
-│                       FastAPI Backend                           │
-│   /users  /organizations  /interviews  /applications  /health   │
-│                                                                 │
-│   ┌────────────────┐  ┌──────────────────┐  ┌────────────────┐  │
-│   │  Auth (JWT +   │  │  Routers /       │  │  Exception     │  │
-│   │  bcrypt)       │  │  Business Logic  │  │  Handlers      │  │
-│   └────────────────┘  └────────┬─────────┘  └────────────────┘  │
+│ FastAPI Backend │
+│ /users /organizations /interviews /applications /health │
+│ │
+│ ┌────────────────┐ ┌──────────────────┐ ┌────────────────┐ │
+│ │ Auth (JWT + │ │ Routers / │ │ Exception │ │
+│ │ bcrypt) │ │ Business Logic │ │ Handlers │ │
+│ └────────────────┘ └────────┬─────────┘ └────────────────┘ │
 └────────────────────────────────┼────────────────────────────────┘
-                                 │
-               ┌─────────────────┼──────────────────┐
-               │                 │                  │
-    ┌──────────▼───────┐ ┌───────▼──────────┐ ┌────▼────────────┐
-    │   PostgreSQL /   │ │  TaskIQ + Redis  │ │ Supabase Storage│
-    │   SQLite         │ │  Worker          │ │ (Resume PDFs)   │
-    │ (SQLAlchemy ORM) │ └───────┬──────────┘ └─────────────────┘
-    └──────────────────┘         │
-                        ┌────────▼────────┐
-                        │  LLM Pipeline   │
-                        │  LiteLLM/Groq   │
-                        │  LangChain      │
-                        │  ResumeEvaluator│
-                        └─────────────────┘
+│
+┌─────────────────┼──────────────────┐
+│ │ │
+┌──────────▼───────┐ ┌───────▼──────────┐ ┌────▼────────────┐
+│ PostgreSQL / │ │ TaskIQ + Redis │ │ Supabase Storage│
+│ SQLite │ │ Worker │ │ (Resume PDFs) │
+│ (SQLAlchemy ORM) │ └───────┬──────────┘ └─────────────────┘
+└──────────────────┘ │
+┌────────▼────────┐
+│ LLM Pipeline │
+│ LiteLLM/Groq │
+│ LangChain │
+│ ResumeEvaluator│
+└─────────────────┘
+
 ```
 
 ### Request Lifecycle
@@ -137,58 +142,62 @@ npm run dev
 ### Resume Processing Pipeline
 
 ```
+
 POST /applications/{interview_id}
-        │
-        ├── Create Application record (status: pending)
-        └── Return 202 to client immediately
+│
+├── Create Application record (status: pending)
+└── Return 202 to client immediately
 
 TaskIQ Worker (async):
-        ├── Decode base64 PDF
-        ├── Upload PDF → Supabase Storage
-        ├── Extract text (PyPDF2)
-        ├── ResumeEvaluator.evaluate()
-        │       ├── Build ChatPromptTemplate
-        │       ├── Call LiteLLM/Groq
-        │       └── Parse structured JSON response
-        │             score · shortlisting_decision · feedback
-        └── Update Application record with evaluation results
-              (Delete Application on failure)
+├── Decode base64 PDF
+├── Upload PDF → Supabase Storage
+├── Extract text (PyPDF2)
+├── ResumeEvaluator.evaluate()
+│ ├── Build ChatPromptTemplate
+│ ├── Call LiteLLM/Groq
+│ └── Parse structured JSON response
+│ score · shortlisting_decision · feedback
+└── Update Application record with evaluation results
+(Delete Application on failure)
+
 ```
 
 ## Project Structure
 
 ```
+
 InterXAI-re/
-├── backend/                    # FastAPI application
-│   ├── app/
-│   │   ├── ai/                 # LLM agents and prompt templates
-│   │   ├── background/
-│   │   │   ├── taskiq/         # TaskIQ broker & resume task
-│   │   │   └── celery/         # Legacy (deprecated)
-│   │   ├── exceptions/         # Custom exception hierarchy
-│   │   ├── interfaces/         # Abstract base classes
-│   │   ├── models/             # SQLAlchemy ORM models
-│   │   ├── routers/            # API route handlers
-│   │   ├── schemas/            # Pydantic request/response schemas
-│   │   ├── utils/              # Concrete implementations
-│   │   ├── config.py           # Pydantic settings (env-driven)
-│   │   ├── database.py         # Async DB session factory
-│   │   └── main.py             # App factory, lifespan, middleware
-│   ├── alembic/                # Database migrations
-│   ├── Dockerfile              # API server image
-│   ├── Dockerfile.taskiq       # Worker image
-│   └── pyproject.toml
-├── frontend/                   # React + TypeScript SPA
-│   ├── src/
-│   │   ├── app/                # App routing and layout shells
-│   │   ├── components/         # Shared, reusable UI components
-│   │   ├── features/           # Feature-scoped modules
-│   │   └── services/           # Axios-based API client layer
-│   └── package.json
-├── docker-compose.yml          # Multi-service orchestration
+├── backend/ # FastAPI application
+│ ├── app/
+│ │ ├── ai/ # LLM agents and prompt templates
+│ │ ├── background/
+│ │ │ ├── taskiq/ # TaskIQ broker & resume task
+│ │ │ └── celery/ # Legacy (deprecated)
+│ │ ├── exceptions/ # Custom exception hierarchy
+│ │ ├── interfaces/ # Abstract base classes
+│ │ ├── models/ # SQLAlchemy ORM models
+│ │ ├── routers/ # API route handlers
+│ │ ├── schemas/ # Pydantic request/response schemas
+│ │ ├── utils/ # Concrete implementations
+│ │ ├── config.py # Pydantic settings (env-driven)
+│ │ ├── database.py # Async DB session factory
+│ │ └── main.py # App factory, lifespan, middleware
+│ ├── alembic/ # Database migrations
+│ ├── Dockerfile # API server image
+│ ├── Dockerfile.taskiq # Worker image
+│ └── pyproject.toml
+├── frontend/ # React + TypeScript SPA
+│ ├── src/
+│ │ ├── app/ # App routing and layout shells
+│ │ ├── components/ # Shared, reusable UI components
+│ │ ├── features/ # Feature-scoped modules
+│ │ └── services/ # Axios-based API client layer
+│ └── package.json
+├── docker-compose.yml # Multi-service orchestration
 ├── LICENSE
 └── tools/
-    └── backend_lint            # One-shot ruff + mypy quality check
+└── backend_lint # One-shot ruff + mypy quality check
+
 ```
 
 ## Getting Started
