@@ -40,32 +40,21 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         aria-label="AI interview background"
       />
 
-      {/* Dark gradient overlay — heavier on left for text legibility */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/10" />
+      {/* Dark gradient overlay */}
+      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/10" />
 
-      {/* Subtle green glow bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#0d1f13]/70 to-transparent pointer-events-none" />
+      {/* Bottom glow */}
+      <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#0d1f13]/70 to-transparent pointer-events-none" />
 
       {/* Content */}
       <div className="relative z-10 w-full px-6 md:px-16 lg:px-24 pt-28 pb-16">
         <div className="max-w-xl">
-          {/* Badge */}
-          {/* <div
-            id="hero-badge"
-            className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 rounded-full border border-[#3ddc84]/40
-              bg-[#3ddc84]/10 backdrop-blur-sm text-[#3ddc84] text-xs font-medium tracking-wide"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3ddc84] opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#3ddc84]" />
-            </span>
-            AI-Powered Interviews · Live Now
-          </div> */}
-
           {/* Headline */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-2">
-            {headline} <span className="text-[#3ddc84]">{headlineAccent}</span>
+            {headline}{" "}
+            <span className="text-[#3ddc84]">{headlineAccent}</span>
           </h1>
+
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
             {subheadline}
           </h2>
@@ -76,7 +65,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Button
               variant="primary"
               href={primaryCta.onClick ? undefined : primaryCta.href}
@@ -86,6 +75,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             >
               {primaryCta.label}
             </Button>
+
             <Button
               variant="outline"
               href={secondaryCta.onClick ? undefined : secondaryCta.href}
@@ -106,7 +96,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({
               { value: "4.9★", label: "User Rating" },
             ].map((stat) => (
               <div key={stat.label} className="flex flex-col">
-                <span className="text-2xl font-bold text-white">
+                <span
+                  className="text-2xl font-bold text-white"
+                  aria-label={`${stat.value} ${stat.label}`}
+                >
                   {stat.value}
                 </span>
                 <span className="text-white/50 text-xs mt-0.5">
@@ -118,8 +111,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 animate-bounce">
+      {/* Scroll indicator - decorative only */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 animate-bounce"
+      >
         <span className="text-xs tracking-widest uppercase">Scroll</span>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path
@@ -134,7 +130,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   );
 };
 
-const PlayIcon = () => (
+const PlayIcon: React.FC = () => (
   <svg
     width="16"
     height="16"
