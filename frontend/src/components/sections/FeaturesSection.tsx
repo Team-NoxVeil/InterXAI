@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export interface Feature {
   icon: React.ReactNode;
@@ -15,33 +15,33 @@ export interface FeaturesSectionProps {
 const defaultFeatures: Feature[] = [
   {
     icon: <MicIcon />,
-    title: 'Voice-Driven Interviews',
+    title: "Voice-Driven Interviews",
     description:
-      'Fully conversational AI interviewer with real-time voice analysis and natural language understanding.',
+      "Fully conversational AI interviewer with real-time voice analysis and natural language understanding.",
   },
   {
     icon: <BrainIcon />,
-    title: 'Instant Evaluation',
+    title: "Instant Evaluation",
     description:
-      'Confidence scoring, clarity rating, and structured feedback delivered the moment your session ends.',
+      "Confidence scoring, clarity rating, and structured feedback delivered the moment your session ends.",
   },
   {
     icon: <ChartIcon />,
-    title: 'Career Coaching',
+    title: "Career Coaching",
     description:
-      'Personalised improvement plans based on your performance, role target, and industry benchmarks.',
+      "Personalised improvement plans based on your performance, role target, and industry benchmarks.",
   },
   {
     icon: <ShieldIcon />,
-    title: 'Privacy First',
+    title: "Privacy First",
     description:
-      'Your data stays yours. End-to-end encrypted sessions with zero human reviewers.',
+      "Your data stays yours. End-to-end encrypted sessions with zero human reviewers.",
   },
 ];
 
 const FeaturesSection: React.FC<FeaturesSectionProps> = ({
-  title = 'Everything you need to ace your next role',
-  subtitle = 'InterXAI combines cutting-edge AI with career intelligence.',
+  title = "Everything you need to ace your next role",
+  subtitle = "InterXAI combines cutting-edge AI with career intelligence.",
   features = defaultFeatures,
 }) => (
   <section
@@ -54,7 +54,9 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({
       <span className="text-[#3ddc84] text-xs uppercase tracking-widest font-semibold mb-3 block">
         Features
       </span>
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{title}</h2>
+      <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+        {title}
+      </h2>
       <p className="text-white/50 max-w-xl mx-auto text-base">{subtitle}</p>
     </div>
 
@@ -82,8 +84,12 @@ const FeatureCard: React.FC<{ feature: Feature }> = ({ feature }) => (
       >
         {feature.icon}
       </div>
-      <h3 className="text-white font-semibold text-base mb-2">{feature.title}</h3>
-      <p className="text-white/50 text-sm leading-relaxed">{feature.description}</p>
+      <h3 className="text-white font-semibold text-base mb-2">
+        {feature.title}
+      </h3>
+      <p className="text-white/50 text-sm leading-relaxed">
+        {feature.description}
+      </p>
     </div>
   </div>
 );
@@ -92,9 +98,30 @@ const FeatureCard: React.FC<{ feature: Feature }> = ({ feature }) => (
 function MicIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <rect x="7" y="2" width="6" height="10" rx="3" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M4 10a6 6 0 0012 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="10" y1="16" x2="10" y2="19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <rect
+        x="7"
+        y="2"
+        width="6"
+        height="10"
+        rx="3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M4 10a6 6 0 0012 0"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <line
+        x1="10"
+        y1="16"
+        x2="10"
+        y2="19"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -108,7 +135,15 @@ function BrainIcon() {
         strokeWidth="1.5"
         strokeLinejoin="round"
       />
-      <line x1="10" y1="8" x2="10" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <line
+        x1="10"
+        y1="8"
+        x2="10"
+        y2="13"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -116,8 +151,24 @@ function BrainIcon() {
 function ChartIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <rect x="3" y="11" width="3" height="6" rx="1" fill="currentColor" opacity="0.5" />
-      <rect x="8.5" y="7" width="3" height="10" rx="1" fill="currentColor" opacity="0.7" />
+      <rect
+        x="3"
+        y="11"
+        width="3"
+        height="6"
+        rx="1"
+        fill="currentColor"
+        opacity="0.5"
+      />
+      <rect
+        x="8.5"
+        y="7"
+        width="3"
+        height="10"
+        rx="1"
+        fill="currentColor"
+        opacity="0.7"
+      />
       <rect x="14" y="3" width="3" height="14" rx="1" fill="currentColor" />
     </svg>
   );
@@ -132,7 +183,13 @@ function ShieldIcon() {
         strokeWidth="1.5"
         strokeLinejoin="round"
       />
-      <path d="M7 10l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M7 10l2 2 4-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

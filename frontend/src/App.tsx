@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import LandingPage from './features/LandingPage';
-import LoginPage from './features/auth/LoginPage';
-import SignupPage from './features/auth/SignupPage';
-import OrgAuthPage from './features/org/OrgAuthPage';
-import ProfileSetupPage from './features/user/ProfileSetupPage';
-import DashboardPage from './features/user/DashboardPage';
-import type { TokenResponse } from './services/auth.service';
-import type { OrgSignupResponse } from './services/organization.service';
-import type { UserResponse } from './services/user.service';
+import { useState } from "react";
+import LandingPage from "./features/LandingPage";
+import LoginPage from "./features/auth/LoginPage";
+import SignupPage from "./features/auth/SignupPage";
+import OrgAuthPage from "./features/org/OrgAuthPage";
+import ProfileSetupPage from "./features/user/ProfileSetupPage";
+import DashboardPage from "./features/user/DashboardPage";
+import type { TokenResponse } from "./services/auth.service";
+import type { OrgSignupResponse } from "./services/organization.service";
+import type { UserResponse } from "./services/user.service";
 
 // ── App-level auth state ──────────────────────────────────────────────────────
 interface AuthState {
@@ -17,77 +17,79 @@ interface AuthState {
 }
 
 type Page =
-  | 'landing'
-  | 'login'
-  | 'signup'
-  | 'org-auth'
-  | 'profile-setup'
-  | 'dashboard'
-  | 'org-dashboard';
+  | "landing"
+  | "login"
+  | "signup"
+  | "org-auth"
+  | "profile-setup"
+  | "dashboard"
+  | "org-dashboard";
 
 // ── Root component ────────────────────────────────────────────────────────────
 function App() {
-  const [page, setPage] = useState<Page>('landing');
+  const [page, setPage] = useState<Page>("landing");
   const [auth, setAuth] = useState<AuthState | null>(null);
 
   // User login — profile already exists → skip setup
   const handleUserLoginSuccess = (data: TokenResponse) => {
-    const hasProfile = Boolean(data.user.profile?.bio || data.user.profile?.github);
+    const hasProfile = Boolean(
+      data.user.profile?.bio || data.user.profile?.github,
+    );
     setAuth({ token: data.token, user: data.user, isNewUser: false });
-    setPage(hasProfile ? 'dashboard' : 'profile-setup');
+    setPage(hasProfile ? "dashboard" : "profile-setup");
   };
 
   // User signup → always show profile setup
   const handleSignupSuccess = (data: TokenResponse) => {
     setAuth({ token: data.token, user: data.user, isNewUser: true });
-    setPage('profile-setup');
+    setPage("profile-setup");
   };
 
   // Profile setup complete (or skipped)
   const handleProfileComplete = (updatedUser: UserResponse) => {
-    setAuth((prev) => prev ? { ...prev, user: updatedUser } : null);
-    setPage('dashboard');
+    setAuth((prev) => (prev ? { ...prev, user: updatedUser } : null));
+    setPage("dashboard");
   };
 
   // Logout
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setAuth(null);
-    setPage('landing');
+    setPage("landing");
   };
 
   // Org auth
   const handleOrgLoginSuccess = (token: string) => {
-    console.log('Org token:', token.slice(0, 20) + '…');
-    setPage('org-dashboard');
+    console.log("Org token:", token.slice(0, 20) + "…");
+    setPage("org-dashboard");
   };
 
   const handleOrgSignupSuccess = (data: OrgSignupResponse) => {
-    console.log('Org signed up:', data.organization.id);
-    setPage('org-dashboard');
+    console.log("Org signed up:", data.organization.id);
+    setPage("org-dashboard");
   };
 
   // ── Routing ────────────────────────────────────────────────────────────────
   switch (page) {
-    case 'login':
+    case "login":
       return (
         <LoginPage
           onLoginSuccess={handleUserLoginSuccess}
-          onSignupClick={() => setPage('signup')}
-          onBack={() => setPage('landing')}
+          onSignupClick={() => setPage("signup")}
+          onBack={() => setPage("landing")}
         />
       );
 
-    case 'signup':
+    case "signup":
       return (
         <SignupPage
           onSignupSuccess={handleSignupSuccess}
-          onLoginClick={() => setPage('login')}
-          onBack={() => setPage('landing')}
+          onLoginClick={() => setPage("login")}
+          onBack={() => setPage("landing")}
         />
       );
 
-    case 'profile-setup':
+    case "profile-setup":
       if (!auth) return null;
       return (
         <ProfileSetupPage
@@ -98,7 +100,7 @@ function App() {
         />
       );
 
-    case 'dashboard':
+    case "dashboard":
       if (!auth) return null;
       return (
         <DashboardPage
@@ -108,25 +110,28 @@ function App() {
         />
       );
 
-    case 'org-auth':
+    case "org-auth":
       return (
         <OrgAuthPage
           onLoginSuccess={handleOrgLoginSuccess}
           onSignupSuccess={handleOrgSignupSuccess}
-          onBack={() => setPage('landing')}
+          onBack={() => setPage("landing")}
         />
       );
 
-    case 'org-dashboard':
+    case "org-dashboard":
       return (
-        <Placeholder label="Organisation Dashboard" onBack={() => setPage('landing')} />
+        <Placeholder
+          label="Organisation Dashboard"
+          onBack={() => setPage("landing")}
+        />
       );
 
     default:
       return (
         <LandingPage
-          onLoginClick={() => setPage('login')}
-          onOrgLoginClick={() => setPage('org-auth')}
+          onLoginClick={() => setPage("login")}
+          onOrgLoginClick={() => setPage("org-auth")}
         />
       );
   }
@@ -137,7 +142,10 @@ function Placeholder({ label, onBack }: { label: string; onBack: () => void }) {
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4 text-slate-900">
       <div className="text-5xl">🚀</div>
       <p className="text-xl font-semibold">{label} — coming soon</p>
-      <button onClick={onBack} className="text-blue-600 hover:underline text-sm mt-2">
+      <button
+        onClick={onBack}
+        className="text-blue-600 hover:underline text-sm mt-2"
+      >
         ← Back to home
       </button>
     </div>

@@ -4,15 +4,15 @@
  * All logic is in the respective hooks; this is layout + composition only.
  */
 
-import React, { useState } from 'react';
-import Logo from '../../components/ui/Logo';
-import OrgLoginForm from './components/OrgLoginForm';
-import OrgSignupForm from './components/OrgSignupForm';
-import { useOrgLogin } from './hooks/useOrgLogin';
-import { useOrgSignup } from './hooks/useOrgSignup';
-import type { OrgSignupResponse } from '../../services/organization.service';
+import React, { useState } from "react";
+import Logo from "../../components/ui/Logo";
+import OrgLoginForm from "./components/OrgLoginForm";
+import OrgSignupForm from "./components/OrgSignupForm";
+import { useOrgLogin } from "./hooks/useOrgLogin";
+import { useOrgSignup } from "./hooks/useOrgSignup";
+import type { OrgSignupResponse } from "../../services/organization.service";
 
-type Tab = 'login' | 'signup';
+type Tab = "login" | "signup";
 
 export interface OrgAuthPageProps {
   /** Called after successful login — receives the JWT */
@@ -28,7 +28,7 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
   onSignupSuccess,
   onBack,
 }) => {
-  const [tab, setTab] = useState<Tab>('login');
+  const [tab, setTab] = useState<Tab>("login");
 
   const loginHook = useOrgLogin(onLoginSuccess);
   const signupHook = useOrgSignup(onSignupSuccess);
@@ -54,7 +54,13 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
             className="flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm mb-6 transition-colors"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M10 3L5 8l5 5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
             Back
           </button>
@@ -65,11 +71,13 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
           <div className="flex flex-col items-center gap-3 mb-8">
             <Logo />
             <div className="text-center">
-              <h1 className="text-2xl font-bold text-white">Organisation Portal</h1>
+              <h1 className="text-2xl font-bold text-white">
+                Organisation Portal
+              </h1>
               <p className="text-white/50 text-sm mt-1">
-                {tab === 'login'
-                  ? 'Sign in to manage your hiring pipeline'
-                  : 'Register your company on InterXAI'}
+                {tab === "login"
+                  ? "Sign in to manage your hiring pipeline"
+                  : "Register your company on InterXAI"}
               </p>
             </div>
           </div>
@@ -80,7 +88,7 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
             role="tablist"
             aria-label="Auth mode"
           >
-            {(['login', 'signup'] as Tab[]).map((t) => (
+            {(["login", "signup"] as Tab[]).map((t) => (
               <button
                 key={t}
                 role="tab"
@@ -89,25 +97,27 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
                 onClick={() => setTab(t)}
                 className={`
                   flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-200
-                  ${tab === t
-                    ? 'bg-[#3ddc84] text-black shadow-sm'
-                    : 'text-white/50 hover:text-white/80'}
+                  ${
+                    tab === t
+                      ? "bg-[#3ddc84] text-black shadow-sm"
+                      : "text-white/50 hover:text-white/80"
+                  }
                 `}
               >
-                {t === 'login' ? 'Sign In' : 'Sign Up'}
+                {t === "login" ? "Sign In" : "Sign Up"}
               </button>
             ))}
           </div>
 
           {/* Form */}
-          {tab === 'login' ? (
+          {tab === "login" ? (
             <OrgLoginForm
               form={loginHook.form}
               isLoading={loginHook.isLoading}
               error={loginHook.error}
               onChange={loginHook.handleChange}
               onSubmit={loginHook.handleSubmit}
-              onSignupClick={() => setTab('signup')}
+              onSignupClick={() => setTab("signup")}
             />
           ) : (
             <OrgSignupForm
@@ -116,17 +126,28 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
               error={signupHook.error}
               onChange={signupHook.handleChange}
               onSubmit={signupHook.handleSubmit}
-              onLoginClick={() => setTab('login')}
+              onLoginClick={() => setTab("login")}
             />
           )}
         </div>
 
         {/* Footer */}
         <p className="text-center text-white/20 text-xs mt-6 px-4">
-          By continuing you agree to our{' '}
-          <a href="#terms" className="underline hover:text-white/40 transition-colors">Terms</a>
-          {' '}and{' '}
-          <a href="#privacy" className="underline hover:text-white/40 transition-colors">Privacy Policy</a>.
+          By continuing you agree to our{" "}
+          <a
+            href="#terms"
+            className="underline hover:text-white/40 transition-colors"
+          >
+            Terms
+          </a>{" "}
+          and{" "}
+          <a
+            href="#privacy"
+            className="underline hover:text-white/40 transition-colors"
+          >
+            Privacy Policy
+          </a>
+          .
         </p>
       </div>
     </div>

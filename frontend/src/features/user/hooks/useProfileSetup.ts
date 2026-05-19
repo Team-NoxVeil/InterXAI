@@ -4,12 +4,12 @@
  * Calls PUT /users/:id with the profile payload.
  */
 
-import { useState } from 'react';
+import { useState } from "react";
 import {
   updateUserProfile,
   UserServiceError,
-} from '../../../services/user.service';
-import type { UserResponse } from '../../../services/user.service';
+} from "../../../services/user.service";
+import type { UserResponse } from "../../../services/user.service";
 
 export interface ProfileSetupForm {
   bio: string;
@@ -22,7 +22,9 @@ export interface UseProfileSetupReturn {
   form: ProfileSetupForm;
   isLoading: boolean;
   error: string | null;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  handleChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleSkip: () => void;
 }
@@ -33,15 +35,17 @@ export function useProfileSetup(
   onComplete: (user: UserResponse) => void,
 ): UseProfileSetupReturn {
   const [form, setForm] = useState<ProfileSetupForm>({
-    bio: '',
-    github: '',
-    linkedin: '',
-    leetcode: '',
+    bio: "",
+    github: "",
+    linkedin: "",
+    leetcode: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     if (error) setError(null);
@@ -69,7 +73,7 @@ export function useProfileSetup(
       if (err instanceof UserServiceError) {
         setError(err.message);
       } else {
-        setError('Something went wrong. Please try again.');
+        setError("Something went wrong. Please try again.");
       }
     } finally {
       setIsLoading(false);

@@ -4,7 +4,7 @@
  * Mirrors backend schemas: app/schemas/user.py + app/schemas/interview.py
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
+const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 export class UserServiceError extends Error {
@@ -12,18 +12,21 @@ export class UserServiceError extends Error {
   constructor(statusCode: number, message: string) {
     super(message);
     this.statusCode = statusCode;
-    this.name = 'UserServiceError';
+    this.name = "UserServiceError";
   }
 }
 
 function authHeaders(token: string) {
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
 }
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new UserServiceError(res.status, data?.detail ?? 'Request failed.');
+    throw new UserServiceError(res.status, data?.detail ?? "Request failed.");
   }
   return res.json() as Promise<T>;
 }
@@ -83,7 +86,7 @@ export async function updateUserProfile(
   token: string,
 ): Promise<UserResponse> {
   const res = await fetch(`${BASE_URL}/users/${userId}`, {
-    method: 'PUT',
+    method: "PUT",
     headers: authHeaders(token),
     body: JSON.stringify(data),
   });
@@ -91,7 +94,9 @@ export async function updateUserProfile(
 }
 
 /** GET /interviews/ — available interviews for this user */
-export async function fetchInterviews(token: string): Promise<InterviewBasic[]> {
+export async function fetchInterviews(
+  token: string,
+): Promise<InterviewBasic[]> {
   const res = await fetch(`${BASE_URL}/interviews/`, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -99,7 +104,9 @@ export async function fetchInterviews(token: string): Promise<InterviewBasic[]> 
 }
 
 /** GET /interviews/applied — interviews the user has applied to */
-export async function fetchAppliedInterviews(token: string): Promise<AppliedInterview[]> {
+export async function fetchAppliedInterviews(
+  token: string,
+): Promise<AppliedInterview[]> {
   const res = await fetch(`${BASE_URL}/interviews/applied`, {
     headers: { Authorization: `Bearer ${token}` },
   });

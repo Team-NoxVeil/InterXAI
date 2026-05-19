@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.8' # In recent versions, the utility no longer reads this field
 
 services:
   api:
@@ -32,6 +32,20 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Empty default value.
+        # In real deployments, this is provided via a host environment variable
+        # or a root-level .env file.
+        VITE_API_URL: ${VITE_API_URL:-}
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
 
 volumes:
   redis_data:
