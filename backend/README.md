@@ -17,23 +17,21 @@ FastAPI-based backend for the InterXAI interview automation platform. Handles al
 11. [Code Quality](#code-quality)
 12. [Docker](#docker)
 
-
 ## Tech Stack
 
-| Technology | Purpose |
-|---|---|
-| **FastAPI** | Async REST API framework |
-| **SQLAlchemy 2.0** | Async ORM |
-| **Alembic** | Schema migrations |
-| **TaskIQ + Redis** | Async background job queue |
-| **LangChain + LiteLLM** | LLM orchestration |
-| **Groq** | LLM inference provider |
-| **PyPDF2** | Resume PDF text extraction |
-| **Supabase** | File storage (resume PDFs) |
-| **PyJWT + bcrypt** | Authentication |
-| **Pydantic v2** | Request/response validation and settings |
-| **uv** | Python package manager |
-
+| Technology              | Purpose                                  |
+| ----------------------- | ---------------------------------------- |
+| **FastAPI**             | Async REST API framework                 |
+| **SQLAlchemy 2.0**      | Async ORM                                |
+| **Alembic**             | Schema migrations                        |
+| **TaskIQ + Redis**      | Async background job queue               |
+| **LangChain + LiteLLM** | LLM orchestration                        |
+| **Groq**                | LLM inference provider                   |
+| **PyPDF2**              | Resume PDF text extraction               |
+| **Supabase**            | File storage (resume PDFs)               |
+| **PyJWT + bcrypt**      | Authentication                           |
+| **Pydantic v2**         | Request/response validation and settings |
+| **uv**                  | Python package manager                   |
 
 ## Project Structure
 
@@ -73,7 +71,7 @@ backend/
 │   │
 │   ├── utils/                  # Concrete implementations
 │   │   ├── authorization.py    # JWT auth dependencies (get_current_user, etc.)
-│   │   ├── supabase.py         # SupabaseStorageProvider
+│   │   ├── supabase.py and vercel_blob.py         # SupabaseStorageProvider and          VercelBlobStorageProvider
 │   │   └── ...                 # BcryptHasher, JwtEncrypter, PDF extractor
 │   │
 │   ├── ai/                     # LLM agents and prompts
@@ -100,7 +98,6 @@ backend/
 └── mypy.ini                    # Mypy type checker configuration
 ```
 
-
 ## Setup & Installation
 
 This project uses [`uv`](https://github.com/astral-sh/uv) for dependency management.
@@ -112,7 +109,6 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # Install all dependencies, including dev tools
 uv sync --dev
 ```
-
 
 ## Configuration
 
@@ -156,7 +152,6 @@ from app.config import settings
 print(settings.DATABASE_URL)
 ```
 
-
 ## Running the Server
 
 ```bash
@@ -168,9 +163,9 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
 Interactive API docs are served automatically:
+
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
-
 
 ## Background Jobs (TaskIQ)
 
@@ -200,7 +195,6 @@ When a candidate applies for an interview (`POST /applications/{interview_id}`):
 
 The broker uses `taskiq-redis` and supports optional SSL for production Redis connections. The broker is started and stopped via FastAPI's `lifespan` context manager in `main.py`.
 
-
 ## Database Migrations
 
 Migrations are managed with [Alembic](https://alembic.sqlalchemy.org/).
@@ -221,7 +215,6 @@ uv run alembic history --verbose
 
 > **Note:** Alembic uses a sync connection even for async SQLAlchemy setups. This is configured in `alembic/env.py`.
 
-
 ## Architecture Deep Dive
 
 ### Dependency Injection Pattern
@@ -240,12 +233,12 @@ async def get_interview(
 
 Auth guards are composable dependencies:
 
-| Dependency | Purpose |
-|---|---|
-| `get_current_user()` | Validates JWT, returns authenticated user |
-| `verify_ownership()` | Ensures the user owns the requested resource |
-| `verify_org_ownership()` | Ensures the org owns the requested resource |
-| `is_organization()` | Restricts route to organization accounts only |
+| Dependency               | Purpose                                       |
+| ------------------------ | --------------------------------------------- |
+| `get_current_user()`     | Validates JWT, returns authenticated user     |
+| `verify_ownership()`     | Ensures the user owns the requested resource  |
+| `verify_org_ownership()` | Ensures the org owns the requested resource   |
+| `is_organization()`      | Restricts route to organization accounts only |
 
 ### Interface / Implementation Pattern
 
@@ -299,44 +292,42 @@ StorageException    → 502
 AIError             → 500
 ```
 
-
 ## API Endpoints
 
 ### Users (`/users`)
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| `POST` | `/users/signup` | — | Register a new candidate account |
-| `POST` | `/users/login` | — | Authenticate, receive JWT |
-| `GET` | `/users/{user_id}` | User | Get user profile |
-| `PUT` | `/users/{user_id}` | User | Update profile |
-| `DELETE` | `/users/{user_id}` | User | Delete account |
+| Method   | Path               | Auth | Description                      |
+| -------- | ------------------ | ---- | -------------------------------- |
+| `POST`   | `/users/signup`    | —    | Register a new candidate account |
+| `POST`   | `/users/login`     | —    | Authenticate, receive JWT        |
+| `GET`    | `/users/{user_id}` | User | Get user profile                 |
+| `PUT`    | `/users/{user_id}` | User | Update profile                   |
+| `DELETE` | `/users/{user_id}` | User | Delete account                   |
 
 ### Organizations (`/organizations`)
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| `POST` | `/organizations/signup` | — | Register a new organization |
-| `GET` | `/organizations/{org_id}` | Org | Get organization details |
-| `PUT` | `/organizations/{org_id}` | Org | Update organization |
-| `DELETE` | `/organizations/{org_id}` | Org | Delete organization |
+| Method   | Path                      | Auth | Description                 |
+| -------- | ------------------------- | ---- | --------------------------- |
+| `POST`   | `/organizations/signup`   | —    | Register a new organization |
+| `GET`    | `/organizations/{org_id}` | Org  | Get organization details    |
+| `PUT`    | `/organizations/{org_id}` | Org  | Update organization         |
+| `DELETE` | `/organizations/{org_id}` | Org  | Delete organization         |
 
 ### Interviews (`/interviews`)
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| `POST` | `/interviews/` | Org | Create a new interview |
-| `GET` | `/interviews/` | Any | List (orgs see own, users see open) |
-| `GET` | `/interviews/applied` | User | List interviews the user has applied to |
-| `GET` | `/interviews/{interview_id}` | Org | Get full interview details |
+| Method | Path                         | Auth | Description                             |
+| ------ | ---------------------------- | ---- | --------------------------------------- |
+| `POST` | `/interviews/`               | Org  | Create a new interview                  |
+| `GET`  | `/interviews/`               | Any  | List (orgs see own, users see open)     |
+| `GET`  | `/interviews/applied`        | User | List interviews the user has applied to |
+| `GET`  | `/interviews/{interview_id}` | Org  | Get full interview details              |
 
 ### Applications (`/applications`)
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| `POST` | `/applications/{interview_id}` | User | Apply with a resume PDF |
-| `GET` | `/applications/{interview_id}` | Org | List all applications for an interview |
-
+| Method | Path                           | Auth | Description                            |
+| ------ | ------------------------------ | ---- | -------------------------------------- |
+| `POST` | `/applications/{interview_id}` | User | Apply with a resume PDF                |
+| `GET`  | `/applications/{interview_id}` | Org  | List all applications for an interview |
 
 ## AI Pipeline
 
@@ -361,6 +352,7 @@ class ResumeEvaluatorResponse(BaseModel):
 ```
 
 The agent:
+
 1. Renders a `ChatPromptTemplate` with the request data
 2. Calls `LiteLLMProvider.generate()` → Groq API
 3. Parses the JSON response with LangChain's `JsonOutputParser`
@@ -369,7 +361,6 @@ The agent:
 ### LiteLLMProvider
 
 Wraps `langchain_litellm.ChatLiteLLM` and maps provider-specific exceptions to the custom `AIError` hierarchy, keeping the rest of the application decoupled from the LLM provider.
-
 
 ## Code Quality
 
@@ -392,14 +383,15 @@ uv run mypy .
 ### Configuration
 
 **`ruff.toml`**
+
 - Line length: `100`
 - Enabled rule sets: `E, W, F, I, N, UP, B, C4, SIM, ARG, PTH`
 - Excluded: `alembic/versions/`
 
 **`mypy.ini`**
+
 - Strict mode enabled
 - `untyped-decorator` disabled for `app/background/celery/` (Celery decorator limitation)
-
 
 ## Docker
 
@@ -431,8 +423,8 @@ docker-compose logs -f taskiq_worker
 
 **Services started by Docker Compose:**
 
-| Service | Port | Description |
-|---|---|---|
-| `api` | `8000` | FastAPI application server |
-| `taskiq_worker` | — | Background job worker |
-| `redis` | `6379` | TaskIQ broker and result backend |
+| Service         | Port   | Description                      |
+| --------------- | ------ | -------------------------------- |
+| `api`           | `8000` | FastAPI application server       |
+| `taskiq_worker` | —      | Background job worker            |
+| `redis`         | `6379` | TaskIQ broker and result backend |

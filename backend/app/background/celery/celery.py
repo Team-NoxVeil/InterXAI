@@ -13,7 +13,7 @@ from app.logger import get_logger
 from app.models.application import Application
 from app.models.interview import CustomInterview
 from app.utils.pdf import extract_pdf_content
-from app.utils.supabase_provider import SupabaseStorageProvider
+from app.utils.default_providers import default_storage_provider
 
 logger = get_logger(__name__)
 
@@ -45,7 +45,7 @@ def process_resume_task(file_bytes_b64: str, file_name: str, application_id: int
     """
     logger.info("Received resume processing job for application %d", application_id)
     file_bytes = base64.b64decode(file_bytes_b64)
-    provider = SupabaseStorageProvider()
+    provider = default_storage_provider()
 
     async def process_and_evaluate() -> None:
         from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
