@@ -41,18 +41,23 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       />
 
       {/* Dark gradient overlay */}
-      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/10" />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/10"
+      />
 
       {/* Bottom glow */}
-      <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#0d1f13]/70 to-transparent pointer-events-none" />
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#0d1f13]/70 to-transparent pointer-events-none"
+      />
 
       {/* Content */}
       <div className="relative z-10 w-full px-6 md:px-16 lg:px-24 pt-28 pb-16">
         <div className="max-w-xl">
           {/* Headline */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-2">
-            {headline}{" "}
-            <span className="text-[#3ddc84]">{headlineAccent}</span>
+            {headline} <span className="text-[#3ddc84]">{headlineAccent}</span>
           </h1>
 
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
