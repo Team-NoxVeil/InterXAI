@@ -96,10 +96,14 @@ class TestJWTEncrypterDecrypt:
     def test_decrypt_raises_on_wrong_secret(self) -> None:
         """A token signed with a different secret must fail to decrypt."""
         enc_a = JWTEncrypter(
-            secret_key="secret-a-at-least-32-bytes-long-for-hmac", algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS
+            secret_key="secret-a-at-least-32-bytes-long-for-hmac",
+            algorithm=_ALGORITHM,
+            expire_seconds=_EXPIRE_SECONDS,
         )
         enc_b = JWTEncrypter(
-            secret_key="secret-b-at-least-32-bytes-long-for-hmac", algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS
+            secret_key="secret-b-at-least-32-bytes-long-for-hmac",
+            algorithm=_ALGORITHM,
+            expire_seconds=_EXPIRE_SECONDS,
         )
         token = enc_a.encrypt({"sub": "attacker"})
         with pytest.raises(jwt.exceptions.InvalidSignatureError):
