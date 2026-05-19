@@ -14,9 +14,9 @@ import pytest
 from app.utils.jwt_encrypter import JWTEncrypter
 
 # Fixed test credentials — avoids reading from .env during unit tests.
-_SECRET = "test-secret-key"
+_SECRET = "test-secret-key-at-least-32-bytes-long"
 _ALGORITHM = "HS256"
-_EXPIRE_SECONDS = 60  # 1 minute — fast for tests
+_EXPIRE_SECONDS = 3600  # 1 hour — extremely stable for tests to prevent flakiness
 
 
 class TestJWTEncrypterEncrypt:
@@ -38,22 +38,22 @@ class TestJWTEncrypterEncrypt:
         """When expire_seconds is set, the encoded token must carry an 'exp' claim."""
         enc = JWTEncrypter(secret_key=_SECRET, algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS)
         token = enc.encrypt({"sub": "user42"})
-        # Decode without verifying expiry to inspect raw claims.
-        raw = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM], options={"verify_exp": False})
+        # Decode to inspect raw claims.
+        raw = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM])
         assert "exp" in raw
 
     def test_encrypt_exp_is_in_the_future(self) -> None:
         """The 'exp' claim must be in the future relative to now."""
         enc = JWTEncrypter(secret_key=_SECRET, algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS)
         token = enc.encrypt({"sub": "futureuser"})
-        raw = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM], options={"verify_exp": False})
+        raw = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM])
         assert raw["exp"] > int(time.time())
 
     def test_encrypt_with_zero_expire_omits_exp(self) -> None:
         """When expire_seconds=0, no 'exp' should be embedded in the token."""
         enc = JWTEncrypter(secret_key=_SECRET, algorithm=_ALGORITHM, expire_seconds=0)
         token = enc.encrypt({"sub": "noexpiry"})
-        raw = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM], options={"verify_exp": False})
+        raw = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM])
         assert "exp" not in raw
 
     def test_encrypt_preserves_payload_fields(self) -> None:
@@ -61,7 +61,7 @@ class TestJWTEncrypterEncrypt:
         enc = JWTEncrypter(secret_key=_SECRET, algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS)
         payload = {"sub": "abc", "role": "admin", "user_id": 99}
         token = enc.encrypt(payload)
-        decoded = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM], options={"verify_exp": False})
+        decoded = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM])
         assert decoded["sub"] == "abc"
         assert decoded["role"] == "admin"
         assert decoded["user_id"] == 99
@@ -96,10 +96,10 @@ class TestJWTEncrypterDecrypt:
     def test_decrypt_raises_on_wrong_secret(self) -> None:
         """A token signed with a different secret must fail to decrypt."""
         enc_a = JWTEncrypter(
-            secret_key="secret-a", algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS
+            secret_key="secret-a-at-least-32-bytes-long-for-hmac", algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS
         )
         enc_b = JWTEncrypter(
-            secret_key="secret-b", algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS
+            secret_key="secret-b-at-least-32-bytes-long-for-hmac", algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS
         )
         token = enc_a.encrypt({"sub": "attacker"})
         with pytest.raises(jwt.exceptions.InvalidSignatureError):
