@@ -143,9 +143,17 @@ LLM_MODEL_NAME=groq/openai/gpt-oss-120b
 GROQ_API_KEY=your-groq-api-key
 
 # Supabase Storage
+STORAGE_PROVIDER=supabase
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-service-role-key
 SUPABASE_BUCKET_NAME=resumes
+
+# Cloudinary Storage
+# Set STORAGE_PROVIDER=cloudinary to use Cloudinary for resume uploads.
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+CLOUDINARY_FOLDER=resumes
 ```
 
 All variables are defined and validated in `app/config.py`. Access them anywhere via the `settings` singleton:

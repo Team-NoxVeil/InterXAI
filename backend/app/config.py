@@ -35,6 +35,12 @@ class Settings(BaseSettings):
     IMMEDIATE_DISQUALIFICATION: bool = False
     HEARTBEAT_THRESHOLD_S: int = 20
 
+    # Cloudinary
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
+    CLOUDINARY_FOLDER: str = "resumes"
+
     # Providers
     STORAGE_PROVIDER: str = "supabase"
     BACKGROUND_WORKER: str = "taskiq"

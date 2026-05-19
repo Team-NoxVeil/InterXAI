@@ -4,10 +4,17 @@ from app.interfaces.storage_proivder import StorageProviderInterface
 
 
 def default_storage_provider() -> StorageProviderInterface:
-    if settings.STORAGE_PROVIDER == "supabase":
+    storage_provider = settings.STORAGE_PROVIDER.strip().lower()
+
+    if storage_provider == "supabase":
         from app.utils.supabase_provider import SupabaseStorageProvider
 
         return SupabaseStorageProvider()
+
+    if storage_provider == "cloudinary":
+        from app.utils.cloudinary_provider import CloudinaryStorageProvider
+
+        return CloudinaryStorageProvider()
 
     raise ValueError(f"Unknown storage provider: '{settings.STORAGE_PROVIDER}'")
 
