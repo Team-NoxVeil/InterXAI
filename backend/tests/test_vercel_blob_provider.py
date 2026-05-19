@@ -10,11 +10,13 @@ from app.utils.vercel_blob import VercelBlobStorageProvider
 
 
 @pytest.mark.asyncio
-async def test_upload_success():
+async def test_upload_success() -> None:
     provider = VercelBlobStorageProvider()
 
     with patch("app.utils.vercel_blob.put") as mock_put:
-        mock_put.return_value = {"url": "https://example.com/test.pdf"}
+        mock_put.return_value = {
+            "url": "https://example.com/test.pdf",
+        }
 
         result = await provider.upload(
             b"test-data",
@@ -25,7 +27,7 @@ async def test_upload_success():
 
 
 @pytest.mark.asyncio
-async def test_upload_failure():
+async def test_upload_failure() -> None:
     provider = VercelBlobStorageProvider()
 
     with patch("app.utils.vercel_blob.put") as mock_put:
@@ -39,7 +41,7 @@ async def test_upload_failure():
 
 
 @pytest.mark.asyncio
-async def test_download_success():
+async def test_download_success() -> None:
     provider = VercelBlobStorageProvider()
 
     mock_response = Mock()
@@ -50,13 +52,15 @@ async def test_download_success():
         "httpx.AsyncClient.get",
         return_value=mock_response,
     ):
-        result = await provider.download("https://example.com/test.pdf")
+        result = await provider.download(
+            "https://example.com/test.pdf",
+        )
 
         assert result == b"file-content"
 
 
 @pytest.mark.asyncio
-async def test_download_failure():
+async def test_download_failure() -> None:
     provider = VercelBlobStorageProvider()
 
     with (
@@ -66,4 +70,6 @@ async def test_download_failure():
         ),
         pytest.raises(StorageDownloadError),
     ):
-        await provider.download("https://example.com/test.pdf")
+        await provider.download(
+            "https://example.com/test.pdf",
+        )

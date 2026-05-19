@@ -1,3 +1,5 @@
+from typing import cast
+
 import httpx
 from vercel_blob import put
 
@@ -23,7 +25,7 @@ class VercelBlobStorageProvider(StorageProviderInterface):
                 },
             )
 
-            return response["url"]
+            return cast(str, response["url"])
 
         except Exception as e:
             logger.error("Vercel upload failed: %s", str(e), exc_info=True)
