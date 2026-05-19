@@ -39,14 +39,14 @@ class TestJWTEncrypterEncrypt:
         enc = JWTEncrypter(secret_key=_SECRET, algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS)
         token = enc.encrypt({"sub": "user42"})
         # Decode without verifying expiry to inspect raw claims.
-        raw = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM])
+        raw = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM], options={"verify_exp": False})
         assert "exp" in raw
 
     def test_encrypt_exp_is_in_the_future(self) -> None:
         """The 'exp' claim must be in the future relative to now."""
         enc = JWTEncrypter(secret_key=_SECRET, algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS)
         token = enc.encrypt({"sub": "futureuser"})
-        raw = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM])
+        raw = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM], options={"verify_exp": False})
         assert raw["exp"] > int(time.time())
 
     def test_encrypt_with_zero_expire_omits_exp(self) -> None:
@@ -61,7 +61,7 @@ class TestJWTEncrypterEncrypt:
         enc = JWTEncrypter(secret_key=_SECRET, algorithm=_ALGORITHM, expire_seconds=_EXPIRE_SECONDS)
         payload = {"sub": "abc", "role": "admin", "user_id": 99}
         token = enc.encrypt(payload)
-        decoded = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM])
+        decoded = jwt.decode(token, _SECRET, algorithms=[_ALGORITHM], options={"verify_exp": False})
         assert decoded["sub"] == "abc"
         assert decoded["role"] == "admin"
         assert decoded["user_id"] == 99

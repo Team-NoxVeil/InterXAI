@@ -19,6 +19,7 @@ import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.pool import StaticPool
 
 # ---------------------------------------------------------------------------
 # In-memory test database
@@ -29,7 +30,8 @@ _test_engine = create_async_engine(
     TEST_DATABASE_URL,
     echo=False,
     future=True,
-    # SQLite does not support connect_args={"ssl": ...} — none needed here.
+    poolclass=StaticPool,
+    connect_args={"check_same_thread": False},
 )
 
 _TestSessionLocal = async_sessionmaker(
@@ -63,11 +65,19 @@ async def create_tables() -> AsyncGenerator[None, None]:
 async def db_session() -> AsyncGenerator[AsyncSession, None]:
     """
     Yield a database session whose changes are rolled back after each test.
-    This keeps tests fully isolated from one another.
+    This keeps tests fully isolated from one another by running each test
+    within a connection transaction and a nested SAVEPOINT.
     """
-    async with _TestSessionLocal() as session:
-        yield session
-        await session.rollback()
+    async with _test_engine.connect() as conn:
+        transaction = await conn.begin()
+        async with AsyncSession(
+            bind=conn,
+            expire_on_commit=False,
+            autoflush=False,
+            join_transaction_mode="create_savepoint",
+        ) as session:
+            yield session
+            await transaction.rollback()
 
 
 # ---------------------------------------------------------------------------
