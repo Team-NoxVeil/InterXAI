@@ -1,5 +1,5 @@
-from vercel_blob import put
 import httpx
+from vercel_blob import put
 
 from app.exceptions.storage import (
     StorageDeleteError,
@@ -32,10 +32,10 @@ class VercelBlobStorageProvider(StorageProviderInterface):
                 f"Failed to upload file to storage: {str(e)}"
             ) from e
 
-    async def delete(self, file_name: str) -> None:
+    async def delete(self, _file_name: str) -> None:
         raise StorageDeleteError(
-            "Delete operation not implemented for Vercel Blob."
-        )
+        "Delete operation not implemented for Vercel Blob."
+    )
 
     async def download(self, file_name: str) -> bytes:
         try:

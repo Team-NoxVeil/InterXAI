@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
 
 from app.exceptions.storage import (
     StorageDownloadError,
@@ -65,8 +66,7 @@ async def test_download_failure():
     with patch(
         "httpx.AsyncClient.get",
         side_effect=Exception("Download failed"),
-    ):
-        with pytest.raises(StorageDownloadError):
-            await provider.download(
-                "https://example.com/test.pdf"
-            )
+    ), pytest.raises(StorageDownloadError):
+        await provider.download(
+            "https://example.com/test.pdf"
+        )

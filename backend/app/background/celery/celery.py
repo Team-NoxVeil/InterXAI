@@ -12,8 +12,8 @@ from app.config import settings
 from app.logger import get_logger
 from app.models.application import Application
 from app.models.interview import CustomInterview
-from app.utils.pdf import extract_pdf_content
 from app.utils.default_providers import default_storage_provider
+from app.utils.pdf import extract_pdf_content
 
 logger = get_logger(__name__)
 
