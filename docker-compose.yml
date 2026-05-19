@@ -46,6 +46,15 @@ services:
       - "8080:80"
     depends_on:
       - api
+  piston:
+    image: ghcr.io/engineer-man/piston
+    privileged: true
+    ports:
+      - "2000:2000"
+    volumes:
+      - piston_data:/piston
+    restart: always
 
 volumes:
   redis_data:
+  piston_data:
