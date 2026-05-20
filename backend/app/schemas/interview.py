@@ -33,7 +33,7 @@ class CustomInterviewBase(BaseModel):
     dsa_topics: list[DsaTopicCreate] = []
 
 
-# Create schema → validation stays here
+# Validation should only happen during creation
 class CustomInterviewCreate(CustomInterviewBase):
 
     @model_validator(mode="after")
@@ -81,12 +81,12 @@ class DsaTopicResponse(DsaTopicCreate):
         from_attributes = True
 
 
-# Response schema → NO create validation
+# Response should not trigger create validation
 class CustomInterviewResponse(CustomInterviewBase):
     id: int
     org_id: int
-    questions: list[CustomQuestionResponse] = []
-    dsa_topics: list[DsaTopicResponse] = []
+    questions: list[CustomQuestionResponse] = []  # type: ignore[assignment]
+    dsa_topics: list[DsaTopicResponse] = []  # type: ignore[assignment]
 
     class Config:
         from_attributes = True
