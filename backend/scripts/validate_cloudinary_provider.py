@@ -2,21 +2,32 @@ import asyncio
 import contextlib
 import os
 import urllib.request
+from collections.abc import Generator
+from types import TracebackType
+from typing import Any, Literal
+
+from cloudinary import api as cloudinary_api, uploader as cloudinary_uploader
 
 from app.config import settings
-from app.utils import cloudinary_provider
 from app.utils.cloudinary_provider import CloudinaryStorageProvider
 from app.utils.default_providers import default_storage_provider
 
+CloudinaryCalls = dict[str, list[dict[str, Any]]]
+
 
 class FakeUrlResponse:
-    def __init__(self, payload: bytes):
+    def __init__(self, payload: bytes) -> None:
         self.payload = payload
 
-    def __enter__(self):
+    def __enter__(self) -> "FakeUrlResponse":
         return self
 
-    def __exit__(self, exc_type, exc, traceback):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> Literal[False]:
         return False
 
     def read(self) -> bytes:
@@ -24,14 +35,14 @@ class FakeUrlResponse:
 
 
 @contextlib.contextmanager
-def patched_cloudinary_calls():
-    calls = {"upload": [], "destroy": [], "resource": [], "urlopen": []}
-    original_upload = cloudinary_provider.uploader.upload
-    original_destroy = cloudinary_provider.uploader.destroy
-    original_resource = cloudinary_provider.api.resource
+def patched_cloudinary_calls() -> Generator[CloudinaryCalls, None, None]:
+    calls: CloudinaryCalls = {"upload": [], "destroy": [], "resource": [], "urlopen": []}
+    original_upload = cloudinary_uploader.upload
+    original_destroy = cloudinary_uploader.destroy
+    original_resource = cloudinary_api.resource
     original_urlopen = urllib.request.urlopen
 
-    def fake_upload(file_buffer, **kwargs):
+    def fake_upload(file_buffer: Any, **kwargs: Any) -> dict[str, str]:
         calls["upload"].append(
             {
                 "public_id": kwargs["public_id"],
@@ -43,7 +54,7 @@ def patched_cloudinary_calls():
         )
         return {"secure_url": f"https://cdn.example.com/{kwargs['public_id']}"}
 
-    def fake_destroy(public_id, **kwargs):
+    def fake_destroy(public_id: str, **kwargs: Any) -> dict[str, str]:
         calls["destroy"].append(
             {
                 "public_id": public_id,
@@ -53,7 +64,7 @@ def patched_cloudinary_calls():
         )
         return {"result": "ok"}
 
-    def fake_resource(public_id, **kwargs):
+    def fake_resource(public_id: str, **kwargs: Any) -> dict[str, str]:
         calls["resource"].append(
             {
                 "public_id": public_id,
@@ -62,20 +73,20 @@ def patched_cloudinary_calls():
         )
         return {"secure_url": f"https://cdn.example.com/{public_id}"}
 
-    def fake_urlopen(url, timeout):
+    def fake_urlopen(url: str, timeout: int) -> FakeUrlResponse:
         calls["urlopen"].append({"url": url, "timeout": timeout})
         return FakeUrlResponse(b"validated-download")
 
-    cloudinary_provider.uploader.upload = fake_upload
-    cloudinary_provider.uploader.destroy = fake_destroy
-    cloudinary_provider.api.resource = fake_resource
-    urllib.request.urlopen = fake_urlopen
+    cloudinary_uploader.upload = fake_upload
+    cloudinary_uploader.destroy = fake_destroy
+    cloudinary_api.resource = fake_resource
+    urllib.request.urlopen = fake_urlopen  # type: ignore[assignment]
     try:
         yield calls
     finally:
-        cloudinary_provider.uploader.upload = original_upload
-        cloudinary_provider.uploader.destroy = original_destroy
-        cloudinary_provider.api.resource = original_resource
+        cloudinary_uploader.upload = original_upload
+        cloudinary_uploader.destroy = original_destroy
+        cloudinary_api.resource = original_resource
         urllib.request.urlopen = original_urlopen
 
 
