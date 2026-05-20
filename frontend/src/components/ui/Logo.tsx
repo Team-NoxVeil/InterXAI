@@ -27,8 +27,8 @@ const Logo: React.FC<LogoProps> = ({ className = "", dark = false }) => (
         X
       </text>
     </svg>
-    <span className="font-bold text-xl tracking-tight text-slate-100 drop-shadow-[0_0_8px_rgba(255,255,255,0.18)]" >
-     Inter<span className="text-blue-200">XAI</span>
+    <span className="font-bold text-xl tracking-tight text-slate-100 drop-shadow-[0_0_8px_rgba(255,255,255,0.18)]">
+      Inter<span className="text-blue-200">XAI</span>
     </span>
   </div>
 );
