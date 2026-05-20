@@ -108,3 +108,11 @@ class CustomInterviewBasicResponse(BaseModel):
 
 class AppliedInterviewResponse(CustomInterviewBasicResponse):
     status: str
+
+    
+
+
+
+
+
+
