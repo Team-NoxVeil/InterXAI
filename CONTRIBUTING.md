@@ -1,20 +1,13 @@
-# InterXAI Contribution & Development Guide 🚀
+---
+# InterXAI Contribution & Development Guide
 
 This document details the configuration steps, system dependency frameworks, and codebase discipline metrics required to participate as a contributor to InterXAI. 
 
-As a **GSSoC 2026** development space, maintaining system configuration boundaries, typed structures, and historical git sanity is mandatory. Please confirm compliance with this outline before editing core elements.
+Please follow the project structure, typing standards, and git workflow described below. Please confirm compliance with this outline before editing core elements.
 
 ---
 
-# InterXAI Contribution & Development Guide 🚀
-
-This document details the configuration steps, system dependency frameworks, and codebase discipline metrics required to participate as a contributor to InterXAI. 
-
-Maintaining system configuration boundaries, typed structures, and historical git sanity is mandatory. Please confirm compliance with this outline before editing core elements.
-
----
-
-## 📋 Pre-Flight Technical Checklist
+## Pre-Flight Technical Checklist
 
 Ensure your engine workspace satisfies these foundational environment boundaries:
 * **Python Engine:** Version `3.12+` managed runtime environment.
@@ -24,14 +17,15 @@ Ensure your engine workspace satisfies these foundational environment boundaries
 
 ---
 
-## ⚙️ Setting Up Local Environments
+## Setting Up Local Environments
 
-### Option A: Fully Orchestrated Docker Blueprint (Recommended)
+### Option A: Fully Orchestrated Docker Blueprint 
 This profile handles the deployment topology for API processes, execution layers, and message runtimes within an isolated architecture.
 
-1. Execute container runtime compilation directly from root path mappings:
+1. Run the Docker containers from the project root:
    ```bash
    docker-compose up --build
+   
 
 ```
 
@@ -44,37 +38,31 @@ This profile handles the deployment topology for API processes, execution layers
 1. Navigate into the backend directory:
 ```bash
 cd backend
-
 ```
-
+```
 
 2. Sync the project space and install developer system components natively using `uv`:
-```bash
-uv sync --dev
-
+   ```bash
+   uv sync --dev
 ```
-
 
 3. Initialize a structural environment properties file using the provided boilerplate reference:
 ```bash
 cp .env.example .env
-
 ```
-
+```
 
 4. Align existing storage states by tracking transactional structural upgrades via Alembic mappings:
-```bash
-uv run alembic upgrade head
+   ```bash
+   uv run alembic upgrade head
 
 ```
-
-
 5. Launch the live-monitoring server loop:
 ```bash
 uv run uvicorn app.main:app --reload
 
 ```
-
+```
 #### 2. Background Processing Execution (TaskIQ Worker Tracking)
 
 When auditing tasks interacting with resume files, async data ingestion, or structured agent evaluation routines, spin up an active task cluster worker instance in a secondary execution pane:
@@ -87,42 +75,35 @@ uv run taskiq worker app.background.taskiq.taskiq:broker
 
 #### 3. Frontend Interface Operations (React Architecture)
 
-1. Allocate an independent shell frame pointing to the frontend path mapping:
+1. Open a new terminal and navigate to the frontend directory:
 ```bash
 cd frontend
-
 ```
-
 2. Run clean installations of your local node modules definitions block:
 ```bash
 npm install
-
 ```
-
+```
 3. Execute the development script loop to coordinate local Vite routing setups:
-```bash
-npm run dev
-
+   ```bash
+   npm run dev
 ```
-
 4. Interact directly with the local development web viewport hosted at `http://localhost:5173`.
 
 ---
 
-## 🔑 Environment Variables Matrix
+## Environment Variables Matrix
 
-| Variable Identifier             | Operational Scope Requirements <!--  -->                                             
-                           |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-
-| `GROQ_API_KEY`                  | Required to route processing tasks to target endpoint models. Provision keys via the Groq Console Engine.                                 |
-| `SUPABASE_URL` / `SUPABASE_KEY` | Directs pipeline object assets to cloud structures. Accessible inside Supabase Project Settings. Use the designated `service_role` token. |
-| `SUPABASE_BUCKET_NAME`          | Must align exactly to an initialized storage object vault named `resumes` utilizing standard public resolution settings.                  |
-| `DATABASE_URL`                  | Defaults to local development mapping structures: `sqlite+aiosqlite:///./dev.db`                                                          |
-
+| Variable Identifier | Operational Scope Requirements |
+| --- | --- |
+| `GROQ_API_KEY` | Required to route processing tasks to target endpoint models. Provision keys via the Groq Console Engine. |
+| `DB_PROVIDER_URL` / `DB_PROVIDER_KEY` | Directs pipeline object assets to cloud structures. Accessible inside your preferred database or authentication provider's project settings. |
+| `STORAGE_BUCKET_NAME` | Must align exactly to an initialized storage object vault named `resumes` utilizing standard public resolution settings on your chosen storage provider. |
+| `DATABASE_URL` | Defaults to local development mapping structures customized for your preferred backend relational database engine. |
 
 ---
-## 🌿 Workspace Git Branch Isolation Rules
+
+## Workspace Git Branch Isolation Rules
 
 Do not publish modification tracks straight to master branches. Structure development pathways using standardized prefix schemas to organize tracking profiles across asynchronous developer clusters:
 
@@ -135,7 +116,7 @@ Do not publish modification tracks straight to master branches. Structure develo
 
 ---
 
-## ✍️ Commit Message Discipline (Conventional Commits)
+## Commit Message Discipline (Conventional Commits)
 
 This repository enforces explicit semantic commit rules. Messages must explicitly layout contextual changes utilizing a standard architectural scope syntax to avoid polluted project logs:
 
@@ -161,7 +142,7 @@ This repository enforces explicit semantic commit rules. Messages must explicitl
 
 ---
 
-## 🧪 Code Quality Verification Routines
+## Code Quality Verification Routines
 
 The target framework utilizes strict schema, linting, and formatting protocols. Before pushing file modifications upstream, test your files locally to prevent structural CI/CD build breaks.
 
@@ -176,7 +157,13 @@ This verification file coordinates a unified test block leveraging **Ruff** for 
 
 ---
 
-## 🛠️ Environment Troubleshooting Matrix
+## Ethical Use of AI
+
+InterXAI values authentic, high-quality human contributions. While using AI-assisted tooling (like code completions) for productivity is acceptable, automated AI-generated pull requests, boilerplate "AI slop," and unverified LLM code dumps are strictly prohibited. All submissions must be logically sound, rigorously tested, and directly address the stated issue. Pull requests violating this policy will be closed immediately without review.
+
+---
+
+## Environment Troubleshooting Matrix
 
 ### 1. Vite Throwing `ReferenceError: CustomEvent is not defined`
 
@@ -187,14 +174,20 @@ npx vite
 # Alternatively, address file trees explicitly
 node node_modules/vite/bin/vite.js
 
+
+```
+
+
+
 ```
 
 ### 2. Missing Database Table Relational Errors on App Bootstrap
 
 * **Root Structural Cause:** The operational local database schema structure is out of alignment with newer data modeling objects declared in the backend routers.
 * **Workaround Path:** Execute database component alignments inside the backend folder context:
-```bash
-uv run alembic upgrade head
+   ```bash
+   uv run alembic upgrade head
+   
 
 ```
 
@@ -202,13 +195,13 @@ uv run alembic upgrade head
 
 For complex system installation setups, environment caching bugs, or infrastructure permission anomalies, please consult the respective official documentation frameworks:
 
-* **Docker/Containers:** For advanced daemon configurations or containerization bugs, review the [Official Docker Troubleshooting Guide](https://docs.docker.com/engine/security/rootless/troubleshoot/).
+* **Docker/Containers:** For advanced daemon configurations or containerization bugs, review the official troubleshooting guide at https://docs.docker.com/engine/security/rootless/troubleshoot/.
 * **Python/UV Setup:** For environment management or package resolution queries, check the [Official UV Integration Reference](https://docs.astral.sh/uv/).
 * **Node.js/NPM Runtime:** For syntax engine features or global dependency errors, refer to the [Official Node.js Documentation Portal](https://nodejs.org/en/docs/).
 
 ---
 
-## 🔄 Pull Request Workflow
+## Pull Request Workflow
 
 1. Fork the repository.
 2. Create a feature branch using the approved naming conventions.
@@ -220,20 +213,3 @@ For complex system installation setups, environment caching bugs, or infrastruct
 
 ```
 
----
-
-## Step 3: Amend and Push your Commit
-
-Save your files inside VS Code. To clean up your Git tracking history before Sathwik views the updated PR, amend your previous local commit and force push it up to your profile:
-
-```bash
-# Stage the modified readme and corrected guide
-git add .
-
-# Overwrite your last local commit instead of making a new messy one
-git commit --amend --no-edit
-
-# Push it to update your active Pull Request automatically
-git push origin docs/add-contributing-guide --force
-
-```
