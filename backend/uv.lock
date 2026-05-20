@@ -236,6 +236,7 @@ dependencies = [
     { name = "taskiq" },
     { name = "taskiq-redis" },
     { name = "uvicorn", extra = ["standard"] },
+    { name = "vercel-blob" },
 ]
 
 [package.dev-dependencies]
@@ -265,6 +266,7 @@ requires-dist = [
     { name = "taskiq", specifier = ">=0.11.0" },
     { name = "taskiq-redis", specifier = ">=0.5.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30.0" },
+    { name = "vercel-blob", specifier = ">=0.4.2" },
 ]
 
 [package.metadata.requires-dev]
@@ -2821,6 +2823,21 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c1/37/945b4ca0ac27e3dc4952642d4c900edd030b3da6c9634875af6e13ae80e5/uvloop-0.22.1-cp314-cp314t-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:b91328c72635f6f9e0282e4a57da7470c7350ab1c9f48546c0f2866205349d21", size = 4467065, upload-time = "2025-10-16T22:16:58.206Z" },
     { url = "https://files.pythonhosted.org/packages/97/cc/48d232f33d60e2e2e0b42f4e73455b146b76ebe216487e862700457fbf3c/uvloop-0.22.1-cp314-cp314t-musllinux_1_2_aarch64.whl", hash = "sha256:daf620c2995d193449393d6c62131b3fbd40a63bf7b307a1527856ace637fe88", size = 4328384, upload-time = "2025-10-16T22:16:59.36Z" },
     { url = "https://files.pythonhosted.org/packages/e4/16/c1fd27e9549f3c4baf1dc9c20c456cd2f822dbf8de9f463824b0c0357e06/uvloop-0.22.1-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:6cde23eeda1a25c75b2e07d39970f3374105d5eafbaab2a4482be82f272d5a5e", size = 4296730, upload-time = "2025-10-16T22:17:00.744Z" },
+]
+
+[[package]]
+name = "vercel-blob"
+version = "0.4.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "certifi" },
+    { name = "requests" },
+    { name = "tqdm" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/42/bd/d299ee6ef69db7b3b6bd636e592ea0f5d87d65f0a9a69f68db4818117265/vercel_blob-0.4.2.tar.gz", hash = "sha256:1c8e24c618cb62d7ddaa91d6a01b94bd5e8856ed0cfc7525fb6bfe064e2790c6", size = 15281, upload-time = "2025-06-07T06:16:06.891Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5d/19/fadf607014ab74305e1eb91027215401d65b29af7e1f67cb4d1c17785796/vercel_blob-0.4.2-py3-none-any.whl", hash = "sha256:4150fc596b198489529275de46e577353a200fb292a39b9aecb76f76425fc05d", size = 15655, upload-time = "2025-06-07T06:16:05.343Z" },
 ]
 
 [[package]]

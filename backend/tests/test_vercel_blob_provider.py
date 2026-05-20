@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from app.exceptions.storage import (
+    StorageDeleteError,
     StorageDownloadError,
     StorageUploadError,
 )
@@ -75,6 +76,36 @@ def test_download_failure() -> None:
     ):
         asyncio.run(
             provider.download(
+                "https://example.com/test.pdf",
+            )
+        )
+
+
+def test_delete_success() -> None:
+    provider = VercelBlobStorageProvider()
+
+    with patch("app.utils.vercel_blob.delete") as mock_delete:
+        asyncio.run(
+            provider.delete(
+                "https://example.com/test.pdf",
+            )
+        )
+
+        mock_delete.assert_called_once()
+
+
+def test_delete_failure() -> None:
+    provider = VercelBlobStorageProvider()
+
+    with (
+        patch(
+            "app.utils.vercel_blob.delete",
+            side_effect=Exception("Delete failed"),
+        ),
+        pytest.raises(StorageDeleteError),
+    ):
+        asyncio.run(
+            provider.delete(
                 "https://example.com/test.pdf",
             )
         )
