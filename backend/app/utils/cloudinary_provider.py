@@ -21,11 +21,16 @@ logger = get_logger(__name__)
 class CloudinaryStorageProvider(StorageProviderInterface):
     def __init__(
         self,
-        cloud_name: str = settings.CLOUDINARY_CLOUD_NAME,
-        api_key: str = settings.CLOUDINARY_API_KEY,
-        api_secret: str = settings.CLOUDINARY_API_SECRET,
-        folder: str = settings.CLOUDINARY_FOLDER,
+        cloud_name: str | None = None,
+        api_key: str | None = None,
+        api_secret: str | None = None,
+        folder: str | None = None,
     ):
+        cloud_name = cloud_name if cloud_name is not None else settings.CLOUDINARY_CLOUD_NAME
+        api_key = api_key if api_key is not None else settings.CLOUDINARY_API_KEY
+        api_secret = api_secret if api_secret is not None else settings.CLOUDINARY_API_SECRET
+        folder = folder if folder is not None else settings.CLOUDINARY_FOLDER
+
         missing = [
             name
             for name, value in {
