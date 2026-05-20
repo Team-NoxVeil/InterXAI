@@ -35,7 +35,6 @@ class CustomInterviewBase(BaseModel):
 
 # Validation should only happen during creation
 class CustomInterviewCreate(CustomInterviewBase):
-
     @model_validator(mode="after")
     def validate_times_and_scores(self) -> "CustomInterviewCreate":
         tz = self.start_time.tzinfo
@@ -58,9 +57,7 @@ class CustomInterviewCreate(CustomInterviewBase):
             dev = self.dev_score or 0
 
             if dsa + dev != 100:
-                raise BadRequestError(
-                    "The sum of dsa_score and dev_score must be exactly 100"
-                )
+                raise BadRequestError("The sum of dsa_score and dev_score must be exactly 100")
 
         return self
 
@@ -105,15 +102,6 @@ class CustomInterviewBasicResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class AppliedInterviewResponse(CustomInterviewBasicResponse):
     status: str
-
-
-
-
-
-
-
-
-
-
