@@ -15,7 +15,9 @@ class DsaTopicCreate(BaseModel):
     difficulty: str
 
 
-class CustomInterviewCreate(BaseModel):
+class CustomInterviewBase(BaseModel):
+    """Neutral base schema with shared interview fields ΓÇö no create-time validation."""
+
     description: str
     position: str
     experience: str
@@ -27,6 +29,10 @@ class CustomInterviewCreate(BaseModel):
     dev_score: int = 50
     resume_shortlist_score: float = 0
     ask_questions_on_resume: bool = False
+
+
+class CustomInterviewCreate(CustomInterviewBase):
+    """Schema used when *creating* an interview ΓÇö enforces future-date constraints."""
 
     questions: list[CustomQuestionCreate] = []
     dsa_topics: list[DsaTopicCreate] = []
@@ -71,14 +77,22 @@ class DsaTopicResponse(DsaTopicCreate):
         from_attributes = True
 
 
-class CustomInterviewResponse(CustomInterviewCreate):
+class CustomInterviewResponse(CustomInterviewBase):
+    """Schema used when *reading* an interview ΓÇö no future-date validation."""
+
     id: int
     org_id: int
-    questions: list[CustomQuestionResponse] = []  # type: ignore[assignment]
-    dsa_topics: list[DsaTopicResponse] = []  # type: ignore[assignment]
+    questions: list[CustomQuestionResponse] = []
+    dsa_topics: list[DsaTopicResponse] = []
 
     class Config:
         from_attributes = True
+
+
+class CustomInterviewReadResponse(CustomInterviewResponse):
+    """Explicit read-only schema for interview detail endpoints."""
+
+    pass
 
 
 class CustomInterviewBasicResponse(BaseModel):

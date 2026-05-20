@@ -14,6 +14,7 @@ from app.schemas.interview import (
     AppliedInterviewResponse,
     CustomInterviewBasicResponse,
     CustomInterviewCreate,
+    CustomInterviewReadResponse,
     CustomInterviewResponse,
 )
 from app.utils.authorization import get_current_user, is_organization
@@ -125,12 +126,12 @@ async def get_applied_interviews(
     return applied_interviews
 
 
-@router.get("/{interview_id}", response_model=CustomInterviewResponse)
+@router.get("/{interview_id}", response_model=CustomInterviewReadResponse)
 async def get_interview(
     interview_id: int,
     db: AsyncSession = Depends(get_db),
     org: Organization = Depends(is_organization),
-) -> CustomInterviewResponse:
+) -> CustomInterviewReadResponse:
     """
     Get full interview details. Only accessible by the organization that created it.
     """
@@ -150,4 +151,4 @@ async def get_interview(
     if interview.org_id != org.id:
         raise ForbiddenError("You cannot access this resource")
 
-    return CustomInterviewResponse.model_validate(interview)
+    return CustomInterviewReadResponse.model_validate(interview)

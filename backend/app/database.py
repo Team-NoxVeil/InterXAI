@@ -14,13 +14,15 @@ db_url = settings.DATABASE_URL
 if db_url.startswith("postgresql://"):
     db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
 
+connect_args: dict[str, object] = {}
+if "postgresql" in db_url:
+    connect_args["ssl"] = "require"
+
 engine = create_async_engine(
     db_url,
     echo=settings.DEBUG,
     future=True,
-    connect_args={
-        "ssl": "require",
-    },
+    connect_args=connect_args,
 )
 
 

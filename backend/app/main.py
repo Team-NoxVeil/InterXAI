@@ -31,6 +31,14 @@ logger = get_logger(__name__)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
+    # Auto-create tables for local SQLite development
+    if "sqlite" in settings.DATABASE_URL:
+        from app.database import Base, engine
+
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("SQLite tables created/verified")
+
     await default_worker_provider().startup()
     yield
     await default_worker_provider().shutdown()

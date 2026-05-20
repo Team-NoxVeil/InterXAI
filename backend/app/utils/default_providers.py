@@ -18,4 +18,9 @@ def default_worker_provider() -> BackgroundWorkerInterface:
 
         return worker
 
+    if settings.BACKGROUND_WORKER == "noop":
+        from app.background.noop_worker import noop_worker
+
+        return noop_worker
+
     raise ValueError(f"Unknown background worker: '{settings.BACKGROUND_WORKER}'")
