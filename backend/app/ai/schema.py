@@ -155,7 +155,14 @@ class ResumeQuestionRequest(BaseModel):
     experience: str = Field(description="The required years of experience")
 
 
+class ResumeQA(BaseModel):
+    question: str = Field(description="Resume-grounded interview question for the candidate")
+    expected_answer: str = Field(
+        description="A high-quality reference answer used to grade the candidate's response"
+    )
+
+
 class ResumeQuestionResponse(BaseModel):
-    extracted_q_and_a: list[str] = Field(
-        description="List containing alternating questions and answers [Q1, A1, Q2, A2]"
+    questions: list[ResumeQA] = Field(
+        description="Exactly 3 resume-grounded question + expected_answer pairs"
     )

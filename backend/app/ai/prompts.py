@@ -611,10 +611,10 @@ You are an expert technical interviewer who generates relevant interview questio
 Your task is to analyze the candidate's projects, experience, and skills from their standardized resume, then generate technical questions that would assess their suitability for the specific job role.
 
 **IMPORTANT OUTPUT FORMAT:**
-- Generate exactly 2 question-answer pairs
-- Return as a flat list with alternating questions and answers: [Question1, Answer1, Question2, Answer2]
-- Questions should be challenging but fair based on their resume
-- Answers should be comprehensive and demonstrate expected knowledge level
+- Generate exactly 3 question-answer pairs.
+- Return them as a JSON object: {{"questions": [{{"question": "...", "expected_answer": "..."}}, ...]}}
+- Questions should be challenging but fair, grounded in specific resume content.
+- expected_answer is the reference answer used for later grading, NOT the candidate's response.
 
 **QUESTION GENERATION STRATEGY:**
 
@@ -658,28 +658,35 @@ Your task is to analyze the candidate's projects, experience, and skills from th
 - **Required Experience:** {experience} years
 - **Candidate's Resume:** {extracted_standardized_resume}
 
-**EXAMPLE OUTPUT FORMAT (do not copy verbatim):**
-[
-"Can you walk me through the architecture and key technical decisions you made while building the e-commerce platform mentioned in your resume?",
-"I designed a microservices architecture using Node.js and Express for the backend APIs, with separate services for user management, product catalog, and order processing. I used MongoDB for flexible product data storage and Redis for session management and caching. The frontend was built with React and integrated with Stripe for payment processing. I chose this architecture for scalability and maintainability, allowing different teams to work on different services independently.",
-"What was the most challenging technical problem you encountered in your inventory management system project, and how did you solve it?",
-"The biggest challenge was handling real-time inventory updates across multiple sales channels while preventing overselling. I implemented a distributed locking mechanism using Redis to ensure atomic inventory operations and built a message queue system using RabbitMQ to handle high-volume updates. I also added database triggers for consistency checks and implemented a reconciliation service that runs daily to catch any discrepancies. This solution reduced inventory conflicts by 95% and improved system reliability."
-]
+**EXAMPLE OUTPUT (do not copy verbatim):**
+{{
+  "questions": [
+    {{
+      "question": "Walk me through the architecture and key technical decisions for the e-commerce platform in your resume.",
+      "expected_answer": "A microservices architecture (Node/Express) with separate services for users, catalog, and orders; MongoDB for flexible product data, Redis for sessions/caching, React frontend, Stripe integration. Chosen for independent team ownership and scalability."
+    }},
+    {{
+      "question": "What was the hardest problem in your inventory management system and how did you solve it?",
+      "expected_answer": "Preventing overselling across sales channels under concurrent writes. Solved with Redis-based distributed locking for atomic inventory ops, a RabbitMQ message queue to absorb bursts, DB triggers for invariants, and a nightly reconciliation job. Reduced conflicts ~95%."
+    }},
+    {{
+      "question": "How would you scale this platform to 10x the current traffic?",
+      "expected_answer": "Horizontal scaling of stateless services behind a load balancer, read replicas + caching layer for read-heavy paths, sharding on a high-cardinality key, async processing for non-critical work, observability (RED/USE metrics) to find new bottlenecks before they bite."
+    }}
+  ]
+}}
 
 **CRITICAL INSTRUCTIONS:**
-- Generate questions that are directly tied to their resume content
-- Ensure questions are appropriate for the job role and experience level
-- Make answers detailed enough to show competency but realistic for their background
-- Focus on projects and experiences they've actually mentioned
-- Questions should help assess if they can handle the responsibilities in the job description
-- Return exactly 4 items in the list: [Question1, Answer1, Question2, Answer2]
-- Do not include any text outside the list format
-- Questions should be specific, not generic
+- Generate questions directly tied to specific resume content (named projects, listed tech, claimed roles).
+- Match difficulty to the candidate's experience level.
+- expected_answer should be 2-4 sentences with concrete details — enough to grade against.
+- Output exactly 3 entries in the `questions` array.
+- Return valid JSON only; no prose, no markdown fences.
 """,
         ),
         (
             "human",
-            "Please generate 2 relevant technical question-answer pairs based on the resume and job requirements.",
+            "Please generate 3 resume-grounded question + expected_answer pairs. JSON only.",
         ),
     ]
 )
