@@ -51,6 +51,9 @@ services:
     privileged: true
     ports:
       - "2000:2000"
+    environment:
+      - PISTON_RUN_TIMEOUT=15000
+      - PISTON_COMPILE_TIMEOUT=15000
     volumes:
       - piston_data:/piston
     restart: always
