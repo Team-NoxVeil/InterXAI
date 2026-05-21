@@ -10,12 +10,14 @@ from app.models.application import InterviewSession, InterviewStatus
 logger = get_logger(__name__)
 
 
-TERMINAL_STATUSES: frozenset[str] = frozenset({
-    InterviewStatus.COMPLETED.value,
-    InterviewStatus.CANCELLED.value,
-    InterviewStatus.CHEATED.value,
-    InterviewStatus.DISQUALIFIED.value,
-})
+TERMINAL_STATUSES: frozenset[str] = frozenset(
+    {
+        InterviewStatus.COMPLETED.value,
+        InterviewStatus.CANCELLED.value,
+        InterviewStatus.CHEATED.value,
+        InterviewStatus.DISQUALIFIED.value,
+    }
+)
 
 
 async def disqualify_if_stale(session: InterviewSession, db: AsyncSession) -> bool:
@@ -39,7 +41,9 @@ async def disqualify_if_stale(session: InterviewSession, db: AsyncSession) -> bo
 
     logger.info(
         "Disqualifying session %d (silence=%.1fs, threshold=%ds)",
-        session.id, elapsed.total_seconds(), settings.HEARTBEAT_THRESHOLD_S,
+        session.id,
+        elapsed.total_seconds(),
+        settings.HEARTBEAT_THRESHOLD_S,
     )
     session.status = InterviewStatus.DISQUALIFIED.value
     await db.commit()

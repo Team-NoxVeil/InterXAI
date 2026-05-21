@@ -35,6 +35,20 @@ class DsaCaseResult(BaseModel):
     actual: str
 
 
+class DsaTestRequest(BaseModel):
+    source_code: str
+    language: str
+
+
+class DsaTestCaseStatus(BaseModel):
+    case: int
+    status: str  # passed | failed | error
+
+
+class DsaTestResponse(BaseModel):
+    case_results: list[DsaTestCaseStatus]
+
+
 class CustomQuestionPayload(BaseModel):
     type: Literal["custom"] = "custom"
     interaction_id: int

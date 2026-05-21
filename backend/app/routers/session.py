@@ -24,6 +24,9 @@ from app.schemas.session import (
     DsaRunResponse,
     DsaSubmitRequest,
     DsaSubmitResponse,
+    DsaTestCaseStatus,
+    DsaTestRequest,
+    DsaTestResponse,
     HeartbeatResponse,
     InterviewStateResponse,
     ResumeQuestionPayload,
@@ -58,9 +61,7 @@ logger = get_logger(__name__)
 router: APIRouter = APIRouter(prefix="/sessions", tags=["sessions"])
 
 
-async def _load_owned_session(
-    session_id: int, user: User, db: AsyncSession
-) -> InterviewSession:
+async def _load_owned_session(session_id: int, user: User, db: AsyncSession) -> InterviewSession:
     result = await db.execute(
         select(InterviewSession)
         .options(selectinload(InterviewSession.application))
@@ -294,6 +295,61 @@ async def dsa_run(
         stderr=result.stderr,
         exit_code=result.exit_code,
     )
+
+
+@router.post("/{session_id}/dsa/test", response_model=DsaTestResponse)
+async def dsa_test(
+    session_id: int,
+    body: DsaTestRequest,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> DsaTestResponse:
+    """
+    Dry-run the candidate's code against the active DSA question's HIDDEN test
+    cases and return only pass/fail/error per case. Does NOT update the
+    DsaInteraction — score and code are only persisted on /dsa/submit.
+
+    Useful for letting the candidate gauge their solution against the same
+    inputs that grading will use, without consuming their final submission.
+    """
+    session = await _load_owned_session(session_id, user, db)
+    await assert_session_alive(session, db)
+
+    if session.current_round != CurrentRound.DSA.value:
+        raise BadRequestError(
+            f"/dsa/test is only valid during the DSA round (current: {session.current_round})"
+        )
+
+    pair = await current_dsa_interaction(session, db)
+    if pair is None:
+        raise BadRequestError("No active DSA question for this session")
+    _, question = pair
+
+    cases: list[dict[str, str]] = question.test_cases or []
+    client = PistonClient()
+    results: list[DsaTestCaseStatus] = []
+
+    for idx, case in enumerate(cases, 1):
+        stdin = case.get("stdin", "")
+        expected = (case.get("expected_stdout") or "").strip()
+
+        run = await client.execute(
+            source_code=body.source_code,
+            language=body.language,
+            stdin=stdin,
+            run_timeout_ms=question.time_limit_ms,
+        )
+        if run.exit_code != 0:
+            results.append(DsaTestCaseStatus(case=idx, status="error"))
+            continue
+        results.append(
+            DsaTestCaseStatus(
+                case=idx,
+                status="passed" if run.stdout.strip() == expected else "failed",
+            )
+        )
+
+    return DsaTestResponse(case_results=results)
 
 
 @router.post("/{session_id}/dsa/submit", response_model=DsaSubmitResponse)

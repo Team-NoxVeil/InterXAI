@@ -32,13 +32,16 @@ async def run_grade_interaction(interaction_id: int) -> None:
         custom_q = await db.get(CustomQuestion, interaction.custom_question_id)
         session = await db.get(InterviewSession, interaction.session_id)
         if custom_q is None or session is None:
-            logger.error("Missing CustomQuestion or InterviewSession for interaction %d", interaction_id)
+            logger.error(
+                "Missing CustomQuestion or InterviewSession for interaction %d", interaction_id
+            )
             return
 
         application = await db.get(Application, session.application_id)
         interview = (
             await db.get(CustomInterview, application.interview_id)
-            if application is not None else None
+            if application is not None
+            else None
         )
         if interview is None:
             logger.error("Missing interview metadata for interaction %d", interaction_id)
@@ -96,7 +99,8 @@ async def run_grade_session(session_id: int) -> None:
         application = await db.get(Application, session.application_id)
         interview = (
             await db.get(CustomInterview, application.interview_id)
-            if application is not None else None
+            if application is not None
+            else None
         )
         if interview is None:
             logger.error("Missing interview metadata for session %d", session_id)
@@ -112,12 +116,14 @@ async def run_grade_session(session_id: int) -> None:
         history: list[dict[str, Any]] = []
         for interaction in interactions:
             cq = await db.get(CustomQuestion, interaction.custom_question_id)
-            history.append({
-                "main_question": cq.question if cq else None,
-                "expected_answer": cq.expected_answer if cq else None,
-                "individual_score": interaction.score,
-                "individual_feedback": interaction.feedback,
-            })
+            history.append(
+                {
+                    "main_question": cq.question if cq else None,
+                    "expected_answer": cq.expected_answer if cq else None,
+                    "individual_score": interaction.score,
+                    "individual_feedback": interaction.feedback,
+                }
+            )
 
         final = FinalEvaluator(llm_provider=LiteLLMProvider())
         result = await final.evaluate(
@@ -136,7 +142,9 @@ async def run_grade_session(session_id: int) -> None:
 
     logger.info(
         "Final-graded session %d: score=%.1f recommendation=%s",
-        session_id, result.overall_score, result.recommendation,
+        session_id,
+        result.overall_score,
+        result.recommendation,
     )
 
 

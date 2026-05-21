@@ -154,9 +154,7 @@ async def current_dsa_interaction(
     return interaction, question
 
 
-def dsa_payload_for(
-    interaction: DsaInteraction, question: DsaQuestion
-) -> DsaQuestionPayload:
+def dsa_payload_for(interaction: DsaInteraction, question: DsaQuestion) -> DsaQuestionPayload:
     """Build the candidate-facing DSA payload (no hidden test cases)."""
     return DsaQuestionPayload(
         interaction_id=interaction.id,
@@ -260,9 +258,7 @@ async def transition_to_resume(
     )
 
 
-async def transition_to_dsa(
-    session: InterviewSession, db: AsyncSession
-) -> InterviewStateResponse:
+async def transition_to_dsa(session: InterviewSession, db: AsyncSession) -> InterviewStateResponse:
     """
     Flip the session to the DSA round (index reset to 1) and return the first
     DSA question. If the session has no DSA interactions assigned (interview
@@ -290,9 +286,7 @@ async def transition_to_dsa(
     )
 
 
-async def interview_metadata(
-    session: InterviewSession, db: AsyncSession
-) -> CustomInterview:
+async def interview_metadata(session: InterviewSession, db: AsyncSession) -> CustomInterview:
     """Load the CustomInterview tied to this session (via application.interview_id)."""
     result = await db.execute(
         select(CustomInterview)

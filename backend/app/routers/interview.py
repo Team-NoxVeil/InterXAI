@@ -244,11 +244,13 @@ async def start_interview(
     await db.flush()
 
     # First turn in the conversation: the main question itself, answer pending.
-    db.add(FollowUpQuestion(
-        interaction_id=interaction.id,
-        question=first_question.question,
-        answer=None,
-    ))
+    db.add(
+        FollowUpQuestion(
+            interaction_id=interaction.id,
+            question=first_question.question,
+            answer=None,
+        )
+    )
     await db.commit()
     await db.refresh(interaction)
 
@@ -258,7 +260,9 @@ async def start_interview(
 
     logger.info(
         "Started interview session %d for user %d (interview=%d)",
-        session.id, current_user.id, interview_id,
+        session.id,
+        current_user.id,
+        interview_id,
     )
 
     return InterviewStateResponse(
