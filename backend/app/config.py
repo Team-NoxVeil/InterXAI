@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     # Piston (code execution)
     PISTON_URL: str = "http://localhost:2000"
 
+    # Interview proctoring
+    IMMEDIATE_DISQUALIFICATION: bool = False
+    HEARTBEAT_THRESHOLD_S: int = 20
+
     # Providers
     STORAGE_PROVIDER: str = "supabase"
     BACKGROUND_WORKER: str = "taskiq"
