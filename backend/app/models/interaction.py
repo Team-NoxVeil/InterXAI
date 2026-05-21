@@ -102,6 +102,7 @@ class ResumeQuestion(BaseTable):
         ForeignKey("resume_conversations.id", ondelete="CASCADE"), nullable=False
     )
     question: Mapped[str] = mapped_column(Text, default="Default question text")
+    expected_answer: Mapped[str | None] = mapped_column(Text, nullable=True)
     answer: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     conversation = relationship("ResumeConversation", foreign_keys=[conversation_id])
