@@ -29,6 +29,7 @@ from app.schemas.session import (
     ResumeQuestionPayload,
 )
 from app.utils.authorization import get_current_user
+from app.utils.default_providers import default_worker_provider
 from app.utils.interview_flow import (
     MAX_FOLLOWUPS,
     conversation_context,
@@ -155,9 +156,12 @@ async def _handle_questions_answer(
                 ),
             )
 
-    # No follow-up needed (or cap hit). Advance to the next CustomQuestion.
+    # No follow-up needed (or cap hit). The conversation around this Interaction
+    # is complete — fire off LLM grading in the background, then advance.
     if custom_q is None:
         raise BadRequestError("Interaction references a missing CustomQuestion")
+
+    await default_worker_provider().grade_interaction_task(interaction.id)
 
     upcoming = await next_custom_question(custom_q.interview_id, custom_q.id, db)
     if upcoming is not None:

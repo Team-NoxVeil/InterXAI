@@ -25,6 +25,7 @@ from app.schemas.session import (
     InterviewStateResponse,
     ResumeQuestionPayload,
 )
+from app.utils.default_providers import default_worker_provider
 
 logger = get_logger(__name__)
 
@@ -169,10 +170,11 @@ def dsa_payload_for(
 async def mark_session_completed(
     session: InterviewSession, db: AsyncSession
 ) -> InterviewStateResponse:
-    """Terminal-transition the session and return the final completed response."""
+    """Terminal-transition the session, fire the final-grading task, and return."""
     session.status = InterviewStatus.COMPLETED.value
     session.end_time = datetime.utcnow()
     await db.commit()
+    await default_worker_provider().grade_session_task(session.id)
     return InterviewStateResponse(
         session_id=session.id,
         round=session.current_round,

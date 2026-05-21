@@ -39,3 +39,11 @@ class BackgroundWorkerInterface(ABC):
     @abstractmethod
     async def generate_resume_questions_task(self, session_id: int) -> None:
         pass
+
+    @abstractmethod
+    async def grade_interaction_task(self, interaction_id: int) -> None:
+        pass
+
+    @abstractmethod
+    async def grade_session_task(self, session_id: int) -> None:
+        pass

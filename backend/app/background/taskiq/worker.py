@@ -2,6 +2,7 @@ from app.background.taskiq.taskiq import broker
 from app.background.taskiq.tasks import (
     dsa_execution,
     dsa_generation,
+    grading,
     resume_generation,
     resume_processing,
 )
@@ -38,6 +39,12 @@ class TaskiqWorker(BackgroundWorkerInterface):
 
     async def generate_resume_questions_task(self, session_id: int) -> None:
         await resume_generation.generate_resume_questions_task.kiq(session_id)
+
+    async def grade_interaction_task(self, interaction_id: int) -> None:
+        await grading.grade_interaction_task.kiq(interaction_id)
+
+    async def grade_session_task(self, session_id: int) -> None:
+        await grading.grade_session_task.kiq(session_id)
 
 
 worker = TaskiqWorker()
