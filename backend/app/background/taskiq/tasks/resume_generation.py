@@ -96,7 +96,7 @@ async def run_generate_resume_questions(session_id: int) -> None:
                 ResumeQuestion(
                     conversation_id=conversation.id,
                     question=qa.question,
-                    answer=qa.expected_answer,
+                    expected_answer=qa.expected_answer,
                 )
             )
 
