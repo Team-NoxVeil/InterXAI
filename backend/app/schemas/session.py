@@ -23,6 +23,18 @@ class DsaRunResponse(BaseModel):
     exit_code: int
 
 
+class DsaSubmitRequest(BaseModel):
+    source_code: str
+    language: str
+
+
+class DsaCaseResult(BaseModel):
+    case: int
+    status: str  # passed | failed | error
+    expected: str
+    actual: str
+
+
 class CustomQuestionPayload(BaseModel):
     type: Literal["custom"] = "custom"
     interaction_id: int
@@ -61,3 +73,9 @@ class InterviewStateResponse(BaseModel):
     round: str
     completed: bool
     question: QuestionPayload | None
+
+
+class DsaSubmitResponse(BaseModel):
+    case_results: list[DsaCaseResult]
+    score: float
+    next_state: InterviewStateResponse

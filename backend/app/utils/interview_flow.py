@@ -1,13 +1,30 @@
+from datetime import datetime
+
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.exceptions.common import BadRequestError
 from app.logger import get_logger
-from app.models.application import Application, CurrentRound, InterviewSession
+from app.models.application import (
+    Application,
+    CurrentRound,
+    InterviewSession,
+    InterviewStatus,
+)
 from app.models.dsa_question import DsaQuestion
-from app.models.interaction import DsaInteraction, FollowUpQuestion, Interaction
+from app.models.interaction import (
+    DsaInteraction,
+    FollowUpQuestion,
+    Interaction,
+    ResumeConversation,
+    ResumeQuestion,
+)
 from app.models.interview import CustomInterview, CustomQuestion
-from app.schemas.session import DsaQuestionPayload, InterviewStateResponse
+from app.schemas.session import (
+    DsaQuestionPayload,
+    InterviewStateResponse,
+    ResumeQuestionPayload,
+)
 
 logger = get_logger(__name__)
 
@@ -146,6 +163,61 @@ def dsa_payload_for(
         description=question.description,
         sample_test_cases=question.sample_test_cases,
         time_limit_ms=question.time_limit_ms,
+    )
+
+
+async def mark_session_completed(
+    session: InterviewSession, db: AsyncSession
+) -> InterviewStateResponse:
+    """Terminal-transition the session and return the final completed response."""
+    session.status = InterviewStatus.COMPLETED.value
+    session.end_time = datetime.utcnow()
+    await db.commit()
+    return InterviewStateResponse(
+        session_id=session.id,
+        round=session.current_round,
+        completed=True,
+        question=None,
+    )
+
+
+async def transition_to_resume(
+    session: InterviewSession, db: AsyncSession
+) -> InterviewStateResponse:
+    """
+    Flip to the RESUME round and return the first resume question. If the
+    interview has ask_questions_on_resume=False (no ResumeConversation was ever
+    created) or the conversation has no questions, fall through to completion.
+    """
+    conv_result = await db.execute(
+        select(ResumeConversation).where(ResumeConversation.session_id == session.id)
+    )
+    conversation = conv_result.scalar_one_or_none()
+    if conversation is None:
+        return await mark_session_completed(session, db)
+
+    rq_result = await db.execute(
+        select(ResumeQuestion)
+        .where(ResumeQuestion.conversation_id == conversation.id)
+        .order_by(ResumeQuestion.id.asc())
+        .limit(1)
+    )
+    first_rq = rq_result.scalar_one_or_none()
+    if first_rq is None:
+        return await mark_session_completed(session, db)
+
+    session.current_round = CurrentRound.RESUME.value
+    session.current_question_index = 1
+    await db.commit()
+
+    return InterviewStateResponse(
+        session_id=session.id,
+        round=session.current_round,
+        completed=False,
+        question=ResumeQuestionPayload(
+            question_id=first_rq.id,
+            question=first_rq.question,
+        ),
     )
 
 

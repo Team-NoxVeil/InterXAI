@@ -8,6 +8,7 @@ from sqlalchemy.orm import selectinload
 from app.ai.follow_up_decider import FollowUpDecider
 from app.ai.lite_llm import LiteLLMProvider
 from app.ai.schema import FollowUpDeciderRequest
+from app.background.taskiq.tasks.dsa_execution import run_evaluate_submission
 from app.database import get_db
 from app.exceptions.common import BadRequestError, ForbiddenError, NotFoundError
 from app.logger import get_logger
@@ -18,8 +19,11 @@ from app.models.user import User
 from app.schemas.session import (
     AnswerRequest,
     CustomQuestionPayload,
+    DsaCaseResult,
     DsaRunRequest,
     DsaRunResponse,
+    DsaSubmitRequest,
+    DsaSubmitResponse,
     HeartbeatResponse,
     InterviewStateResponse,
 )
@@ -28,12 +32,14 @@ from app.utils.interview_flow import (
     MAX_FOLLOWUPS,
     conversation_context,
     current_dsa_interaction,
+    dsa_payload_for,
     followups_used,
     interview_metadata,
     latest_interaction,
     next_custom_question,
     open_follow_up,
     transition_to_dsa,
+    transition_to_resume,
 )
 from app.utils.piston_client import PistonClient
 from app.utils.session_lifecycle import (
@@ -247,4 +253,67 @@ async def dsa_run(
         stdout=result.stdout,
         stderr=result.stderr,
         exit_code=result.exit_code,
+    )
+
+
+@router.post("/{session_id}/dsa/submit", response_model=DsaSubmitResponse)
+async def dsa_submit(
+    session_id: int,
+    body: DsaSubmitRequest,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> DsaSubmitResponse:
+    """
+    Final submission for the current DSA question. Runs the candidate's code
+    against every hidden test_case on the DsaQuestion, persists code/language/
+    score onto the DsaInteraction, then advances the session — either to the
+    next DSA question, the RESUME round, or terminal COMPLETED.
+
+    The response carries both the per-case results (so the frontend can show
+    pass/fail per case) and next_state so a single roundtrip is enough.
+    """
+    session = await _load_owned_session(session_id, user, db)
+    await assert_session_alive(session, db)
+
+    if session.current_round != CurrentRound.DSA.value:
+        raise BadRequestError(
+            f"/dsa/submit is only valid during the DSA round (current: {session.current_round})"
+        )
+
+    pair = await current_dsa_interaction(session, db)
+    if pair is None:
+        raise BadRequestError("No active DSA question for this session")
+    interaction, _ = pair
+    interaction_id = interaction.id
+
+    # run_evaluate_submission opens its own AsyncSession and commits the
+    # candidate's code/language/score onto the DsaInteraction internally.
+    case_results_raw = await run_evaluate_submission(
+        interaction_id, body.source_code, body.language
+    )
+
+    # Re-load the interaction so we can read the freshly-committed score.
+    await db.refresh(interaction)
+    score = interaction.score or 0.0
+
+    # Advance to the next DSA question, or transition out of the DSA round.
+    session.current_question_index += 1
+    await db.commit()
+
+    next_pair = await current_dsa_interaction(session, db)
+    if next_pair is not None:
+        next_interaction, next_question = next_pair
+        next_state = InterviewStateResponse(
+            session_id=session.id,
+            round=session.current_round,
+            completed=False,
+            question=dsa_payload_for(next_interaction, next_question),
+        )
+    else:
+        next_state = await transition_to_resume(session, db)
+
+    return DsaSubmitResponse(
+        case_results=[DsaCaseResult(**c) for c in case_results_raw],
+        score=score,
+        next_state=next_state,
     )
