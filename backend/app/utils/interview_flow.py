@@ -264,16 +264,18 @@ async def transition_to_dsa(
     session: InterviewSession, db: AsyncSession
 ) -> InterviewStateResponse:
     """
-    Flip the session to the DSA round (index reset to 1), load the first DSA
-    interaction, and return its candidate-facing payload. Raises if no DSA
-    interaction was assigned (background-task race / mis-configured interview).
+    Flip the session to the DSA round (index reset to 1) and return the first
+    DSA question. If the session has no DSA interactions assigned (interview
+    has no DSA topics, or the background-assign task hasn't produced any),
+    fall through to the RESUME round instead.
     """
     pair = await first_dsa_interaction(session.id, db)
     if pair is None:
-        raise BadRequestError(
-            "Session has no DSA questions assigned — the background task may not have"
-            " completed yet, or the interview has no DSA topics configured."
+        logger.info(
+            "Session %d has no DSA interactions — falling through to resume round",
+            session.id,
         )
+        return await transition_to_resume(session, db)
 
     interaction, question = pair
     session.current_round = CurrentRound.DSA.value
