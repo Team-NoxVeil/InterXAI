@@ -184,6 +184,7 @@ InterXAI-re/
 - Node.js 20+
 - Redis (or run everything via Docker)
 - [`uv`](https://github.com/astral-sh/uv) - fast Python package manager
+- **Docker Desktop** (required for Windows users running Option A)
 
 ### Environment Variables
 
@@ -341,7 +342,10 @@ Contributions are welcome. Please follow these steps:
 2. **Create** a feature branch: `git checkout -b feature/your-feature-name`
 3. **Make** your changes and ensure all quality checks pass: `./tools/backend_lint`
 4. **Commit** with a descriptive message following [Conventional Commits](https://www.conventionalcommits.org/)
-5. **Push** to your fork and **open a Pull Request**
+5. 5. **Push** to your fork and **open a Pull Request**
+
+> This project participates in **GSSoC 2026**.
+> Look for issues labelled `gssoc2026` to get started.
 
 ### Code Guidelines
 
@@ -358,5 +362,5 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 
 <div align="center">
-  Built with FastAPI, React, and LangChain
+  Built with ❤️ using FastAPI, React, and LangChain
 </div>
