@@ -40,7 +40,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: uv sync --dev
+        run: uv sync --dev --frozen
 
       - name: Run Ruff (linting)
         run: uv run ruff check .
@@ -74,7 +74,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: uv sync --dev
+        run: uv sync --dev --frozen
 
       - name: Run pytest
         run: uv run pytest tests -q
