@@ -26,17 +26,21 @@ from app.schemas.session import (
     DsaSubmitResponse,
     HeartbeatResponse,
     InterviewStateResponse,
+    ResumeQuestionPayload,
 )
 from app.utils.authorization import get_current_user
 from app.utils.interview_flow import (
     MAX_FOLLOWUPS,
     conversation_context,
     current_dsa_interaction,
+    current_resume_question,
     dsa_payload_for,
     followups_used,
     interview_metadata,
     latest_interaction,
+    mark_session_completed,
     next_custom_question,
+    next_resume_question,
     open_follow_up,
     transition_to_dsa,
     transition_to_resume,
@@ -208,10 +212,42 @@ async def answer(
         raise BadRequestError("DSA submissions must be sent to /dsa/submit, not /answer")
 
     if session.current_round == CurrentRound.RESUME.value:
-        # Resume-round answer handling will be wired in a follow-up commit.
-        raise BadRequestError("Resume round answers are not yet supported")
+        return await _handle_resume_answer(session, body.answer, db)
 
     raise BadRequestError(f"Unknown round: {session.current_round}")
+
+
+async def _handle_resume_answer(
+    session: InterviewSession, answer_text: str, db: AsyncSession
+) -> InterviewStateResponse:
+    """
+    RESUME-round answer handler. Linear flow (no follow-ups): persist the
+    candidate's response onto the current ResumeQuestion, advance to the next
+    one, or mark the session COMPLETED when the resume questions are exhausted.
+    """
+    current = await current_resume_question(session, db)
+    if current is None:
+        raise BadRequestError("No active resume question for this session")
+
+    current.answer = answer_text
+    await db.flush()
+
+    upcoming = await next_resume_question(current.conversation_id, current.id, db)
+    if upcoming is None:
+        return await mark_session_completed(session, db)
+
+    session.current_question_index += 1
+    await db.commit()
+
+    return InterviewStateResponse(
+        session_id=session.id,
+        round=session.current_round,
+        completed=False,
+        question=ResumeQuestionPayload(
+            question_id=upcoming.id,
+            question=upcoming.question,
+        ),
+    )
 
 
 @router.post("/{session_id}/dsa/run", response_model=DsaRunResponse)

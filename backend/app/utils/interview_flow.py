@@ -181,6 +181,43 @@ async def mark_session_completed(
     )
 
 
+async def current_resume_question(
+    session: InterviewSession, db: AsyncSession
+) -> ResumeQuestion | None:
+    """The ResumeQuestion at session.current_question_index (1-based) for this session."""
+    conv_result = await db.execute(
+        select(ResumeConversation).where(ResumeConversation.session_id == session.id)
+    )
+    conversation = conv_result.scalar_one_or_none()
+    if conversation is None:
+        return None
+    offset = max(0, session.current_question_index - 1)
+    rq_result = await db.execute(
+        select(ResumeQuestion)
+        .where(ResumeQuestion.conversation_id == conversation.id)
+        .order_by(ResumeQuestion.id.asc())
+        .offset(offset)
+        .limit(1)
+    )
+    return rq_result.scalar_one_or_none()
+
+
+async def next_resume_question(
+    conversation_id: int, after_question_id: int, db: AsyncSession
+) -> ResumeQuestion | None:
+    """The next ResumeQuestion (by id) in the conversation after the given one."""
+    result = await db.execute(
+        select(ResumeQuestion)
+        .where(
+            ResumeQuestion.conversation_id == conversation_id,
+            ResumeQuestion.id > after_question_id,
+        )
+        .order_by(ResumeQuestion.id.asc())
+        .limit(1)
+    )
+    return result.scalar_one_or_none()
+
+
 async def transition_to_resume(
     session: InterviewSession, db: AsyncSession
 ) -> InterviewStateResponse:
