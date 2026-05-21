@@ -79,6 +79,9 @@ Organizations create fully customized interviews with domain-specific questions 
 ## Architecture
 
 ```
+InterXAI/
+├── backend/                    # FastAPI application
+```
 ┌─────────────────────────────────────────────────────────────────┐
 │                          Client (React)                         │
 │          React Query · Zustand · React Hook Form · Zod          │
