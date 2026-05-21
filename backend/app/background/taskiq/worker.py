@@ -1,5 +1,10 @@
 from app.background.taskiq.taskiq import broker
-from app.background.taskiq.tasks import dsa_execution, dsa_generation, resume_processing
+from app.background.taskiq.tasks import (
+    dsa_execution,
+    dsa_generation,
+    resume_generation,
+    resume_processing,
+)
 from app.interfaces.background_worker import BackgroundWorkerInterface
 
 
@@ -30,6 +35,9 @@ class TaskiqWorker(BackgroundWorkerInterface):
         self, dsa_interaction_id: int, source_code: str, language: str
     ) -> None:
         await dsa_execution.evaluate_submission_task.kiq(dsa_interaction_id, source_code, language)
+
+    async def generate_resume_questions_task(self, session_id: int) -> None:
+        await resume_generation.generate_resume_questions_task.kiq(session_id)
 
 
 worker = TaskiqWorker()

@@ -35,3 +35,7 @@ class BackgroundWorkerInterface(ABC):
         self, dsa_interaction_id: int, source_code: str, language: str
     ) -> None:
         pass
+
+    @abstractmethod
+    async def generate_resume_questions_task(self, session_id: int) -> None:
+        pass
