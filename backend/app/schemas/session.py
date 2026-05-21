@@ -7,6 +7,10 @@ class HeartbeatResponse(BaseModel):
     status: str
 
 
+class AnswerRequest(BaseModel):
+    answer: str
+
+
 class CustomQuestionPayload(BaseModel):
     type: Literal["custom"] = "custom"
     interaction_id: int
