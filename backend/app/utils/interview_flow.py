@@ -111,6 +111,31 @@ async def first_dsa_interaction(
     return interaction, question
 
 
+async def current_dsa_interaction(
+    session: InterviewSession, db: AsyncSession
+) -> tuple[DsaInteraction, DsaQuestion] | None:
+    """
+    The DsaInteraction at session.current_question_index (1-based), paired with
+    its DsaQuestion. Returns None if the index is out of range or the question
+    record is missing.
+    """
+    offset = max(0, session.current_question_index - 1)
+    result = await db.execute(
+        select(DsaInteraction)
+        .where(DsaInteraction.session_id == session.id)
+        .order_by(DsaInteraction.id.asc())
+        .offset(offset)
+        .limit(1)
+    )
+    interaction = result.scalar_one_or_none()
+    if interaction is None or interaction.question_id is None:
+        return None
+    question = await db.get(DsaQuestion, interaction.question_id)
+    if question is None:
+        return None
+    return interaction, question
+
+
 def dsa_payload_for(
     interaction: DsaInteraction, question: DsaQuestion
 ) -> DsaQuestionPayload:

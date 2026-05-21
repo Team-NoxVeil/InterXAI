@@ -11,6 +11,18 @@ class AnswerRequest(BaseModel):
     answer: str
 
 
+class DsaRunRequest(BaseModel):
+    source_code: str
+    language: str
+    stdin: str = ""
+
+
+class DsaRunResponse(BaseModel):
+    stdout: str
+    stderr: str
+    exit_code: int
+
+
 class CustomQuestionPayload(BaseModel):
     type: Literal["custom"] = "custom"
     interaction_id: int

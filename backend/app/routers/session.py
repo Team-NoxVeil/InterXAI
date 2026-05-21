@@ -18,6 +18,8 @@ from app.models.user import User
 from app.schemas.session import (
     AnswerRequest,
     CustomQuestionPayload,
+    DsaRunRequest,
+    DsaRunResponse,
     HeartbeatResponse,
     InterviewStateResponse,
 )
@@ -25,6 +27,7 @@ from app.utils.authorization import get_current_user
 from app.utils.interview_flow import (
     MAX_FOLLOWUPS,
     conversation_context,
+    current_dsa_interaction,
     followups_used,
     interview_metadata,
     latest_interaction,
@@ -32,6 +35,7 @@ from app.utils.interview_flow import (
     open_follow_up,
     transition_to_dsa,
 )
+from app.utils.piston_client import PistonClient
 from app.utils.session_lifecycle import (
     TERMINAL_STATUSES,
     assert_session_alive,
@@ -202,3 +206,45 @@ async def answer(
         raise BadRequestError("Resume round answers are not yet supported")
 
     raise BadRequestError(f"Unknown round: {session.current_round}")
+
+
+@router.post("/{session_id}/dsa/run", response_model=DsaRunResponse)
+async def dsa_run(
+    session_id: int,
+    body: DsaRunRequest,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+) -> DsaRunResponse:
+    """
+    Free-form code execution for the candidate during the DSA round. Runs the
+    submitted source against the provided stdin (custom input or sample input
+    chosen by the frontend) and returns stdout/stderr/exit_code.
+
+    This endpoint does NOT update score or advance the session — it's the
+    candidate's scratchpad. Final grading happens via /dsa/submit.
+    """
+    session = await _load_owned_session(session_id, user, db)
+    await assert_session_alive(session, db)
+
+    if session.current_round != CurrentRound.DSA.value:
+        raise BadRequestError(
+            f"/dsa/run is only valid during the DSA round (current: {session.current_round})"
+        )
+
+    pair = await current_dsa_interaction(session, db)
+    if pair is None:
+        raise BadRequestError("No active DSA question for this session")
+    _, question = pair
+
+    client = PistonClient()
+    result = await client.execute(
+        source_code=body.source_code,
+        language=body.language,
+        stdin=body.stdin,
+        run_timeout_ms=question.time_limit_ms,
+    )
+    return DsaRunResponse(
+        stdout=result.stdout,
+        stderr=result.stderr,
+        exit_code=result.exit_code,
+    )
