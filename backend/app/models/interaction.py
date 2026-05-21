@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, Float, ForeignKey, Text, func
+from sqlalchemy import DateTime, Float, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import BaseTable
@@ -58,17 +58,21 @@ class DsaInteraction(BaseTable):
     topic_id: Mapped[int | None] = mapped_column(
         ForeignKey("dsa_topics.id", ondelete="CASCADE"), nullable=True
     )
-    question: Mapped[str | None] = mapped_column(Text, nullable=True)
+    question_id: Mapped[int | None] = mapped_column(
+        ForeignKey("dsa_questions.id", ondelete="SET NULL"), nullable=True
+    )
     code: Mapped[str | None] = mapped_column(Text, nullable=True)
+    language: Mapped[str | None] = mapped_column(String(50), nullable=True)
     score: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     session = relationship(
         "InterviewSession", back_populates="dsa_sessions", foreign_keys=[session_id]
     )
     topic = relationship("DsaTopic", foreign_keys=[topic_id])
+    question = relationship("DsaQuestion", foreign_keys=[question_id])
 
     def __repr__(self) -> str:
-        return f"<DsaInteraction(session_id={self.session_id}, topic_id={self.topic_id})>"
+        return f"<DsaInteraction(session_id={self.session_id}, topic_id={self.topic_id}, question_id={self.question_id})>"
 
 
 class ResumeConversation(BaseTable):

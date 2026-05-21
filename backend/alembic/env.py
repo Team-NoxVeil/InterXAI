@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from app.database import Base, db_url
 from app.models.application import Application, InterviewSession  # noqa: F401
+from app.models.dsa_question import DsaQuestion  # noqa: F401
 from app.models.interaction import (  # noqa: F401
     DsaInteraction,
     FollowUpQuestion,
