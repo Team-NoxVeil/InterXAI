@@ -28,7 +28,7 @@
 - [Data Models](#data-models)
 - [Development](#development)
 - [Contributing](#contributing)
-- [License](#license)
+- [License](#license)        
 
 
 ## Overview
@@ -213,6 +213,7 @@ The Docker Compose file starts the API server, TaskIQ worker, and Redis in one c
 ```bash
 docker-compose up --build
 ```
+<!-- test -->
 
 The API will be available at `http://localhost:8000`.
 
