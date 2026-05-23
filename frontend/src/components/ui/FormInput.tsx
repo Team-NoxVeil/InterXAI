@@ -28,7 +28,7 @@ const FormInput: React.FC<FormInputProps> = ({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-white/70">
+      <label htmlFor={id} className="text-sm font-medium text-gray-700">
         {label}
       </label>
 
@@ -37,8 +37,8 @@ const FormInput: React.FC<FormInputProps> = ({
           id={id}
           type={inputType}
           className={`
-            w-full rounded-xl border px-4 py-3 text-sm text-white
-            bg-white/5 backdrop-blur-sm placeholder-white/25
+            w-full rounded-xl border px-4 py-3 text-sm text-gray-900
+            bg-white backdrop-blur-sm placeholder-gray-400
             outline-none transition-all duration-200
             ${
               error
