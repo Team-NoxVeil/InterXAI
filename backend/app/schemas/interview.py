@@ -15,7 +15,8 @@ class DsaTopicCreate(BaseModel):
     difficulty: str
 
 
-class CustomInterviewCreate(BaseModel):
+# Shared fields (NO validation here)
+class CustomInterviewBase(BaseModel):
     description: str
     position: str
     experience: str
@@ -31,6 +32,9 @@ class CustomInterviewCreate(BaseModel):
     questions: list[CustomQuestionCreate] = []
     dsa_topics: list[DsaTopicCreate] = []
 
+
+# Validation should only happen during creation
+class CustomInterviewCreate(CustomInterviewBase):
     @model_validator(mode="after")
     def validate_times_and_scores(self) -> "CustomInterviewCreate":
         tz = self.start_time.tzinfo
@@ -38,8 +42,10 @@ class CustomInterviewCreate(BaseModel):
 
         if self.start_time <= now:
             raise BadRequestError("start_time must be in the future")
+
         if self.end_time <= now:
             raise BadRequestError("end_time must be in the future")
+
         if self.submission_deadline <= now:
             raise BadRequestError("submission_deadline must be in the future")
 
@@ -49,6 +55,7 @@ class CustomInterviewCreate(BaseModel):
         if self.dsa_score is not None or self.dev_score is not None:
             dsa = self.dsa_score or 0
             dev = self.dev_score or 0
+
             if dsa + dev != 100:
                 raise BadRequestError("The sum of dsa_score and dev_score must be exactly 100")
 
@@ -71,7 +78,8 @@ class DsaTopicResponse(DsaTopicCreate):
         from_attributes = True
 
 
-class CustomInterviewResponse(CustomInterviewCreate):
+# Response should not trigger create validation
+class CustomInterviewResponse(CustomInterviewBase):
     id: int
     org_id: int
     questions: list[CustomQuestionResponse] = []  # type: ignore[assignment]
