@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     GROQ_API_KEY: str = ""
     CHATGROQ_API_KEY: str = ""
     CHATGROQ_MODEL_NAME: str = "llama3-8b-8192"
+    ANTHROPIC_API_KEY: str = ""
+    ANTHROPIC_MODEL_NAME: str = "claude-3-haiku-20240307"
 
     # Supabase
     SUPABASE_URL: str = ""
