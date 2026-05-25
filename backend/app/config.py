@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     # LLM
     LLM_MODEL_NAME: str = "groq/openai/gpt-oss-120b"
     GROQ_API_KEY: str = ""
+    LLM_PROVIDER: str = "litellm"
 
     # Supabase
     SUPABASE_URL: str = ""

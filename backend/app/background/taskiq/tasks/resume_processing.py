@@ -2,7 +2,6 @@ import base64
 
 from sqlalchemy import select
 
-from app.ai.lite_llm import LiteLLMProvider
 from app.ai.resume_evaluator import ResumeEvaluator
 from app.ai.schema import ResumeEvaluatorRequest
 from app.background.taskiq.taskiq import broker
@@ -10,7 +9,7 @@ from app.database import AsyncSessionLocal
 from app.logger import get_logger
 from app.models.application import Application
 from app.models.interview import CustomInterview
-from app.utils.default_providers import default_storage_provider
+from app.utils.default_providers import default_llm_provider, default_storage_provider
 from app.utils.pdf import extract_pdf_content
 
 logger = get_logger(__name__)
@@ -22,6 +21,7 @@ async def process_resume_task(file_bytes_b64: str, file_name: str, application_i
 
     file_bytes = base64.b64decode(file_bytes_b64)
     provider = default_storage_provider()
+    llm_provider = default_llm_provider()
 
     async with AsyncSessionLocal() as session:
         app_to_update = await session.get(Application, application_id)
@@ -41,7 +41,7 @@ async def process_resume_task(file_bytes_b64: str, file_name: str, application_i
                 raise ValueError(f"Interview not found for application {application_id}.")
 
             extracted_text = extract_pdf_content(file_bytes)
-            evaluator = ResumeEvaluator(llm_provider=LiteLLMProvider())
+            evaluator = ResumeEvaluator(llm_provider=llm_provider)
 
             req = ResumeEvaluatorRequest(
                 resume_text=extracted_text,
