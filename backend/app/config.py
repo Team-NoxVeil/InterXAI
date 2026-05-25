@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     LLM_MODEL_NAME: str = "groq/openai/gpt-oss-120b"
     GROQ_API_KEY: str = ""
     LLM_PROVIDER: str = "litellm"
+    FALLBACK_LLM_PROVIDER: str = "gemini/gemini-2.5-flash"
+    LITELLM_API_KEY: str = ""
 
     # Supabase
     SUPABASE_URL: str = ""
