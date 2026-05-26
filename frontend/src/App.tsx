@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LandingPage from "./features/LandingPage";
+import LandingPage from "./components/LandingPage";
 import LoginPage from "./features/auth/LoginPage";
 import SignupPage from "./features/auth/SignupPage";
 import OrgAuthPage from "./features/org/OrgAuthPage";
