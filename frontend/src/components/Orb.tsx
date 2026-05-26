@@ -692,9 +692,7 @@ export default function Orb({
                 marginBottom: 18,
               }}
             >
-              <span
-                style={{ fontWeight: 800, fontSize: 15, color: "#1e293b" }}
-              >
+              <span style={{ fontWeight: 800, fontSize: 15, color: "#1e293b" }}>
                 Feedback
               </span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="#3b82f6">

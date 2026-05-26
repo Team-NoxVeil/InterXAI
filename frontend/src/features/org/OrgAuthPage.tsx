@@ -176,9 +176,7 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
             <svg width="12" height="12" viewBox="0 0 12 12" fill="#3b82f6">
               <path d="M6 0l1.3 3.7 3.7.3-2.7 2.6.8 3.6L6 8.3l-3.1 1.9.8-3.6L1 4.1l3.7-.4z" />
             </svg>
-            <span
-              style={{ fontSize: 12, fontWeight: 600, color: "#1d4ed8" }}
-            >
+            <span style={{ fontSize: 12, fontWeight: 600, color: "#1d4ed8" }}>
               Organisation Portal
             </span>
           </div>
@@ -255,9 +253,7 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
                         : "transparent",
                     color: tab === t ? "#fff" : "#64748b",
                     boxShadow:
-                      tab === t
-                        ? "0 4px 12px rgba(59,130,246,0.4)"
-                        : "none",
+                      tab === t ? "0 4px 12px rgba(59,130,246,0.4)" : "none",
                     transition: "all 0.2s",
                   }}
                 >
@@ -359,7 +355,9 @@ const OrgLoginInline: React.FC<OrgLoginInlineProps> = ({
       required
     />
 
-    <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+    <div
+      style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}
+    >
       <a
         href="#forgot"
         style={{

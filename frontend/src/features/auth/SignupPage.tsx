@@ -94,9 +94,7 @@ const SignupPage: React.FC<SignupPageProps> = ({
               border: "1.5px solid rgba(255,255,255,0.35)",
             }}
           >
-            <span
-              style={{ color: "#fff", fontWeight: 800, fontSize: 14 }}
-            >
+            <span style={{ color: "#fff", fontWeight: 800, fontSize: 14 }}>
               X
             </span>
           </div>
@@ -173,9 +171,7 @@ const SignupPage: React.FC<SignupPageProps> = ({
             <svg width="12" height="12" viewBox="0 0 12 12" fill="#3b82f6">
               <path d="M6 0l1.3 3.7 3.7.3-2.7 2.6.8 3.6L6 8.3l-3.1 1.9.8-3.6L1 4.1l3.7-.4z" />
             </svg>
-            <span
-              style={{ fontSize: 12, fontWeight: 600, color: "#1d4ed8" }}
-            >
+            <span style={{ fontSize: 12, fontWeight: 600, color: "#1d4ed8" }}>
               Create Your Account
             </span>
           </div>
