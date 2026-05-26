@@ -5,15 +5,15 @@ import SignupPage from "./features/auth/SignupPage";
 import OrgAuthPage from "./features/org/OrgAuthPage";
 import ProfileSetupPage from "./features/user/ProfileSetupPage";
 import DashboardPage from "./features/user/DashboardPage";
+import InterviewSessionPage from "./features/interview/InterviewSessionPage";
 import type { TokenResponse } from "./services/auth.service";
 import type { OrgSignupResponse } from "./services/organization.service";
 import type { UserResponse } from "./services/user.service";
 
-// ── App-level auth state ──────────────────────────────────────────────────────
 interface AuthState {
   token: string;
   user: UserResponse;
-  isNewUser: boolean; // true → show profile setup before dashboard
+  isNewUser: boolean;
 }
 
 type Page =
@@ -23,14 +23,16 @@ type Page =
   | "org-auth"
   | "profile-setup"
   | "dashboard"
-  | "org-dashboard";
+  | "org-dashboard"
+  | "interview";
 
-// ── Root component ────────────────────────────────────────────────────────────
 function App() {
   const [page, setPage] = useState<Page>("landing");
   const [auth, setAuth] = useState<AuthState | null>(null);
+  const [activeInterviewId, setActiveInterviewId] = useState<number | null>(
+    null,
+  );
 
-  // User login — profile already exists → skip setup
   const handleUserLoginSuccess = (data: TokenResponse) => {
     const hasProfile = Boolean(
       data.user.profile?.bio || data.user.profile?.github,
@@ -39,26 +41,23 @@ function App() {
     setPage(hasProfile ? "dashboard" : "profile-setup");
   };
 
-  // User signup → always show profile setup
   const handleSignupSuccess = (data: TokenResponse) => {
     setAuth({ token: data.token, user: data.user, isNewUser: true });
     setPage("profile-setup");
   };
 
-  // Profile setup complete (or skipped)
   const handleProfileComplete = (updatedUser: UserResponse) => {
     setAuth((prev) => (prev ? { ...prev, user: updatedUser } : null));
     setPage("dashboard");
   };
 
-  // Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     setAuth(null);
+    setActiveInterviewId(null);
     setPage("landing");
   };
 
-  // Org auth
   const handleOrgLoginSuccess = (token: string) => {
     console.log("Org token:", token.slice(0, 20) + "…");
     setPage("org-dashboard");
@@ -69,7 +68,16 @@ function App() {
     setPage("org-dashboard");
   };
 
-  // ── Routing ────────────────────────────────────────────────────────────────
+  const handleAttemptInterview = (interviewId: number) => {
+    setActiveInterviewId(interviewId);
+    setPage("interview");
+  };
+
+  const handleExitInterview = () => {
+    setActiveInterviewId(null);
+    setPage("dashboard");
+  };
+
   switch (page) {
     case "login":
       return (
@@ -107,6 +115,17 @@ function App() {
           user={auth.user}
           token={auth.token}
           onLogout={handleLogout}
+          onAttemptInterview={handleAttemptInterview}
+        />
+      );
+
+    case "interview":
+      if (!auth || activeInterviewId == null) return null;
+      return (
+        <InterviewSessionPage
+          interviewId={activeInterviewId}
+          token={auth.token}
+          onExit={handleExitInterview}
         />
       );
 

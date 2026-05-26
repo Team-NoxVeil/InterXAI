@@ -10,6 +10,7 @@ export interface DashboardPageProps {
   user: UserResponse;
   token: string;
   onLogout: () => void;
+  onAttemptInterview?: (interviewId: number) => void;
 }
 
 type Tab = "available" | "applied";
@@ -65,6 +66,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
   user,
   token,
   onLogout,
+  onAttemptInterview,
 }) => {
   const [tab, setTab] = useState<Tab>("available");
   const [query, setQuery] = useState("");
@@ -542,6 +544,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                         onSelect={() =>
                           setSelectedId((p) => (p === iv.id ? null : iv.id))
                         }
+                        onAttempt={() => onAttemptInterview?.(iv.id)}
                       />
                     ))}
                   </div>
@@ -579,6 +582,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                         onSelect={() =>
                           setSelectedId((p) => (p === iv.id ? null : iv.id))
                         }
+                        onAttempt={() => onAttemptInterview?.(iv.id)}
                       />
                     ))}
                   </div>
@@ -698,6 +702,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
             )}
 
             <button
+              onClick={() => onAttemptInterview?.(selectedInterview.id)}
               style={{
                 marginTop: 18,
                 width: "100%",
@@ -716,7 +721,9 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                 boxShadow: "0 8px 22px rgba(59,130,246,0.4)",
               }}
             >
-              {"status" in selectedInterview ? "View Application" : "Apply Now"}
+              {"status" in selectedInterview
+                ? "Attempt Interview"
+                : "Apply Now"}
               <ArrowIcon />
             </button>
           </aside>
@@ -732,10 +739,11 @@ const AvailableCard: React.FC<{
   interview: InterviewBasic;
   selected: boolean;
   onSelect: () => void;
-}> = ({ interview, selected, onSelect }) => {
+  onAttempt: () => void;
+}> = ({ interview, selected, onSelect, onAttempt }) => {
   const t = timeRemaining(interview.submission_deadline);
   return (
-    <button
+    <div
       onClick={onSelect}
       style={{
         textAlign: "left",
@@ -836,20 +844,30 @@ const AvailableCard: React.FC<{
           <CalendarIcon />
           {formatDate(interview.start_time)}
         </div>
-        <span
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onAttempt();
+          }}
           style={{
             fontSize: 12,
             fontWeight: 700,
-            color: "#2563eb",
+            color: "#fff",
+            background: "linear-gradient(135deg,#3b82f6,#1d4ed8)",
+            border: "none",
+            borderRadius: 99,
+            padding: "6px 14px",
+            cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: 4,
+            gap: 5,
+            boxShadow: "0 4px 12px rgba(59,130,246,0.35)",
           }}
         >
-          View details →
-        </span>
+          Attempt →
+        </button>
       </div>
-    </button>
+    </div>
   );
 };
 
@@ -857,8 +875,9 @@ const AppliedCard: React.FC<{
   interview: AppliedInterview;
   selected: boolean;
   onSelect: () => void;
-}> = ({ interview, selected, onSelect }) => (
-  <button
+  onAttempt: () => void;
+}> = ({ interview, selected, onSelect, onAttempt }) => (
+  <div
     onClick={onSelect}
     style={{
       textAlign: "left",
@@ -924,17 +943,47 @@ const AppliedCard: React.FC<{
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 6,
+        justifyContent: "space-between",
         paddingTop: 14,
         borderTop: "1px solid rgba(226,232,240,0.6)",
-        fontSize: 11.5,
-        color: "#64748b",
-        fontWeight: 500,
+        gap: 10,
       }}
     >
-      <ClockIcon /> Deadline: {formatDate(interview.submission_deadline)}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          fontSize: 11.5,
+          color: "#64748b",
+          fontWeight: 500,
+        }}
+      >
+        <ClockIcon /> Deadline: {formatDate(interview.submission_deadline)}
+      </div>
+      {interview.status === "approved" && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onAttempt();
+          }}
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            color: "#fff",
+            background: "linear-gradient(135deg,#3b82f6,#1d4ed8)",
+            border: "none",
+            borderRadius: 99,
+            padding: "6px 14px",
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(59,130,246,0.35)",
+          }}
+        >
+          Attempt →
+        </button>
+      )}
     </div>
-  </button>
+  </div>
 );
 
 const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
