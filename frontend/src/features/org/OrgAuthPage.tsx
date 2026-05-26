@@ -12,13 +12,60 @@ export interface OrgAuthPageProps {
   onBack?: () => void;
 }
 
+const ORG_BENEFITS = [
+  {
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M3 12l3-3 4 4 8-8M21 4v8h-8"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    title: "Screen 10x faster",
+    desc: "Run async AI interviews at scale — no scheduler, no recruiter time.",
+  },
+  {
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M20 7L9 18l-5-5"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    title: "Standardised scoring",
+    desc: "Identical evaluation rubric for every candidate, every role.",
+  },
+  {
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    title: "SOC 2 ready",
+    desc: "Enterprise-grade security and audit logs out of the box.",
+  },
+];
+
 const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
   onLoginSuccess,
   onSignupSuccess,
   onBack,
 }) => {
-  const [tab, setTab] = useState<Tab>("login");
-
+  const [tab, setTab] = useState<Tab>("signup");
   const loginHook = useOrgLogin(onLoginSuccess);
   const signupHook = useOrgSignup(onSignupSuccess);
 
@@ -35,204 +82,178 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
         position: "relative",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          width: 800,
-          height: 800,
-          background: "rgba(219,234,254,0.5)",
-          borderRadius: "50%",
-          filter: "blur(120px)",
-          zIndex: 0,
-          pointerEvents: "none",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: "-20%",
-          width: 600,
-          height: 600,
-          background: "rgba(207,232,251,0.5)",
-          borderRadius: "50%",
-          filter: "blur(100px)",
-          zIndex: 0,
-          pointerEvents: "none",
-        }}
-      />
-
-      <nav
-        style={{
-          position: "relative",
-          zIndex: 50,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "20px 52px",
-          maxWidth: 1300,
-          margin: "0 auto",
-        }}
-      >
-        <button
-          onClick={onBack}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 9,
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          <div
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 9,
-              background: "linear-gradient(145deg,#4f9cf9,#1649c9)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1.5px solid rgba(255,255,255,0.35)",
-            }}
-          >
-            <span style={{ color: "#fff", fontWeight: 800, fontSize: 14 }}>
-              X
-            </span>
-          </div>
-          <span
-            style={{
-              fontWeight: 800,
-              fontSize: 17,
-              color: "#0f172a",
-              letterSpacing: "-0.4px",
-            }}
-          >
-            InterXAI
-          </span>
-        </button>
-        {onBack && (
-          <button
-            onClick={onBack}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              background: "transparent",
-              border: "none",
-              color: "#4b5563",
-              fontSize: 14,
-              fontWeight: 500,
-              cursor: "pointer",
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M9 3L5 7l4 4"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Back to home
-          </button>
-        )}
-      </nav>
+      <BgBlobs />
+      <TopNav onBack={onBack} />
 
       <section
         style={{
           position: "relative",
           zIndex: 10,
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          maxWidth: 1300,
+          gridTemplateColumns: "1.05fr 1fr",
+          maxWidth: 1280,
           margin: "0 auto",
-          padding: "20px 52px",
+          padding: "16px 52px 40px",
           alignItems: "center",
           minHeight: "calc(100vh - 90px)",
-          gap: 32,
+          gap: 48,
         }}
       >
-        {/* LEFT: tabs + form */}
-        <div style={{ maxWidth: 480, justifySelf: "center", width: "100%" }}>
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 7,
-              background: "rgba(255,255,255,0.72)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(147,197,253,0.55)",
-              borderRadius: 99,
-              padding: "6px 14px",
-              marginBottom: 22,
-              boxShadow: "0 2px 10px rgba(59,130,246,0.08)",
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="#3b82f6">
-              <path d="M6 0l1.3 3.7 3.7.3-2.7 2.6.8 3.6L6 8.3l-3.1 1.9.8-3.6L1 4.1l3.7-.4z" />
-            </svg>
-            <span style={{ fontSize: 12, fontWeight: 600, color: "#1d4ed8" }}>
-              Organisation Portal
-            </span>
-          </div>
-
+        {/* LEFT: hiring-focused marketing */}
+        <div style={{ position: "relative" }}>
+          <Pill text="Organisation Portal" />
           <h1
             style={{
-              fontSize: 44,
+              fontSize: 56,
               fontWeight: 900,
               lineHeight: 1.05,
               color: "#0f172a",
-              marginBottom: 12,
-              letterSpacing: "-1.4px",
+              marginTop: 18,
+              marginBottom: 16,
+              letterSpacing: "-1.6px",
             }}
           >
-            Hire <span style={{ color: "#2563eb" }}>smarter.</span>
+            Hire the best.
+            <br />
+            <span style={{ color: "#2563eb" }}>Skip the noise.</span>
           </h1>
           <p
             style={{
-              fontSize: 15,
+              fontSize: 16,
               color: "#64748b",
               lineHeight: 1.6,
-              marginBottom: 24,
+              marginBottom: 32,
+              maxWidth: 460,
               fontWeight: 500,
             }}
           >
-            {tab === "login"
-              ? "Sign in to manage your hiring pipeline."
-              : "Register your company on InterXAI."}
+            Set up your organisation in minutes. Let AI run first-round
+            interviews so your team only meets the candidates worth meeting.
           </p>
 
           <div
             style={{
-              background: "rgba(255,255,255,0.7)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.9)",
-              borderRadius: 24,
-              padding: 28,
-              boxShadow:
-                "0 25px 50px -12px rgba(15,23,42,0.1), inset 0 1px 2px rgba(255,255,255,0.6)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 14,
+              marginBottom: 36,
+              maxWidth: 460,
             }}
           >
-            {/* Tabs */}
+            {ORG_BENEFITS.map((b) => (
+              <div
+                key={b.title}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 14,
+                  padding: "14px 16px",
+                  background: "rgba(255,255,255,0.55)",
+                  backdropFilter: "blur(14px)",
+                  WebkitBackdropFilter: "blur(14px)",
+                  border: "1px solid rgba(255,255,255,0.85)",
+                  borderRadius: 16,
+                  boxShadow: "0 8px 24px rgba(15,23,42,0.04)",
+                }}
+              >
+                <div
+                  style={{
+                    width: 32,
+                    height: 32,
+                    flexShrink: 0,
+                    borderRadius: 10,
+                    background: "linear-gradient(145deg,#dbeafe,#bfdbfe)",
+                    color: "#1d4ed8",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1px solid rgba(147,197,253,0.5)",
+                  }}
+                >
+                  {b.icon}
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontSize: 13.5,
+                      fontWeight: 700,
+                      color: "#0f172a",
+                      marginBottom: 2,
+                    }}
+                  >
+                    {b.title}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12.5,
+                      color: "#64748b",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {b.desc}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <TrustedRow />
+        </div>
+
+        {/* RIGHT: auth card + decorative orb */}
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: -40,
+              right: -40,
+              width: 380,
+              height: 380,
+              pointerEvents: "none",
+              zIndex: 1,
+              opacity: 0.95,
+            }}
+          >
+            <Orb scale={0.55} showCards={false} showPodium={false} />
+          </div>
+
+          <div
+            style={{
+              position: "relative",
+              zIndex: 5,
+              width: "100%",
+              maxWidth: 460,
+              background: "rgba(255,255,255,0.78)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              border: "1px solid rgba(255,255,255,0.95)",
+              borderRadius: 28,
+              padding: 32,
+              boxShadow:
+                "0 35px 60px -15px rgba(15,23,42,0.18), inset 0 1px 2px rgba(255,255,255,0.7)",
+            }}
+          >
             <div
               role="tablist"
               aria-label="Auth mode"
               style={{
                 display: "flex",
                 padding: 4,
-                background: "rgba(241,245,249,0.6)",
-                borderRadius: 12,
+                background: "rgba(241,245,249,0.7)",
+                borderRadius: 99,
                 border: "1px solid rgba(226,232,240,0.7)",
                 marginBottom: 22,
               }}
             >
-              {(["login", "signup"] as Tab[]).map((t) => (
+              {(["signup", "login"] as Tab[]).map((t) => (
                 <button
                   key={t}
                   role="tab"
@@ -242,9 +263,9 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
                   style={{
                     flex: 1,
                     padding: "9px 12px",
-                    borderRadius: 8,
+                    borderRadius: 99,
                     fontSize: 13,
-                    fontWeight: 600,
+                    fontWeight: 700,
                     border: "none",
                     cursor: "pointer",
                     background:
@@ -253,24 +274,48 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
                         : "transparent",
                     color: tab === t ? "#fff" : "#64748b",
                     boxShadow:
-                      tab === t ? "0 4px 12px rgba(59,130,246,0.4)" : "none",
+                      tab === t ? "0 6px 16px rgba(59,130,246,0.35)" : "none",
                     transition: "all 0.2s",
                   }}
                 >
-                  {t === "login" ? "Sign In" : "Sign Up"}
+                  {t === "signup" ? "Create Organisation" : "Sign In"}
                 </button>
               ))}
             </div>
 
-            {tab === "login" ? (
-              <OrgLoginInline
-                hook={loginHook}
-                onSignupClick={() => setTab("signup")}
-              />
-            ) : (
+            <h2
+              style={{
+                fontSize: 22,
+                fontWeight: 800,
+                color: "#0f172a",
+                letterSpacing: "-0.5px",
+                marginBottom: 4,
+              }}
+            >
+              {tab === "signup" ? "Register your company" : "Welcome back"}
+            </h2>
+            <p
+              style={{
+                fontSize: 13.5,
+                color: "#64748b",
+                marginBottom: 22,
+                fontWeight: 500,
+              }}
+            >
+              {tab === "signup"
+                ? "Free for the first 5 candidates · No credit card"
+                : "Sign in to manage your hiring pipeline"}
+            </p>
+
+            {tab === "signup" ? (
               <OrgSignupInline
                 hook={signupHook}
                 onLoginClick={() => setTab("login")}
+              />
+            ) : (
+              <OrgLoginInline
+                hook={loginHook}
+                onSignupClick={() => setTab("signup")}
               />
             )}
           </div>
@@ -278,9 +323,11 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
           <p
             style={{
               textAlign: "center",
-              fontSize: 12,
+              fontSize: 11.5,
               color: "#94a3b8",
               marginTop: 16,
+              maxWidth: 380,
+              lineHeight: 1.5,
             }}
           >
             By continuing you agree to our{" "}
@@ -300,115 +347,10 @@ const OrgAuthPage: React.FC<OrgAuthPageProps> = ({
             .
           </p>
         </div>
-
-        {/* RIGHT: orb */}
-        <div
-          style={{
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: 600,
-          }}
-        >
-          <Orb scale={0.75} showCards />
-        </div>
       </section>
     </div>
   );
 };
-
-interface OrgLoginInlineProps {
-  hook: ReturnType<typeof useOrgLogin>;
-  onSignupClick: () => void;
-}
-
-const OrgLoginInline: React.FC<OrgLoginInlineProps> = ({
-  hook,
-  onSignupClick,
-}) => (
-  <form id="org-login-form" onSubmit={hook.handleSubmit} noValidate>
-    {hook.error && <ErrorAlert message={hook.error} />}
-
-    <LightInput
-      id="org-login-username"
-      name="username"
-      label="Username"
-      type="text"
-      placeholder="org_username"
-      autoComplete="username"
-      value={hook.form.username}
-      onChange={hook.handleChange}
-      disabled={hook.isLoading}
-      required
-    />
-    <LightInput
-      id="org-login-password"
-      name="password"
-      label="Password"
-      type="password"
-      placeholder="••••••••"
-      autoComplete="current-password"
-      value={hook.form.password}
-      onChange={hook.handleChange}
-      disabled={hook.isLoading}
-      required
-    />
-
-    <div
-      style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}
-    >
-      <a
-        href="#forgot"
-        style={{
-          fontSize: 12,
-          color: "#2563eb",
-          textDecoration: "none",
-          fontWeight: 500,
-        }}
-      >
-        Forgot password?
-      </a>
-    </div>
-
-    <PrimaryButton disabled={hook.isLoading}>
-      {hook.isLoading ? (
-        <>
-          <Spinner /> Signing in…
-        </>
-      ) : (
-        "Sign In"
-      )}
-    </PrimaryButton>
-
-    <p
-      style={{
-        textAlign: "center",
-        fontSize: 14,
-        color: "#64748b",
-        marginTop: 18,
-        paddingTop: 18,
-        borderTop: "1px solid rgba(226,232,240,0.7)",
-      }}
-    >
-      Don't have an account?{" "}
-      <button
-        type="button"
-        onClick={onSignupClick}
-        style={{
-          color: "#2563eb",
-          background: "transparent",
-          border: "none",
-          fontWeight: 600,
-          cursor: "pointer",
-          padding: 0,
-        }}
-      >
-        Register your organisation
-      </button>
-    </p>
-  </form>
-);
 
 interface OrgSignupInlineProps {
   hook: ReturnType<typeof useOrgSignup>;
@@ -432,6 +374,7 @@ const OrgSignupInline: React.FC<OrgSignupInlineProps> = ({
       value={hook.form.username}
       onChange={hook.handleChange}
       disabled={hook.isLoading}
+      icon={<BuildingIcon />}
       required
     />
     <LightInput
@@ -444,6 +387,7 @@ const OrgSignupInline: React.FC<OrgSignupInlineProps> = ({
       value={hook.form.email}
       onChange={hook.handleChange}
       disabled={hook.isLoading}
+      icon={<MailIcon />}
       required
     />
     <LightInput
@@ -456,6 +400,7 @@ const OrgSignupInline: React.FC<OrgSignupInlineProps> = ({
       value={hook.form.password}
       onChange={hook.handleChange}
       disabled={hook.isLoading}
+      icon={<LockIcon />}
       required
     />
     <LightInput
@@ -468,16 +413,20 @@ const OrgSignupInline: React.FC<OrgSignupInlineProps> = ({
       value={hook.form.confirmPassword}
       onChange={hook.handleChange}
       disabled={hook.isLoading}
+      icon={<LockIcon />}
       required
     />
 
-    <PrimaryButton disabled={hook.isLoading}>
+    <PrimaryButton disabled={hook.isLoading} fullWidth>
       {hook.isLoading ? (
         <>
           <Spinner /> Creating account…
         </>
       ) : (
-        "Create Organisation Account"
+        <>
+          Create Organisation Account
+          <ArrowIcon />
+        </>
       )}
     </PrimaryButton>
 
@@ -499,7 +448,7 @@ const OrgSignupInline: React.FC<OrgSignupInlineProps> = ({
           color: "#2563eb",
           background: "transparent",
           border: "none",
-          fontWeight: 600,
+          fontWeight: 700,
           cursor: "pointer",
           padding: 0,
         }}
@@ -510,40 +459,288 @@ const OrgSignupInline: React.FC<OrgSignupInlineProps> = ({
   </form>
 );
 
-interface PrimaryButtonProps {
-  disabled?: boolean;
-  children: React.ReactNode;
+interface OrgLoginInlineProps {
+  hook: ReturnType<typeof useOrgLogin>;
+  onSignupClick: () => void;
 }
 
-const PrimaryButton: React.FC<PrimaryButtonProps> = ({
-  disabled,
-  children,
+const OrgLoginInline: React.FC<OrgLoginInlineProps> = ({
+  hook,
+  onSignupClick,
 }) => (
-  <button
-    type="submit"
-    disabled={disabled}
+  <form id="org-login-form" onSubmit={hook.handleSubmit} noValidate>
+    {hook.error && <ErrorAlert message={hook.error} />}
+
+    <LightInput
+      id="org-login-username"
+      name="username"
+      label="Username"
+      type="text"
+      placeholder="org_username"
+      autoComplete="username"
+      value={hook.form.username}
+      onChange={hook.handleChange}
+      disabled={hook.isLoading}
+      icon={<BuildingIcon />}
+      required
+    />
+    <LightInput
+      id="org-login-password"
+      name="password"
+      label="Password"
+      type="password"
+      placeholder="••••••••"
+      autoComplete="current-password"
+      value={hook.form.password}
+      onChange={hook.handleChange}
+      disabled={hook.isLoading}
+      icon={<LockIcon />}
+      required
+    />
+
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "flex-end",
+        marginBottom: 8,
+        marginTop: -6,
+      }}
+    >
+      <a
+        href="#forgot"
+        style={{
+          fontSize: 12,
+          color: "#2563eb",
+          textDecoration: "none",
+          fontWeight: 600,
+        }}
+      >
+        Forgot password?
+      </a>
+    </div>
+
+    <PrimaryButton disabled={hook.isLoading} fullWidth>
+      {hook.isLoading ? (
+        <>
+          <Spinner /> Signing in…
+        </>
+      ) : (
+        <>
+          Sign In
+          <ArrowIcon />
+        </>
+      )}
+    </PrimaryButton>
+
+    <p
+      style={{
+        textAlign: "center",
+        fontSize: 14,
+        color: "#64748b",
+        marginTop: 18,
+        paddingTop: 18,
+        borderTop: "1px solid rgba(226,232,240,0.7)",
+      }}
+    >
+      Don't have an account?{" "}
+      <button
+        type="button"
+        onClick={onSignupClick}
+        style={{
+          color: "#2563eb",
+          background: "transparent",
+          border: "none",
+          fontWeight: 700,
+          cursor: "pointer",
+          padding: 0,
+        }}
+      >
+        Register your organisation
+      </button>
+    </p>
+  </form>
+);
+
+const BgBlobs = () => (
+  <>
+    <div
+      style={{
+        position: "absolute",
+        top: 0,
+        right: 0,
+        width: 800,
+        height: 800,
+        background: "rgba(219,234,254,0.5)",
+        borderRadius: "50%",
+        filter: "blur(120px)",
+        zIndex: 0,
+        pointerEvents: "none",
+      }}
+    />
+    <div
+      style={{
+        position: "absolute",
+        bottom: 0,
+        left: "-20%",
+        width: 600,
+        height: 600,
+        background: "rgba(207,232,251,0.5)",
+        borderRadius: "50%",
+        filter: "blur(100px)",
+        zIndex: 0,
+        pointerEvents: "none",
+      }}
+    />
+  </>
+);
+
+const TopNav: React.FC<{ onBack?: () => void }> = ({ onBack }) => (
+  <nav
     style={{
-      width: "100%",
-      marginTop: 8,
-      background: "linear-gradient(135deg,#3b82f6,#1d4ed8)",
-      color: "#fff",
-      border: "none",
-      borderRadius: 99,
-      padding: "13px 28px",
-      fontSize: 14.5,
-      fontWeight: 700,
-      cursor: disabled ? "not-allowed" : "pointer",
+      position: "relative",
+      zIndex: 50,
       display: "flex",
       alignItems: "center",
-      justifyContent: "center",
-      gap: 10,
-      boxShadow: "0 6px 22px rgba(59,130,246,0.48)",
-      opacity: disabled ? 0.7 : 1,
-      transition: "all 0.2s",
+      justifyContent: "space-between",
+      padding: "20px 52px",
+      maxWidth: 1300,
+      margin: "0 auto",
     }}
   >
-    {children}
-  </button>
+    <button
+      onClick={onBack}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 9,
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+      }}
+    >
+      <div
+        style={{
+          width: 34,
+          height: 34,
+          borderRadius: 9,
+          background: "linear-gradient(145deg,#4f9cf9,#1649c9)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          border: "1.5px solid rgba(255,255,255,0.35)",
+        }}
+      >
+        <span style={{ color: "#fff", fontWeight: 800, fontSize: 14 }}>X</span>
+      </div>
+      <span
+        style={{
+          fontWeight: 800,
+          fontSize: 17,
+          color: "#0f172a",
+          letterSpacing: "-0.4px",
+        }}
+      >
+        InterXAI
+      </span>
+    </button>
+    {onBack && (
+      <button
+        onClick={onBack}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          background: "rgba(255,255,255,0.6)",
+          border: "1px solid rgba(255,255,255,0.9)",
+          borderRadius: 99,
+          padding: "8px 16px",
+          color: "#475569",
+          fontSize: 13,
+          fontWeight: 600,
+          cursor: "pointer",
+          boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path
+            d="M9 3L5 7l4 4"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        Back to home
+      </button>
+    )}
+  </nav>
+);
+
+const Pill: React.FC<{ text: string }> = ({ text }) => (
+  <div
+    style={{
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 7,
+      background: "rgba(255,255,255,0.72)",
+      backdropFilter: "blur(10px)",
+      border: "1px solid rgba(147,197,253,0.55)",
+      borderRadius: 99,
+      padding: "6px 14px",
+      boxShadow: "0 2px 10px rgba(59,130,246,0.08)",
+    }}
+  >
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="#3b82f6">
+      <path d="M6 0l1.3 3.7 3.7.3-2.7 2.6.8 3.6L6 8.3l-3.1 1.9.8-3.6L1 4.1l3.7-.4z" />
+    </svg>
+    <span
+      style={{
+        fontSize: 12,
+        fontWeight: 600,
+        color: "#1d4ed8",
+        letterSpacing: "0.02em",
+      }}
+    >
+      {text}
+    </span>
+  </div>
+);
+
+const TrustedRow = () => (
+  <div>
+    <div
+      style={{
+        fontSize: 11,
+        fontWeight: 700,
+        color: "#94a3b8",
+        letterSpacing: "0.18em",
+        textTransform: "uppercase",
+        marginBottom: 12,
+      }}
+    >
+      Trusted by hiring teams at
+    </div>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 24,
+        opacity: 0.6,
+        flexWrap: "wrap",
+        color: "#475569",
+      }}
+    >
+      <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.5px" }}>
+        Google
+      </span>
+      <span style={{ fontSize: 16, fontWeight: 700 }}>Microsoft</span>
+      <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-1px" }}>
+        amazon
+      </span>
+      <span style={{ fontSize: 16, fontWeight: 700 }}>Meta</span>
+      <span style={{ fontSize: 16, fontWeight: 700 }}>Stripe</span>
+    </div>
+  </div>
 );
 
 const ErrorAlert: React.FC<{ message: string }> = ({ message }) => (
@@ -572,19 +769,21 @@ const ErrorAlert: React.FC<{ message: string }> = ({ message }) => (
         strokeLinecap="round"
       />
     </svg>
-    {message}
+    <span>{message}</span>
   </div>
 );
 
 interface LightInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   id: string;
+  icon?: React.ReactNode;
 }
 
 const LightInput: React.FC<LightInputProps> = ({
   label,
   id,
   type = "text",
+  icon,
   ...props
 }) => {
   const [revealed, setRevealed] = React.useState(false);
@@ -606,15 +805,31 @@ const LightInput: React.FC<LightInputProps> = ({
         {label}
       </label>
       <div style={{ position: "relative" }}>
+        {icon && (
+          <div
+            style={{
+              position: "absolute",
+              left: 12,
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "#94a3b8",
+              display: "flex",
+              pointerEvents: "none",
+            }}
+          >
+            {icon}
+          </div>
+        )}
         <input
           id={id}
           type={inputType}
           style={{
             width: "100%",
-            background: "rgba(255,255,255,0.8)",
+            background: "rgba(255,255,255,0.95)",
             border: "1px solid rgba(203,213,225,0.7)",
             borderRadius: 12,
             padding: "11px 14px",
+            paddingLeft: icon ? 38 : 14,
             paddingRight: isPassword ? 40 : 14,
             fontSize: 14,
             color: "#0f172a",
@@ -685,6 +900,50 @@ const LightInput: React.FC<LightInputProps> = ({
   );
 };
 
+const PrimaryButton: React.FC<{
+  disabled?: boolean;
+  fullWidth?: boolean;
+  children: React.ReactNode;
+}> = ({ disabled, fullWidth, children }) => (
+  <button
+    type="submit"
+    disabled={disabled}
+    style={{
+      width: fullWidth ? "100%" : undefined,
+      marginTop: 8,
+      background: "linear-gradient(135deg,#3b82f6,#1d4ed8)",
+      color: "#fff",
+      border: "none",
+      borderRadius: 99,
+      padding: "13px 28px",
+      fontSize: 14.5,
+      fontWeight: 700,
+      cursor: disabled ? "not-allowed" : "pointer",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 10,
+      boxShadow: "0 8px 24px rgba(59,130,246,0.45)",
+      opacity: disabled ? 0.7 : 1,
+      transition: "all 0.2s",
+    }}
+  >
+    {children}
+  </button>
+);
+
+const ArrowIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path
+      d="M2 7h10M8 3l4 4-4 4"
+      stroke="white"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const Spinner = () => (
   <svg
     width="16"
@@ -704,6 +963,50 @@ const Spinner = () => (
     />
     <path
       d="M14 8a6 6 0 00-6-6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const BuildingIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9h.01M9 13h.01M9 17h.01"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const MailIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zM22 6l-10 7L2 6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const LockIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <rect
+      x="3"
+      y="11"
+      width="18"
+      height="11"
+      rx="2"
+      stroke="currentColor"
+      strokeWidth="2"
+    />
+    <path
+      d="M7 11V7a5 5 0 0110 0v4"
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
