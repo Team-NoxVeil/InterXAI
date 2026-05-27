@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import settings
 from app.exceptions.auth import register_auth_exception_handlers
@@ -50,6 +51,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# Required by Authlib to persist the OAuth state/nonce across the OIDC redirect.
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 register_auth_exception_handlers(app)
 register_common_exception_handlers(app)
 register_sql_alchemy_exception_handlers(app)

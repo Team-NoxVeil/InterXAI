@@ -1,6 +1,9 @@
+from typing import Any
+
 from fastapi import APIRouter, Depends, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.requests import Request
 
 from app.database import get_db
 from app.exceptions.auth import UserNotFoundError
@@ -16,10 +19,14 @@ from app.schemas.user import (
 from app.utils.authorization import get_current_user, verify_ownership
 from app.utils.bcrypt_hasher import BcryptHasher
 from app.utils.jwt_auth import JwtAuth
+from app.utils.oidc import OIDCProvider
 
 logger = get_logger(__name__)
 
 router: APIRouter = APIRouter(prefix="/users", tags=["users"])
+google_oidc_provider = OIDCProvider(provider_name="google")
+google_client = google_oidc_provider.client
+assert google_client is not None, "OIDC client initialization failed for Google provider"
 
 
 @router.post("/signup", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
@@ -141,3 +148,29 @@ async def delete_user(
     await db.delete(user)
     await db.commit()
     logger.info("User deleted successfully: %d", user_id)
+
+
+@router.get("/login/google")
+async def login_google(request: Request) -> Any:
+
+    redirect_uri = request.url_for("auth_callback")
+
+    return await google_client.authorize_redirect(request, redirect_uri)
+
+
+@router.get("/auth/google/callback", response_model=TokenResponse)
+async def auth_callback(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+) -> TokenResponse:
+
+    token = await google_client.authorize_access_token(request)
+
+    user_info = token.get("userinfo")
+    email = user_info["email"]
+    name = user_info["name"]
+    auth = JwtAuth(db_session=db)
+
+    user = await auth.get_or_create_oidc_user(email=email, name=name)
+    jwt_token = await auth.generate_token(user)
+    return TokenResponse(token=jwt_token, user=UserResponse.model_validate(user))
