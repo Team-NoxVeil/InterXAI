@@ -1,6 +1,7 @@
 import React from "react";
 import Orb from "../../components/Orb";
 import { useSignup } from "./hooks/useSignup";
+import { startGoogleOAuth } from "../../services/auth.service";
 import type { TokenResponse } from "../../services/auth.service";
 
 export interface SignupPageProps {
@@ -635,7 +636,7 @@ const StepIndicator: React.FC<{ current: number; total: number }> = ({
 
 const SocialAuthRow: React.FC<{ disabled?: boolean }> = ({ disabled }) => (
   <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
-    <SocialBtn disabled={disabled} label="Google">
+    <SocialBtn disabled={disabled} label="Google" onClick={startGoogleOAuth}>
       <GoogleIcon />
     </SocialBtn>
     <SocialBtn disabled={disabled} label="LinkedIn">
@@ -647,11 +648,13 @@ const SocialAuthRow: React.FC<{ disabled?: boolean }> = ({ disabled }) => (
 const SocialBtn: React.FC<{
   disabled?: boolean;
   label: string;
+  onClick?: () => void;
   children: React.ReactNode;
-}> = ({ disabled, label, children }) => (
+}> = ({ disabled, label, onClick, children }) => (
   <button
     type="button"
     disabled={disabled}
+    onClick={onClick}
     style={{
       flex: 1,
       display: "flex",

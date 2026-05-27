@@ -43,6 +43,8 @@ class Settings(BaseSettings):
 
     OIDC_GOOGLE_CLIENT_ID: str = ""
     OIDC_GOOGLE_CLIENT_SECRET: str = ""
+    # Where the OIDC callback redirects the browser back to (the SPA origin).
+    FRONTEND_URL: str = "http://localhost:5173"
 
     class Config:
         env_file = ".env"

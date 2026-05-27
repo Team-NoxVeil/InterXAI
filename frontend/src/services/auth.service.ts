@@ -63,3 +63,34 @@ export async function loginUser(
 
   return response.json() as Promise<TokenResponse>;
 }
+
+// ── Google OIDC ───────────────────────────────────────────────────────────────
+
+/** Backend endpoint that starts the Google OIDC redirect dance. */
+export const GOOGLE_OAUTH_URL = `${BASE_URL}/users/login/google`;
+
+/**
+ * Begins Google sign-in by navigating the whole browser to the backend, which
+ * redirects on to Google. On success the backend sends the browser back to the
+ * SPA at `/#oidc_token=<jwt>` (see App.tsx for the return handler).
+ */
+export function startGoogleOAuth(): void {
+  window.location.href = GOOGLE_OAUTH_URL;
+}
+
+/** GET /users/me — resolve the authenticated user from a bearer token. */
+export async function fetchCurrentUser(token: string): Promise<UserResponse> {
+  const response = await fetch(`${BASE_URL}/users/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new AuthServiceError(
+      response.status,
+      data?.detail ?? "Could not load your account.",
+    );
+  }
+
+  return response.json() as Promise<UserResponse>;
+}

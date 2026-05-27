@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LandingPage from "./components/LandingPage";
 import LoginPage from "./features/auth/LoginPage";
 import SignupPage from "./features/auth/SignupPage";
@@ -6,6 +6,7 @@ import OrgAuthPage from "./features/org/OrgAuthPage";
 import ProfileSetupPage from "./features/user/ProfileSetupPage";
 import DashboardPage from "./features/user/DashboardPage";
 import InterviewSessionPage from "./features/interview/InterviewSessionPage";
+import { fetchCurrentUser } from "./services/auth.service";
 import type { TokenResponse } from "./services/auth.service";
 import type { OrgSignupResponse } from "./services/organization.service";
 import type { UserResponse } from "./services/user.service";
@@ -26,12 +27,60 @@ type Page =
   | "org-dashboard"
   | "interview";
 
+/** Read a Google OIDC return (`#oidc_token=…` / `#oidc_error=…`) from the URL. */
+function parseOidcHash(): {
+  token: string | null;
+  error: string | null;
+} | null {
+  const hash = window.location.hash;
+  if (!hash.includes("oidc_token") && !hash.includes("oidc_error")) return null;
+  const params = new URLSearchParams(hash.replace(/^#/, ""));
+  return { token: params.get("oidc_token"), error: params.get("oidc_error") };
+}
+
 function App() {
-  const [page, setPage] = useState<Page>("landing");
+  // Initial page/loader are derived from the URL so an OIDC return never flashes
+  // the landing page: a token shows the loader, an error drops straight to login.
+  const [page, setPage] = useState<Page>(() =>
+    parseOidcHash()?.error ? "login" : "landing",
+  );
   const [auth, setAuth] = useState<AuthState | null>(null);
   const [activeInterviewId, setActiveInterviewId] = useState<number | null>(
     null,
   );
+  const [hydrating, setHydrating] = useState<boolean>(() =>
+    Boolean(parseOidcHash()?.token),
+  );
+
+  // Handle the Google OIDC return: the backend redirects to `/#oidc_token=<jwt>`
+  // (or `/#oidc_error=<reason>`). Pick the token up, hydrate the user, route.
+  useEffect(() => {
+    const oidc = parseOidcHash();
+    if (!oidc) return;
+
+    // Strip the token/error from the URL so it isn't kept in history or re-read.
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + window.location.search,
+    );
+
+    const token = oidc.token;
+    if (!token) return; // error case already reflected in the initial page state
+
+    localStorage.setItem("token", token);
+    fetchCurrentUser(token)
+      .then((user) => {
+        const hasProfile = Boolean(user.profile?.bio || user.profile?.github);
+        setAuth({ token, user, isNewUser: false });
+        setPage(hasProfile ? "dashboard" : "profile-setup");
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+        setPage("login");
+      })
+      .finally(() => setHydrating(false));
+  }, []);
 
   const handleUserLoginSuccess = (data: TokenResponse) => {
     const hasProfile = Boolean(
@@ -77,6 +126,10 @@ function App() {
     setActiveInterviewId(null);
     setPage("dashboard");
   };
+
+  if (hydrating) {
+    return <OidcLoader />;
+  }
 
   switch (page) {
     case "login":
@@ -154,6 +207,15 @@ function App() {
         />
       );
   }
+}
+
+function OidcLoader() {
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4 text-slate-900">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
+      <p className="text-sm font-medium text-slate-500">Signing you in…</p>
+    </div>
+  );
 }
 
 function Placeholder({ label, onBack }: { label: string; onBack: () => void }) {
