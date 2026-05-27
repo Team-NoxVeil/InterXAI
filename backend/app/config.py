@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     STORAGE_PROVIDER: str = "supabase"
     BACKGROUND_WORKER: str = "taskiq"
 
+    OIDC_GOOGLE_CLIENT_ID: str = ""
+    OIDC_GOOGLE_CLIENT_SECRET: str = ""
+
     class Config:
         env_file = ".env"
         case_sensitive = True
