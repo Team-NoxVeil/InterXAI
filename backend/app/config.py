@@ -40,6 +40,16 @@ class Settings(BaseSettings):
     # Providers
     STORAGE_PROVIDER: str = "supabase"
     BACKGROUND_WORKER: str = "taskiq"
+    EMAIL_PROVIDER: str = "smtp"
+
+    # SMTP (email)
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM_EMAIL: str = ""  # falls back to SMTP_USERNAME when empty
+    SMTP_USE_TLS: bool = True  # STARTTLS, typical on port 587
+    SMTP_USE_SSL: bool = False  # implicit SSL, typical on port 465
 
     OIDC_GOOGLE_CLIENT_ID: str = ""
     OIDC_GOOGLE_CLIENT_SECRET: str = ""
