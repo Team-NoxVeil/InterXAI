@@ -23,6 +23,7 @@ from app.models.organization import Organization
 from app.models.user import User, UserProfile
 from app.routers.application import router as application_router
 from app.routers.interview import router as interview_router
+from app.routers.leaderboard import router as leaderboard_router
 from app.routers.organization import router as organization_router
 from app.routers.session import router as session_router
 from app.routers.user import router as user_router
@@ -62,6 +63,7 @@ app.include_router(organization_router)
 app.include_router(interview_router)
 app.include_router(application_router)
 app.include_router(session_router)
+app.include_router(leaderboard_router)
 
 logger.info("Application initialized: %s", settings.APP_NAME)
 
