@@ -129,3 +129,27 @@ class JwtAuth(Authenticator):
             return payload
         except Exception as err:
             raise InvalidTokenError() from err
+
+
+    async def get_or_create_oidc_user(self, email: str, name: str) -> User:
+        result = await self.db_session.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+
+        if user:
+            return user
+
+        new_user = User(
+            username=name,
+            email=email,
+
+        )
+        self.db_session.add(new_user)
+        await self.db_session.flush()
+
+        profile = UserProfile(user_id=new_user.id)
+        self.db_session.add(profile)
+
+        await self.db_session.commit()
+        await self.db_session.refresh(new_user, attribute_names=["profile"])
+
+        return new_user
