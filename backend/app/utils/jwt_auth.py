@@ -118,6 +118,10 @@ class JwtAuth(Authenticator):
         if not user:
             raise InvalidUserCredentialsError()
 
+        # OIDC-only accounts have no password set; reject password login for them.
+        if not user.password_hash:
+            raise InvalidUserCredentialsError()
+
         if not self.hasher.verify(password, user.password_hash):
             raise InvalidUserCredentialsError()
 
@@ -129,3 +133,42 @@ class JwtAuth(Authenticator):
             return payload
         except Exception as err:
             raise InvalidTokenError() from err
+
+    async def _generate_unique_username(self, base: str) -> str:
+        base = base.strip() or "user"
+        candidate = base
+        suffix = 1
+        while True:
+            result = await self.db_session.execute(select(User).where(User.username == candidate))
+            if result.scalar_one_or_none() is None:
+                return candidate
+            suffix += 1
+            candidate = f"{base}{suffix}"
+
+    async def get_or_create_oidc_user(self, email: str, name: str) -> User:
+        result = await self.db_session.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+
+        if user:
+            return user
+
+        # The Google display name is not unique (or may be empty), but username is.
+        # Derive a base from the name, falling back to the email local-part, then
+        # ensure uniqueness so account creation can't fail on a username clash.
+        base_username = (name or "").strip() or email.split("@")[0]
+        username = await self._generate_unique_username(base_username)
+
+        new_user = User(
+            username=username,
+            email=email,
+        )
+        self.db_session.add(new_user)
+        await self.db_session.flush()
+
+        profile = UserProfile(user_id=new_user.id)
+        self.db_session.add(profile)
+
+        await self.db_session.commit()
+        await self.db_session.refresh(new_user, attribute_names=["profile"])
+
+        return new_user

@@ -2,6 +2,7 @@ from app.background.taskiq.taskiq import broker
 from app.background.taskiq.tasks import (
     dsa_execution,
     dsa_generation,
+    email,
     grading,
     resume_generation,
     resume_processing,
@@ -45,6 +46,9 @@ class TaskiqWorker(BackgroundWorkerInterface):
 
     async def grade_session_task(self, session_id: int) -> None:
         await grading.grade_session_task.kiq(session_id)
+
+    async def send_email_task(self, to_email: list[str], subject: str, body: str) -> None:
+        await email.send_email_task.kiq(to_email, subject, body)
 
 
 worker = TaskiqWorker()
