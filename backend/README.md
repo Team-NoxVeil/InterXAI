@@ -142,10 +142,19 @@ REDIS_URL=redis://localhost:6379/0
 LLM_MODEL_NAME=groq/openai/gpt-oss-120b
 GROQ_API_KEY=your-groq-api-key
 
+# Storage
+STORAGE_PROVIDER=supabase
+
 # Supabase Storage
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-service-role-key
 SUPABASE_BUCKET_NAME=resumes
+
+# Cloudinary Storage (set STORAGE_PROVIDER=cloudinary)
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+CLOUDINARY_FOLDER=resumes
 ```
 
 All variables are defined and validated in `app/config.py`. Access them anywhere via the `settings` singleton:
@@ -253,13 +262,13 @@ All major integrations follow the same pattern — abstractions in `app/interfac
 
 ```
 app/interfaces/llm_provider.py      →  app/ai/lite_llm.py
-app/interfaces/storage_provider.py  →  app/utils/supabase.py
+app/interfaces/storage_provider.py  →  app/utils/supabase.py, app/utils/cloudinary_provider.py
 app/interfaces/hasher.py            →  app/utils/ (BcryptHasher)
 app/interfaces/encrypter.py         →  app/utils/ (JwtEncrypter)
 app/interfaces/base_agent.py        →  app/ai/resume_evaluator.py
 ```
 
-This makes it straightforward to swap providers (e.g., Groq → OpenAI, Supabase → S3) without touching business logic.
+This makes it straightforward to swap providers (e.g., Groq → OpenAI, Supabase → Cloudinary) without touching business logic.
 
 ### Model Structure
 
