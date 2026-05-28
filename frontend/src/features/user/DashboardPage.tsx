@@ -8,7 +8,6 @@ import type {
 
 export interface DashboardPageProps {
   user: UserResponse;
-  token: string;
   onLogout: () => void;
   onAttemptInterview?: (interviewId: number) => void;
 }
@@ -64,14 +63,13 @@ function timeRemaining(deadline: string) {
 
 const DashboardPage: React.FC<DashboardPageProps> = ({
   user,
-  token,
   onLogout,
   onAttemptInterview,
 }) => {
   const [tab, setTab] = useState<Tab>("available");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const { available, applied, isLoading, error, refetch } = useDashboard(token);
+  const { available, applied, isLoading, error, refetch } = useDashboard();
 
   const displayName = user.username;
   const initials = displayName.slice(0, 2).toUpperCase();

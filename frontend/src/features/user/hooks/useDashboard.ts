@@ -71,14 +71,13 @@ const initialState: DashboardState = {
   tick: 0,
 };
 
-export function useDashboard(token: string): UseDashboardReturn {
+export function useDashboard(): UseDashboardReturn {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    if (!token) return;
     dispatch({ type: "FETCH_START" });
 
-    Promise.all([fetchInterviews(token), fetchAppliedInterviews(token)])
+    Promise.all([fetchInterviews(), fetchAppliedInterviews()])
       .then(([av, ap]) => {
         dispatch({ type: "FETCH_SUCCESS", available: av, applied: ap });
       })
@@ -89,7 +88,7 @@ export function useDashboard(token: string): UseDashboardReturn {
             : "Failed to load interviews. Please refresh.";
         dispatch({ type: "FETCH_ERROR", error: message });
       });
-  }, [token, state.tick]);
+  }, [state.tick]);
 
   const refetch = useCallback(() => dispatch({ type: "REFETCH" }), []);
 

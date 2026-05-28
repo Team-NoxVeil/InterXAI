@@ -31,7 +31,6 @@ export interface UseProfileSetupReturn {
 
 export function useProfileSetup(
   userId: number,
-  token: string,
   onComplete: (user: UserResponse) => void,
 ): UseProfileSetupReturn {
   const [form, setForm] = useState<ProfileSetupForm>({
@@ -66,7 +65,6 @@ export function useProfileSetup(
             leetcode: form.leetcode || null,
           },
         },
-        token,
       );
       onComplete(updated);
     } catch (err) {
@@ -84,7 +82,7 @@ export function useProfileSetup(
   const handleSkip = () => {
     // We don't have the latest user object here — pass a signal for the caller
     // We'll call the backend with empty profile to keep things clean
-    void updateUserProfile(userId, { profile: {} }, token)
+    void updateUserProfile(userId, { profile: {} })
       .then(onComplete)
       .catch(() => {
         /* silent skip */

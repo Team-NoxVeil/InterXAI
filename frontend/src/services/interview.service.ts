@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { apiClient } from "./apiClient";
 
 export class InterviewServiceError extends Error {
   public readonly statusCode: number;
@@ -87,94 +87,73 @@ export interface DsaSubmitResponse {
   next_state: InterviewStateResponse;
 }
 
-function authHeaders(token: string) {
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-}
-
-async function handle<T>(res: Response): Promise<T> {
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new InterviewServiceError(
-      res.status,
-      data?.detail ?? "Request failed.",
-    );
-  }
-  return res.json() as Promise<T>;
-}
 
 export async function startInterview(
   interviewId: number,
-  token: string,
 ): Promise<InterviewStateResponse> {
-  const res = await fetch(`${BASE_URL}/interviews/${interviewId}/start`, {
-    method: "POST",
-    headers: authHeaders(token),
-  });
-  return handle<InterviewStateResponse>(res);
+  try {
+    const res = await apiClient.post<InterviewStateResponse>(`/interviews/${interviewId}/start`);
+    return res.data;
+  } catch (error: any) {
+    throw new InterviewServiceError(error.response?.status ?? 500, error.response?.data?.detail ?? "Request failed.");
+  }
 }
 
 export async function sendHeartbeat(
   sessionId: number,
-  token: string,
 ): Promise<HeartbeatResponse> {
-  const res = await fetch(`${BASE_URL}/sessions/${sessionId}/heartbeat`, {
-    method: "POST",
-    headers: authHeaders(token),
-  });
-  return handle<HeartbeatResponse>(res);
+  try {
+    const res = await apiClient.post<HeartbeatResponse>(`/sessions/${sessionId}/heartbeat`);
+    return res.data;
+  } catch (error: any) {
+    throw new InterviewServiceError(error.response?.status ?? 500, error.response?.data?.detail ?? "Request failed.");
+  }
 }
 
 export async function submitAnswer(
   sessionId: number,
   answer: string,
-  token: string,
 ): Promise<InterviewStateResponse> {
-  const res = await fetch(`${BASE_URL}/sessions/${sessionId}/answer`, {
-    method: "POST",
-    headers: authHeaders(token),
-    body: JSON.stringify({ answer }),
-  });
-  return handle<InterviewStateResponse>(res);
+  try {
+    const res = await apiClient.post<InterviewStateResponse>(`/sessions/${sessionId}/answer`, { answer });
+    return res.data;
+  } catch (error: any) {
+    throw new InterviewServiceError(error.response?.status ?? 500, error.response?.data?.detail ?? "Request failed.");
+  }
 }
 
 export async function dsaRun(
   sessionId: number,
   payload: DsaRunRequest,
-  token: string,
 ): Promise<DsaRunResponse> {
-  const res = await fetch(`${BASE_URL}/sessions/${sessionId}/dsa/run`, {
-    method: "POST",
-    headers: authHeaders(token),
-    body: JSON.stringify(payload),
-  });
-  return handle<DsaRunResponse>(res);
+  try {
+    const res = await apiClient.post<DsaRunResponse>(`/sessions/${sessionId}/dsa/run`, payload);
+    return res.data;
+  } catch (error: any) {
+    throw new InterviewServiceError(error.response?.status ?? 500, error.response?.data?.detail ?? "Request failed.");
+  }
 }
 
 export async function dsaTest(
   sessionId: number,
   payload: DsaTestRequest,
-  token: string,
 ): Promise<DsaTestResponse> {
-  const res = await fetch(`${BASE_URL}/sessions/${sessionId}/dsa/test`, {
-    method: "POST",
-    headers: authHeaders(token),
-    body: JSON.stringify(payload),
-  });
-  return handle<DsaTestResponse>(res);
+  try {
+    const res = await apiClient.post<DsaTestResponse>(`/sessions/${sessionId}/dsa/test`, payload);
+    return res.data;
+  } catch (error: any) {
+    throw new InterviewServiceError(error.response?.status ?? 500, error.response?.data?.detail ?? "Request failed.");
+  }
 }
 
 export async function dsaSubmit(
   sessionId: number,
   payload: DsaSubmitRequest,
-  token: string,
 ): Promise<DsaSubmitResponse> {
-  const res = await fetch(`${BASE_URL}/sessions/${sessionId}/dsa/submit`, {
-    method: "POST",
-    headers: authHeaders(token),
-    body: JSON.stringify(payload),
-  });
-  return handle<DsaSubmitResponse>(res);
+  try {
+    const res = await apiClient.post<DsaSubmitResponse>(`/sessions/${sessionId}/dsa/submit`, payload);
+    return res.data;
+  } catch (error: any) {
+    throw new InterviewServiceError(error.response?.status ?? 500, error.response?.data?.detail ?? "Request failed.");
+  }
 }

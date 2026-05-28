@@ -5,19 +5,17 @@ import type { UserResponse } from "../../services/user.service";
 
 export interface ProfileSetupPageProps {
   userId: number;
-  token: string;
   username: string;
   onComplete: (user: UserResponse) => void;
 }
 
-const ProfileSetupPage: React.FC<ProfileSetupPageProps> = ({
+export function ProfileSetupPage({
   userId,
-  token,
   username,
   onComplete,
-}) => {
+}: ProfileSetupPageProps) {
   const { form, isLoading, error, handleChange, handleSubmit, handleSkip } =
-    useProfileSetup(userId, token, onComplete);
+    useProfileSetup(userId, onComplete);
 
   return (
     <div

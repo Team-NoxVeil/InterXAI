@@ -102,7 +102,6 @@ function App() {
       return (
         <ProfileSetupPage
           userId={auth.user.id}
-          token={auth.token}
           username={auth.user.username}
           onComplete={handleProfileComplete}
         />
@@ -113,7 +112,6 @@ function App() {
       return (
         <DashboardPage
           user={auth.user}
-          token={auth.token}
           onLogout={handleLogout}
           onAttemptInterview={handleAttemptInterview}
         />
@@ -124,7 +122,6 @@ function App() {
       return (
         <InterviewSessionPage
           interviewId={activeInterviewId}
-          token={auth.token}
           onExit={handleExitInterview}
         />
       );

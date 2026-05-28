@@ -16,7 +16,6 @@ import type {
 
 interface Props {
   sessionId: number;
-  token: string;
   question: Extract<QuestionPayload, { type: "dsa" }>;
   onAdvance: (next: InterviewStateResponse) => void;
 }
@@ -91,7 +90,6 @@ type ConsoleState =
 
 export default function DsaPanel({
   sessionId,
-  token,
   question,
   onAdvance,
 }: Props) {
@@ -128,7 +126,6 @@ export default function DsaPanel({
       const res = await dsaRun(
         sessionId,
         { source_code: source, language, stdin },
-        token,
       );
       setConsoleState({ kind: "run-result", result: res });
     } catch (e) {
@@ -145,8 +142,7 @@ export default function DsaPanel({
     try {
       const res = await dsaTest(
         sessionId,
-        { source_code: source, language },
-        token,
+        { source_code: source, language }
       );
       setConsoleState({ kind: "test-result", result: res });
     } catch (e) {
@@ -164,8 +160,7 @@ export default function DsaPanel({
     try {
       const res = await dsaSubmit(
         sessionId,
-        { source_code: source, language },
-        token,
+        { source_code: source, language }
       );
       setConsoleState({
         kind: "submit-result",
