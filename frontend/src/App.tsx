@@ -3,6 +3,7 @@ import LandingPage from "./components/LandingPage";
 import LoginPage from "./features/auth/LoginPage";
 import SignupPage from "./features/auth/SignupPage";
 import OrgAuthPage from "./features/org/OrgAuthPage";
+import OrgDashboardPage from "./features/org/OrgDashboardPage";
 import ProfileSetupPage from "./features/user/ProfileSetupPage";
 import DashboardPage from "./features/user/DashboardPage";
 import InterviewSessionPage from "./features/interview/InterviewSessionPage";
@@ -108,13 +109,24 @@ function App() {
   };
 
   const handleOrgLoginSuccess = (token: string) => {
-    console.log("Org token:", token.slice(0, 20) + "…");
+    setOrgToken(token);
     setPage("org-dashboard");
   };
 
   const handleOrgSignupSuccess = (data: OrgSignupResponse) => {
-    console.log("Org signed up:", data.organization.id);
+    const token = data.organization
+      ? (localStorage.getItem("org_token") ?? "")
+      : "";
+    setOrgToken(token);
+    setOrgName(data.organization?.id?.toString());
     setPage("org-dashboard");
+  };
+
+  const handleOrgLogout = () => {
+    localStorage.removeItem("org_token");
+    setOrgToken(null);
+    setOrgName(undefined);
+    setPage("landing");
   };
 
   const handleAttemptInterview = (interviewId: number) => {
@@ -193,9 +205,10 @@ function App() {
 
     case "org-dashboard":
       return (
-        <Placeholder
-          label="Organisation Dashboard"
-          onBack={() => setPage("landing")}
+        <OrgDashboardPage
+          token={orgToken ?? localStorage.getItem("org_token") ?? ""}
+          orgName={orgName}
+          onLogout={handleOrgLogout}
         />
       );
 
@@ -234,3 +247,4 @@ function Placeholder({ label, onBack }: { label: string; onBack: () => void }) {
 }
 
 export default App;
+

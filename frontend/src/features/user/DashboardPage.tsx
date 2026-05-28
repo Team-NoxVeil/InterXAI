@@ -71,6 +71,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
   const [tab, setTab] = useState<Tab>("available");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [applyingToId, setApplyingToId] = useState<number | null>(null);
   const { available, applied, isLoading, error, refetch } = useDashboard(token);
 
   const displayName = user.username;
@@ -544,7 +545,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                         onSelect={() =>
                           setSelectedId((p) => (p === iv.id ? null : iv.id))
                         }
-                        onAttempt={() => onAttemptInterview?.(iv.id)}
+                        onApply={() => setApplyingToId(iv.id)}
                       />
                     ))}
                   </div>
@@ -701,35 +702,306 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
               />
             )}
 
-            <button
-              onClick={() => onAttemptInterview?.(selectedInterview.id)}
-              style={{
-                marginTop: 18,
-                width: "100%",
-                background: "linear-gradient(135deg,#3b82f6,#1d4ed8)",
-                color: "#fff",
-                border: "none",
-                borderRadius: 99,
-                padding: "12px 22px",
-                fontSize: 14,
-                fontWeight: 700,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                boxShadow: "0 8px 22px rgba(59,130,246,0.4)",
-              }}
-            >
-              {"status" in selectedInterview
-                ? "Attempt Interview"
-                : "Apply Now"}
-              <ArrowIcon />
-            </button>
+            {/* Detail panel action button */}
+            {"status" in selectedInterview ? (
+              // Applied interview — only show Attempt if approved by org
+              (selectedInterview as AppliedInterview).status === "approved" ? (
+                <button
+                  id="detail-attempt-btn"
+                  onClick={() => onAttemptInterview?.(selectedInterview.id)}
+                  style={{
+                    marginTop: 18,
+                    width: "100%",
+                    background: "linear-gradient(135deg,#3b82f6,#1d4ed8)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 99,
+                    padding: "12px 22px",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    boxShadow: "0 8px 22px rgba(59,130,246,0.4)",
+                  }}
+                >
+                  Attempt Interview
+                  <ArrowIcon />
+                </button>
+              ) : (
+                <div
+                  style={{
+                    marginTop: 18,
+                    width: "100%",
+                    background: "rgba(241,245,249,0.8)",
+                    border: "1px solid rgba(226,232,240,0.8)",
+                    borderRadius: 99,
+                    padding: "12px 22px",
+                    fontSize: 13.5,
+                    fontWeight: 600,
+                    color: "#94a3b8",
+                    textAlign: "center",
+                  }}
+                >
+                  ⏳ Waiting for org approval
+                </div>
+              )
+            ) : (
+              // Available interview — show Apply Now
+              <button
+                id="detail-apply-btn"
+                onClick={() => setApplyingToId(selectedInterview.id)}
+                style={{
+                  marginTop: 18,
+                  width: "100%",
+                  background: "linear-gradient(135deg,#3b82f6,#1d4ed8)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 99,
+                  padding: "12px 22px",
+                  fontSize: 14,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  boxShadow: "0 8px 22px rgba(59,130,246,0.4)",
+                }}
+              >
+                Apply Now
+                <ArrowIcon />
+              </button>
+            )}
           </aside>
         )}
       </main>
+
+      {/* Apply Modal */}
+      {applyingToId !== null && (
+        <ApplyModal
+          interviewId={applyingToId}
+          token={token}
+          interviewTitle={
+            available.find((i) => i.id === applyingToId)?.position ?? "Interview"
+          }
+          onClose={() => setApplyingToId(null)}
+          onSuccess={() => {
+            setApplyingToId(null);
+            setSelectedId(null);
+            refetch();
+          }}
+        />
+      )}
     </div>
+  );
+};
+
+// ── Apply Modal ───────────────────────────────────────────────────────────────
+
+const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+
+const ApplyModal: React.FC<{
+  interviewId: number;
+  interviewTitle: string;
+  token: string;
+  onClose: () => void;
+  onSuccess: () => void;
+}> = ({ interviewId, interviewTitle, token, onClose, onSuccess }) => {
+  const [file, setFile] = React.useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [succeeded, setSucceeded] = React.useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (f.type !== "application/pdf") {
+      setError("Only PDF files are accepted.");
+      return;
+    }
+    if (f.size > 5 * 1024 * 1024) {
+      setError("File must be under 5 MB.");
+      return;
+    }
+    setError(null);
+    setFile(f);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!file) { setError("Please select your resume PDF."); return; }
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append("resume", file);
+      const res = await fetch(`${BASE_URL}/applications/${interviewId}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.detail ?? "Application failed. Please try again.");
+      }
+      setSucceeded(true);
+      setTimeout(onSuccess, 1800);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div
+        onClick={onClose}
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(15,23,42,0.35)",
+          backdropFilter: "blur(6px)",
+          WebkitBackdropFilter: "blur(6px)",
+          zIndex: 200,
+        }}
+      />
+      {/* Modal */}
+      <div
+        id="apply-modal"
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%,-50%)",
+          zIndex: 201,
+          width: "min(480px, 94vw)",
+          background: "rgba(255,255,255,0.97)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          border: "1px solid rgba(255,255,255,0.95)",
+          borderRadius: 28,
+          padding: 32,
+          boxShadow: "0 35px 80px -15px rgba(15,23,42,0.22), inset 0 1px 2px rgba(255,255,255,0.7)",
+        }}
+      >
+        {succeeded ? (
+          <div style={{ textAlign: "center", padding: "16px 0" }}>
+            <div style={{ fontSize: 52, marginBottom: 14 }}>🎉</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", marginBottom: 6 }}>
+              Application submitted!
+            </div>
+            <div style={{ fontSize: 13.5, color: "#64748b" }}>
+              You'll be notified once the organisation reviews your resume.
+            </div>
+          </div>
+        ) : (
+          <>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
+              <div>
+                <div style={{ fontSize: 11.5, fontWeight: 700, color: "#3b82f6", letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 6 }}>
+                  Apply · {interviewTitle}
+                </div>
+                <h2 style={{ fontSize: 20, fontWeight: 800, color: "#0f172a", letterSpacing: "-0.4px" }}>
+                  Upload your resume
+                </h2>
+              </div>
+              <button
+                onClick={onClose}
+                style={{ width: 30, height: 30, borderRadius: "50%", background: "rgba(241,245,249,0.8)", border: "1px solid rgba(226,232,240,0.7)", color: "#64748b", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                aria-label="Close"
+              >
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+
+            <form id="apply-form" onSubmit={handleSubmit} noValidate>
+              {error && (
+                <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", background: "rgba(254,226,226,0.7)", border: "1px solid rgba(248,113,113,0.4)", borderRadius: 12, fontSize: 13, color: "#b91c1c", fontWeight: 500, marginBottom: 16 }}>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.4" /><path d="M8 5v3.5M8 11h.01" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
+                  {error}
+                </div>
+              )}
+
+              {/* Drop zone */}
+              <label
+                id="resume-upload-label"
+                htmlFor="resume-file-input"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  padding: "32px 20px",
+                  border: `2px dashed ${file ? "rgba(59,130,246,0.6)" : "rgba(203,213,225,0.8)"}`,
+                  borderRadius: 18,
+                  background: file ? "rgba(219,234,254,0.3)" : "rgba(248,250,252,0.6)",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  marginBottom: 20,
+                }}
+              >
+                <div style={{ fontSize: 32 }}>{file ? "📄" : "☁️"}</div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", marginBottom: 3 }}>
+                    {file ? file.name : "Click to upload your resume"}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#94a3b8" }}>
+                    {file ? `${(file.size / 1024).toFixed(0)} KB · PDF` : "PDF only · max 5 MB"}
+                  </div>
+                </div>
+                <input
+                  id="resume-file-input"
+                  type="file"
+                  accept="application/pdf"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+              </label>
+
+              <div style={{ display: "flex", gap: 10 }}>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  style={{ flex: 1, padding: "12px", borderRadius: 99, border: "1px solid rgba(226,232,240,0.9)", background: "transparent", fontSize: 13.5, fontWeight: 600, color: "#64748b", cursor: "pointer" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  id="apply-submit-btn"
+                  type="submit"
+                  disabled={isSubmitting || !file}
+                  style={{
+                    flex: 2,
+                    padding: "12px",
+                    borderRadius: 99,
+                    border: "none",
+                    background: isSubmitting || !file
+                      ? "rgba(203,213,225,0.6)"
+                      : "linear-gradient(135deg,#3b82f6,#1d4ed8)",
+                    color: isSubmitting || !file ? "#94a3b8" : "#fff",
+                    fontSize: 13.5,
+                    fontWeight: 700,
+                    cursor: isSubmitting || !file ? "not-allowed" : "pointer",
+                    boxShadow: !file || isSubmitting ? "none" : "0 6px 18px rgba(59,130,246,0.35)",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {isSubmitting ? "Submitting…" : "Submit Application"}
+                </button>
+              </div>
+            </form>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
@@ -739,8 +1011,8 @@ const AvailableCard: React.FC<{
   interview: InterviewBasic;
   selected: boolean;
   onSelect: () => void;
-  onAttempt: () => void;
-}> = ({ interview, selected, onSelect, onAttempt }) => {
+  onApply: () => void;
+}> = ({ interview, selected, onSelect, onApply }) => {
   const t = timeRemaining(interview.submission_deadline);
   return (
     <div
@@ -845,9 +1117,10 @@ const AvailableCard: React.FC<{
           {formatDate(interview.start_time)}
         </div>
         <button
+          id={`apply-btn-${interview.id}`}
           onClick={(e) => {
             e.stopPropagation();
-            onAttempt();
+            onApply();
           }}
           style={{
             fontSize: 12,
@@ -864,7 +1137,7 @@ const AvailableCard: React.FC<{
             boxShadow: "0 4px 12px rgba(59,130,246,0.35)",
           }}
         >
-          Attempt →
+          Apply →
         </button>
       </div>
     </div>
