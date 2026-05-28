@@ -82,6 +82,22 @@ function App() {
       .finally(() => setHydrating(false));
   }, []);
 
+  // Listen for global 401 errors from apiClient to reset state cleanly
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("org_token");
+      setAuth(null);
+      setActiveInterviewId(null);
+      setPage("login");
+    };
+
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () => {
+      window.removeEventListener("auth:unauthorized", handleUnauthorized);
+    };
+  }, []);
+
   const handleUserLoginSuccess = (data: TokenResponse) => {
     const hasProfile = Boolean(
       data.user.profile?.bio || data.user.profile?.github,

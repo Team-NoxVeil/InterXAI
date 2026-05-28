@@ -4,9 +4,6 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 // Request Interceptor: Attach token from localStorage
@@ -30,15 +27,18 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
+      const url = error.config?.url || "";
+      // Do not trigger global redirect for login or signup endpoints
+      if (url.includes("/login") || url.includes("/signup")) {
+        return Promise.reject(error);
+      }
+
       // Clear tokens
       localStorage.removeItem("token");
       localStorage.removeItem("org_token");
 
-      // Redirect to login page
-      // Using window.location to force a hard redirect and clear React state
-      if (!window.location.pathname.includes("/login")) {
-        window.location.href = "/login";
-      }
+      // Dispatch custom event so App.tsx can cleanly update the page state
+      window.dispatchEvent(new CustomEvent("auth:unauthorized"));
     }
     return Promise.reject(error);
   },
