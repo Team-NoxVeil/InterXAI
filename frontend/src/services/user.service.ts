@@ -4,6 +4,7 @@
  * Mirrors backend schemas: app/schemas/user.py + app/schemas/interview.py
  */
 
+import axios, { AxiosError } from "axios";
 import { apiClient } from "./apiClient";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -72,10 +73,11 @@ export async function updateUserProfile(
   try {
     const res = await apiClient.put<UserResponse>(`/users/${userId}`, data);
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new UserServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Request failed.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
     );
   }
 }
@@ -85,10 +87,11 @@ export async function fetchInterviews(): Promise<InterviewBasic[]> {
   try {
     const res = await apiClient.get<InterviewBasic[]>("/interviews/");
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new UserServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Request failed.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
     );
   }
 }
@@ -98,10 +101,11 @@ export async function fetchAppliedInterviews(): Promise<AppliedInterview[]> {
   try {
     const res = await apiClient.get<AppliedInterview[]>("/interviews/applied");
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new UserServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Request failed.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
     );
   }
 }

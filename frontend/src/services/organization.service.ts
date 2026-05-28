@@ -4,6 +4,7 @@
  * Mirrors app/schemas/organization.py and app/routers/organization.py
  */
 
+import axios, { AxiosError } from "axios";
 import { apiClient } from "./apiClient";
 
 // ── Types (mirrors backend schemas) ─────────────────────────────────────────
@@ -53,10 +54,11 @@ export async function signupOrganization(
       payload,
     );
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new OrgServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Request failed. Please try again.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed. Please try again.",
     );
   }
 }
@@ -75,10 +77,11 @@ export async function loginOrganization(credentials: {
       credentials,
     );
     return { token: response.data.token };
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new OrgServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ??
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ??
         "Login failed. Please check your credentials.",
     );
   }

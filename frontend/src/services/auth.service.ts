@@ -4,6 +4,7 @@
  * Mirrors the backend schemas in app/schemas/user.py
  */
 
+import axios, { AxiosError } from "axios";
 import { apiClient } from "./apiClient";
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
@@ -55,10 +56,11 @@ export async function loginUser(
       credentials,
     );
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new AuthServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ??
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ??
         "Login failed. Please check your credentials.",
     );
   }
@@ -83,10 +85,11 @@ export async function fetchCurrentUser(): Promise<UserResponse> {
   try {
     const response = await apiClient.get<UserResponse>("/users/me");
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new AuthServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Could not load your account.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Could not load your account.",
     );
   }
 }

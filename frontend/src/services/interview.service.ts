@@ -1,3 +1,4 @@
+import axios, { AxiosError } from "axios";
 import { apiClient } from "./apiClient";
 
 export class InterviewServiceError extends Error {
@@ -95,10 +96,11 @@ export async function startInterview(
       `/interviews/${interviewId}/start`,
     );
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new InterviewServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Request failed.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
     );
   }
 }
@@ -111,10 +113,11 @@ export async function sendHeartbeat(
       `/sessions/${sessionId}/heartbeat`,
     );
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new InterviewServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Request failed.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
     );
   }
 }
@@ -129,10 +132,11 @@ export async function submitAnswer(
       { answer },
     );
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new InterviewServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Request failed.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
     );
   }
 }
@@ -147,10 +151,11 @@ export async function dsaRun(
       payload,
     );
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new InterviewServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Request failed.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
     );
   }
 }
@@ -165,10 +170,11 @@ export async function dsaTest(
       payload,
     );
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new InterviewServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Request failed.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
     );
   }
 }
@@ -183,10 +189,11 @@ export async function dsaSubmit(
       payload,
     );
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new InterviewServiceError(
-      error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Request failed.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
     );
   }
 }
