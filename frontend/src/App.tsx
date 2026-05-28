@@ -69,7 +69,7 @@ function App() {
     if (!token) return; // error case already reflected in the initial page state
 
     localStorage.setItem("token", token);
-    fetchCurrentUser(token)
+    fetchCurrentUser()
       .then((user) => {
         const hasProfile = Boolean(user.profile?.bio || user.profile?.github);
         setAuth({ token, user, isNewUser: false });

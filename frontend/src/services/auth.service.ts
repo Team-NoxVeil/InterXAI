@@ -6,6 +6,8 @@
 
 import { apiClient } from "./apiClient";
 
+const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+
 // ── Request / Response types (mirrors backend schemas) ──────────────────────
 
 export interface LoginRequest {
@@ -73,18 +75,14 @@ export function startGoogleOAuth(): void {
 }
 
 /** GET /users/me — resolve the authenticated user from a bearer token. */
-export async function fetchCurrentUser(token: string): Promise<UserResponse> {
-  const response = await fetch(`${BASE_URL}/users/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
+export async function fetchCurrentUser(): Promise<UserResponse> {
+  try {
+    const response = await apiClient.get<UserResponse>("/users/me");
+    return response.data;
+  } catch (error: any) {
     throw new AuthServiceError(
-      response.status,
-      data?.detail ?? "Could not load your account.",
+      error.response?.status ?? 500,
+      error.response?.data?.detail ?? "Could not load your account.",
     );
   }
-
-  return response.json() as Promise<UserResponse>;
 }
