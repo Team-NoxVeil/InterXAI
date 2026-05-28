@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, status
 from sqlalchemy import func, select
@@ -135,7 +135,74 @@ async def get_applied_interviews(
     return applied_interviews
 
 
+
+@router.post(
+    "/seed-test",
+    response_model=CustomInterviewResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def seed_test_interview(
+    db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(is_organization),
+) -> CustomInterviewResponse:
+    """
+    Create a fully-populated test interview with future dates.
+    Useful for manual QA without going through the full wizard.
+    """
+    logger.info("Seed test interview for org: %d", org.id)
+
+    now = datetime.utcnow()
+
+    interview = CustomInterview(
+        org_id=org.id,
+        description=(
+            "This is a seeded test interview for QA purposes. "
+            "It covers Python backend development and data structures."
+        ),
+        position="Software Engineer (Test)",
+        experience="Mid",
+        submission_deadline=now + timedelta(days=1),
+        start_time=now + timedelta(days=2),
+        end_time=now + timedelta(days=5),
+        duration=30,
+        dsa_score=50,
+        dev_score=50,
+        resume_shortlist_score=0,
+        ask_questions_on_resume=False,
+    )
+
+    for q in [
+        CustomQuestion(
+            question="Explain the difference between a process and a thread.",
+            expected_answer="A process has its own memory space; threads share memory within a process.",
+        ),
+        CustomQuestion(
+            question="What is the time complexity of binary search?",
+            expected_answer="O(log n)",
+        ),
+        CustomQuestion(
+            question="Describe how you would design a REST API for a blog platform.",
+            expected_answer="Resources: /posts, /users, /comments. Use GET/POST/PUT/DELETE verbs, pagination, auth via JWT.",
+        ),
+    ]:
+        interview.questions.append(q)
+
+    for t in [
+        DsaTopic(topic="Arrays", difficulty="easy"),
+        DsaTopic(topic="Binary Search", difficulty="medium"),
+    ]:
+        interview.dsa_topics.append(t)
+
+    db.add(interview)
+    await db.commit()
+    await db.refresh(interview, attribute_names=["questions", "dsa_topics"])
+
+    logger.info("Test interview created: %d for org: %d", interview.id, org.id)
+    return CustomInterviewResponse.model_validate(interview)
+
+
 @router.get("/{interview_id}", response_model=CustomInterviewResponse)
+
 async def get_interview(
     interview_id: int,
     db: AsyncSession = Depends(get_db),

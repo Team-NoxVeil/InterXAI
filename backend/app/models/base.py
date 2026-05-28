@@ -8,10 +8,10 @@ from app.database import Base
 
 class TimestampMixin:
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, server_default=func.now()
+        DateTime(timezone=True), default=datetime.utcnow, server_default=func.now()
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime,
+        DateTime(timezone=True),
         default=datetime.utcnow,
         server_default=func.now(),
         onupdate=datetime.utcnow,
