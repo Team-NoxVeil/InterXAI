@@ -114,14 +114,18 @@ async def test_download_fetches_cloudinary_raw_url(monkeypatch: pytest.MonkeyPat
         assert kwargs == {"resource_type": "raw", "secure": True}
         return "https://res.cloudinary.com/demo/raw/upload/resumes/resume.pdf", {}
 
-    monkeypatch.setattr("app.utils.cloudinary_provider.cloudinary.utils.cloudinary_url", fake_cloudinary_url)
+    monkeypatch.setattr(
+        "app.utils.cloudinary_provider.cloudinary.utils.cloudinary_url", fake_cloudinary_url
+    )
     monkeypatch.setattr("app.utils.cloudinary_provider.httpx.AsyncClient", lambda: fake_client)
     provider = CloudinaryStorageProvider("demo", "key", "secret", folder="resumes")
 
     result = await provider.download("resume.pdf")
 
     assert result == b"%PDF"
-    assert fake_client.requested_url == "https://res.cloudinary.com/demo/raw/upload/resumes/resume.pdf"
+    assert (
+        fake_client.requested_url == "https://res.cloudinary.com/demo/raw/upload/resumes/resume.pdf"
+    )
 
 
 @pytest.mark.asyncio

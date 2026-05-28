@@ -27,7 +27,9 @@ class CloudinaryStorageProvider(StorageProviderInterface):
         folder: str = settings.CLOUDINARY_FOLDER,
     ):
         if not cloud_name or not api_key or not api_secret:
-            logger.warning("Cloudinary credentials are not configured. Storage operations may fail.")
+            logger.warning(
+                "Cloudinary credentials are not configured. Storage operations may fail."
+            )
 
         self.folder = folder.strip("/")
         cloudinary.config(
