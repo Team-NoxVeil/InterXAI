@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { apiClient } from "./apiClient";
 
 export class InterviewServiceError extends Error {

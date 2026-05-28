@@ -4,7 +4,7 @@
  * Mirrors app/schemas/organization.py and app/routers/organization.py
  */
 
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { apiClient } from "./apiClient";
 
 // ── Types (mirrors backend schemas) ─────────────────────────────────────────

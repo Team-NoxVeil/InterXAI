@@ -4,7 +4,7 @@
  * Mirrors backend schemas: app/schemas/user.py + app/schemas/interview.py
  */
 
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { apiClient } from "./apiClient";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

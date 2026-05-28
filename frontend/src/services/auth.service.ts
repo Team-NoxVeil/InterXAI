@@ -4,7 +4,7 @@
  * Mirrors the backend schemas in app/schemas/user.py
  */
 
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { apiClient } from "./apiClient";
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
