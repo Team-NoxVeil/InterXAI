@@ -55,17 +55,14 @@ export function useProfileSetup(
     setIsLoading(true);
     setError(null);
     try {
-      const updated = await updateUserProfile(
-        userId,
-        {
-          profile: {
-            bio: form.bio || null,
-            github: form.github || null,
-            linkedin: form.linkedin || null,
-            leetcode: form.leetcode || null,
-          },
+      const updated = await updateUserProfile(userId, {
+        profile: {
+          bio: form.bio || null,
+          github: form.github || null,
+          linkedin: form.linkedin || null,
+          leetcode: form.leetcode || null,
         },
-      );
+      });
       onComplete(updated);
     } catch (err) {
       if (err instanceof UserServiceError) {

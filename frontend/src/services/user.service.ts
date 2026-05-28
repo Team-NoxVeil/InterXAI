@@ -16,7 +16,6 @@ export class UserServiceError extends Error {
   }
 }
 
-
 // ── Types (mirror backend schemas) ───────────────────────────────────────────
 
 export interface UserProfileUpdate {
@@ -74,7 +73,10 @@ export async function updateUserProfile(
     const res = await apiClient.put<UserResponse>(`/users/${userId}`, data);
     return res.data;
   } catch (error: any) {
-    throw new UserServiceError(error.response?.status ?? 500, error.response?.data?.detail ?? "Request failed.");
+    throw new UserServiceError(
+      error.response?.status ?? 500,
+      error.response?.data?.detail ?? "Request failed.",
+    );
   }
 }
 
@@ -84,7 +86,10 @@ export async function fetchInterviews(): Promise<InterviewBasic[]> {
     const res = await apiClient.get<InterviewBasic[]>("/interviews/");
     return res.data;
   } catch (error: any) {
-    throw new UserServiceError(error.response?.status ?? 500, error.response?.data?.detail ?? "Request failed.");
+    throw new UserServiceError(
+      error.response?.status ?? 500,
+      error.response?.data?.detail ?? "Request failed.",
+    );
   }
 }
 
@@ -94,6 +99,9 @@ export async function fetchAppliedInterviews(): Promise<AppliedInterview[]> {
     const res = await apiClient.get<AppliedInterview[]>("/interviews/applied");
     return res.data;
   } catch (error: any) {
-    throw new UserServiceError(error.response?.status ?? 500, error.response?.data?.detail ?? "Request failed.");
+    throw new UserServiceError(
+      error.response?.status ?? 500,
+      error.response?.data?.detail ?? "Request failed.",
+    );
   }
 }

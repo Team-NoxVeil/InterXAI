@@ -41,7 +41,6 @@ export class OrgServiceError extends Error {
   }
 }
 
-
 // ── Endpoints ────────────────────────────────────────────────────────────────
 
 /** POST /organizations/signup */
@@ -49,7 +48,10 @@ export async function signupOrganization(
   payload: OrgSignupRequest,
 ): Promise<OrgSignupResponse> {
   try {
-    const response = await apiClient.post<OrgSignupResponse>("/organizations/signup", payload);
+    const response = await apiClient.post<OrgSignupResponse>(
+      "/organizations/signup",
+      payload,
+    );
     return response.data;
   } catch (error: any) {
     throw new OrgServiceError(
@@ -68,12 +70,16 @@ export async function loginOrganization(credentials: {
   password: string;
 }): Promise<{ token: string }> {
   try {
-    const response = await apiClient.post<{ token: string; user: unknown }>("/users/login", credentials);
+    const response = await apiClient.post<{ token: string; user: unknown }>(
+      "/users/login",
+      credentials,
+    );
     return { token: response.data.token };
   } catch (error: any) {
     throw new OrgServiceError(
       error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Login failed. Please check your credentials.",
+      error.response?.data?.detail ??
+        "Login failed. Please check your credentials.",
     );
   }
 }

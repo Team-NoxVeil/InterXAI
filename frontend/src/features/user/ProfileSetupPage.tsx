@@ -301,7 +301,7 @@ export function ProfileSetupPage({
       </section>
     </div>
   );
-};
+}
 
 const BgBlobs = () => (
   <>

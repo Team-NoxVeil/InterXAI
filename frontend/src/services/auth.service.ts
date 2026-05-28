@@ -50,12 +50,16 @@ export async function loginUser(
   credentials: LoginRequest,
 ): Promise<TokenResponse> {
   try {
-    const response = await apiClient.post<TokenResponse>("/users/login", credentials);
+    const response = await apiClient.post<TokenResponse>(
+      "/users/login",
+      credentials,
+    );
     return response.data;
   } catch (error: any) {
     throw new AuthServiceError(
       error.response?.status ?? 500,
-      error.response?.data?.detail ?? "Login failed. Please check your credentials.",
+      error.response?.data?.detail ??
+        "Login failed. Please check your credentials.",
     );
   }
 }
