@@ -32,7 +32,6 @@ const HEARTBEAT_MS = 5000;
 
 export function useInterviewSession(
   interviewId: number,
-  token: string,
 ): UseInterviewSessionReturn {
   const [phase, setPhase] = useState<InterviewPhase>("loading");
   const [state, setState] = useState<InterviewStateResponse | null>(null);
@@ -59,7 +58,7 @@ export function useInterviewSession(
       heartbeatRef.current = setInterval(async () => {
         if (stoppedRef.current) return;
         try {
-          const res = await sendHeartbeat(sessionId, token);
+          const res = await sendHeartbeat(sessionId);
           if (res.status !== "ongoing") {
             stoppedRef.current = true;
             stopHeartbeat();
@@ -71,7 +70,7 @@ export function useInterviewSession(
         }
       }, HEARTBEAT_MS);
     },
-    [token, stopHeartbeat],
+    [stopHeartbeat],
   );
 
   const applyState = useCallback(
@@ -109,7 +108,7 @@ export function useInterviewSession(
 
     (async () => {
       try {
-        const initial = await startInterview(interviewId, token);
+        const initial = await startInterview(interviewId);
         if (cancelled) return;
         setState(initial);
         if (initial.completed) {
@@ -134,7 +133,7 @@ export function useInterviewSession(
       stoppedRef.current = true;
       stopHeartbeat();
     };
-  }, [interviewId, token, startHeartbeat, stopHeartbeat]);
+  }, [interviewId, startHeartbeat, stopHeartbeat]);
 
   const answer = useCallback(
     async (text: string) => {
@@ -142,7 +141,7 @@ export function useInterviewSession(
       setIsSubmitting(true);
       setError(null);
       try {
-        const next = await submitAnswer(state.session_id, text, token);
+        const next = await submitAnswer(state.session_id, text);
         applyState(next);
       } catch (e) {
         if (e instanceof InterviewServiceError) {
@@ -161,7 +160,7 @@ export function useInterviewSession(
         setIsSubmitting(false);
       }
     },
-    [state, isSubmitting, token, applyState, stopHeartbeat],
+    [state, isSubmitting, applyState, stopHeartbeat],
   );
 
   return {

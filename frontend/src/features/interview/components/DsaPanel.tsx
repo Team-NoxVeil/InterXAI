@@ -16,7 +16,6 @@ import type {
 
 interface Props {
   sessionId: number;
-  token: string;
   question: Extract<QuestionPayload, { type: "dsa" }>;
   onAdvance: (next: InterviewStateResponse) => void;
 }
@@ -89,12 +88,7 @@ type ConsoleState =
     }
   | { kind: "error"; message: string };
 
-export default function DsaPanel({
-  sessionId,
-  token,
-  question,
-  onAdvance,
-}: Props) {
+export default function DsaPanel({ sessionId, question, onAdvance }: Props) {
   const [language, setLanguage] = useState<LangOpt>("python");
   const [source, setSource] = useState<string>(
     LANGUAGES.find((l) => l.value === "python")?.starter ?? "",
@@ -125,11 +119,11 @@ export default function DsaPanel({
   const handleRun = async () => {
     setConsoleState({ kind: "running", label: "Running…" });
     try {
-      const res = await dsaRun(
-        sessionId,
-        { source_code: source, language, stdin },
-        token,
-      );
+      const res = await dsaRun(sessionId, {
+        source_code: source,
+        language,
+        stdin,
+      });
       setConsoleState({ kind: "run-result", result: res });
     } catch (e) {
       setConsoleState({
@@ -143,11 +137,7 @@ export default function DsaPanel({
   const handleTest = async () => {
     setConsoleState({ kind: "running", label: "Running hidden test cases…" });
     try {
-      const res = await dsaTest(
-        sessionId,
-        { source_code: source, language },
-        token,
-      );
+      const res = await dsaTest(sessionId, { source_code: source, language });
       setConsoleState({ kind: "test-result", result: res });
     } catch (e) {
       setConsoleState({
@@ -162,11 +152,7 @@ export default function DsaPanel({
     setShowConfirm(false);
     setConsoleState({ kind: "running", label: "Grading your submission…" });
     try {
-      const res = await dsaSubmit(
-        sessionId,
-        { source_code: source, language },
-        token,
-      );
+      const res = await dsaSubmit(sessionId, { source_code: source, language });
       setConsoleState({
         kind: "submit-result",
         results: res.case_results,

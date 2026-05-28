@@ -4,7 +4,8 @@
  * Mirrors backend schemas: app/schemas/user.py + app/schemas/interview.py
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { AxiosError } from "axios";
+import { apiClient } from "./apiClient";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 export class UserServiceError extends Error {
@@ -14,21 +15,6 @@ export class UserServiceError extends Error {
     this.statusCode = statusCode;
     this.name = "UserServiceError";
   }
-}
-
-function authHeaders(token: string) {
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-}
-
-async function handleResponse<T>(res: Response): Promise<T> {
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new UserServiceError(res.status, data?.detail ?? "Request failed.");
-  }
-  return res.json() as Promise<T>;
 }
 
 // ── Types (mirror backend schemas) ───────────────────────────────────────────
@@ -83,32 +69,43 @@ export interface AppliedInterview extends InterviewBasic {
 export async function updateUserProfile(
   userId: number,
   data: UserUpdate,
-  token: string,
 ): Promise<UserResponse> {
-  const res = await fetch(`${BASE_URL}/users/${userId}`, {
-    method: "PUT",
-    headers: authHeaders(token),
-    body: JSON.stringify(data),
-  });
-  return handleResponse<UserResponse>(res);
+  try {
+    const res = await apiClient.put<UserResponse>(`/users/${userId}`, data);
+    return res.data;
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
+    throw new UserServiceError(
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
+    );
+  }
 }
 
 /** GET /interviews/ — available interviews for this user */
-export async function fetchInterviews(
-  token: string,
-): Promise<InterviewBasic[]> {
-  const res = await fetch(`${BASE_URL}/interviews/`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return handleResponse<InterviewBasic[]>(res);
+export async function fetchInterviews(): Promise<InterviewBasic[]> {
+  try {
+    const res = await apiClient.get<InterviewBasic[]>("/interviews/");
+    return res.data;
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
+    throw new UserServiceError(
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
+    );
+  }
 }
 
 /** GET /interviews/applied — interviews the user has applied to */
-export async function fetchAppliedInterviews(
-  token: string,
-): Promise<AppliedInterview[]> {
-  const res = await fetch(`${BASE_URL}/interviews/applied`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return handleResponse<AppliedInterview[]>(res);
+export async function fetchAppliedInterviews(): Promise<AppliedInterview[]> {
+  try {
+    const res = await apiClient.get<AppliedInterview[]>("/interviews/applied");
+    return res.data;
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
+    throw new UserServiceError(
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed.",
+    );
+  }
 }

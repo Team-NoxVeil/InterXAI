@@ -69,7 +69,7 @@ function App() {
     if (!token) return; // error case already reflected in the initial page state
 
     localStorage.setItem("token", token);
-    fetchCurrentUser(token)
+    fetchCurrentUser()
       .then((user) => {
         const hasProfile = Boolean(user.profile?.bio || user.profile?.github);
         setAuth({ token, user, isNewUser: false });
@@ -80,6 +80,22 @@ function App() {
         setPage("login");
       })
       .finally(() => setHydrating(false));
+  }, []);
+
+  // Listen for global 401 errors from apiClient to reset state cleanly
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("org_token");
+      setAuth(null);
+      setActiveInterviewId(null);
+      setPage("login");
+    };
+
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () => {
+      window.removeEventListener("auth:unauthorized", handleUnauthorized);
+    };
   }, []);
 
   const handleUserLoginSuccess = (data: TokenResponse) => {
@@ -155,7 +171,6 @@ function App() {
       return (
         <ProfileSetupPage
           userId={auth.user.id}
-          token={auth.token}
           username={auth.user.username}
           onComplete={handleProfileComplete}
         />
@@ -166,7 +181,6 @@ function App() {
       return (
         <DashboardPage
           user={auth.user}
-          token={auth.token}
           onLogout={handleLogout}
           onAttemptInterview={handleAttemptInterview}
         />
@@ -177,7 +191,6 @@ function App() {
       return (
         <InterviewSessionPage
           interviewId={activeInterviewId}
-          token={auth.token}
           onExit={handleExitInterview}
         />
       );

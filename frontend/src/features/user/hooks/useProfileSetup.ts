@@ -31,7 +31,6 @@ export interface UseProfileSetupReturn {
 
 export function useProfileSetup(
   userId: number,
-  token: string,
   onComplete: (user: UserResponse) => void,
 ): UseProfileSetupReturn {
   const [form, setForm] = useState<ProfileSetupForm>({
@@ -56,18 +55,14 @@ export function useProfileSetup(
     setIsLoading(true);
     setError(null);
     try {
-      const updated = await updateUserProfile(
-        userId,
-        {
-          profile: {
-            bio: form.bio || null,
-            github: form.github || null,
-            linkedin: form.linkedin || null,
-            leetcode: form.leetcode || null,
-          },
+      const updated = await updateUserProfile(userId, {
+        profile: {
+          bio: form.bio || null,
+          github: form.github || null,
+          linkedin: form.linkedin || null,
+          leetcode: form.leetcode || null,
         },
-        token,
-      );
+      });
       onComplete(updated);
     } catch (err) {
       if (err instanceof UserServiceError) {
@@ -84,7 +79,7 @@ export function useProfileSetup(
   const handleSkip = () => {
     // We don't have the latest user object here — pass a signal for the caller
     // We'll call the backend with empty profile to keep things clean
-    void updateUserProfile(userId, { profile: {} }, token)
+    void updateUserProfile(userId, { profile: {} })
       .then(onComplete)
       .catch(() => {
         /* silent skip */

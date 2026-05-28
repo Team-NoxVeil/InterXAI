@@ -4,6 +4,9 @@
  * Mirrors the backend schemas in app/schemas/user.py
  */
 
+import { AxiosError } from "axios";
+import { apiClient } from "./apiClient";
+
 const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 // ── Request / Response types (mirrors backend schemas) ──────────────────────
@@ -47,21 +50,20 @@ export class AuthServiceError extends Error {
 export async function loginUser(
   credentials: LoginRequest,
 ): Promise<TokenResponse> {
-  const response = await fetch(`${BASE_URL}/users/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(credentials),
-  });
-
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
+  try {
+    const response = await apiClient.post<TokenResponse>(
+      "/users/login",
+      credentials,
+    );
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new AuthServiceError(
-      response.status,
-      data?.detail ?? "Login failed. Please check your credentials.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ??
+        "Login failed. Please check your credentials.",
     );
   }
-
-  return response.json() as Promise<TokenResponse>;
 }
 
 // ── Google OIDC ───────────────────────────────────────────────────────────────
@@ -79,18 +81,15 @@ export function startGoogleOAuth(): void {
 }
 
 /** GET /users/me — resolve the authenticated user from a bearer token. */
-export async function fetchCurrentUser(token: string): Promise<UserResponse> {
-  const response = await fetch(`${BASE_URL}/users/me`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
+export async function fetchCurrentUser(): Promise<UserResponse> {
+  try {
+    const response = await apiClient.get<UserResponse>("/users/me");
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
     throw new AuthServiceError(
-      response.status,
-      data?.detail ?? "Could not load your account.",
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Could not load your account.",
     );
   }
-
-  return response.json() as Promise<UserResponse>;
 }

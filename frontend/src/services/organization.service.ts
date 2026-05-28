@@ -4,7 +4,8 @@
  * Mirrors app/schemas/organization.py and app/routers/organization.py
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+import { AxiosError } from "axios";
+import { apiClient } from "./apiClient";
 
 // ── Types (mirrors backend schemas) ─────────────────────────────────────────
 
@@ -41,31 +42,25 @@ export class OrgServiceError extends Error {
   }
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-async function handleResponse<T>(response: Response): Promise<T> {
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    throw new OrgServiceError(
-      response.status,
-      data?.detail ?? "Request failed. Please try again.",
-    );
-  }
-  return response.json() as Promise<T>;
-}
-
 // ── Endpoints ────────────────────────────────────────────────────────────────
 
 /** POST /organizations/signup */
 export async function signupOrganization(
   payload: OrgSignupRequest,
 ): Promise<OrgSignupResponse> {
-  const response = await fetch(`${BASE_URL}/organizations/signup`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  return handleResponse<OrgSignupResponse>(response);
+  try {
+    const response = await apiClient.post<OrgSignupResponse>(
+      "/organizations/signup",
+      payload,
+    );
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
+    throw new OrgServiceError(
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ?? "Request failed. Please try again.",
+    );
+  }
 }
 
 /**
@@ -76,11 +71,18 @@ export async function loginOrganization(credentials: {
   username: string;
   password: string;
 }): Promise<{ token: string }> {
-  const response = await fetch(`${BASE_URL}/users/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(credentials),
-  });
-  const data = await handleResponse<{ token: string; user: unknown }>(response);
-  return { token: data.token };
+  try {
+    const response = await apiClient.post<{ token: string; user: unknown }>(
+      "/users/login",
+      credentials,
+    );
+    return { token: response.data.token };
+  } catch (error) {
+    const axiosError = error as AxiosError<{ detail: string }>;
+    throw new OrgServiceError(
+      axiosError.response?.status ?? 500,
+      axiosError.response?.data?.detail ??
+        "Login failed. Please check your credentials.",
+    );
+  }
 }

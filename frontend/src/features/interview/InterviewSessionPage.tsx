@@ -10,13 +10,11 @@ import type {
 
 export interface InterviewSessionPageProps {
   interviewId: number;
-  token: string;
   onExit: () => void;
 }
 
 const InterviewSessionPage: React.FC<InterviewSessionPageProps> = ({
   interviewId,
-  token,
   onExit,
 }) => {
   const {
@@ -28,7 +26,7 @@ const InterviewSessionPage: React.FC<InterviewSessionPageProps> = ({
     followUpIndex,
     answer,
     applyState,
-  } = useInterviewSession(interviewId, token);
+  } = useInterviewSession(interviewId);
 
   return (
     <div
@@ -70,7 +68,6 @@ const InterviewSessionPage: React.FC<InterviewSessionPageProps> = ({
             error,
             onAnswer: answer,
             applyState,
-            token,
             followUpIndex,
           })}
 
@@ -91,7 +88,6 @@ interface RenderArgs {
   error: string | null;
   onAnswer: (text: string) => Promise<void>;
   applyState: (next: InterviewStateResponse) => void;
-  token: string;
   followUpIndex: number;
 }
 
@@ -102,7 +98,6 @@ function renderRound({
   error,
   onAnswer,
   applyState,
-  token,
   followUpIndex,
 }: RenderArgs) {
   if (question.type === "custom") {
@@ -135,7 +130,6 @@ function renderRound({
     <DsaPanel
       key={`d-${question.interaction_id}`}
       sessionId={state.session_id}
-      token={token}
       question={question}
       onAdvance={applyState}
     />
