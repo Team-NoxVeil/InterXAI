@@ -52,7 +52,7 @@ class CloudinaryStorageProvider(StorageProviderInterface):
                 overwrite=True,
             )
             url = result.get("secure_url") or result.get("url")
-            if not url:
+            if not isinstance(url, str) or not url:
                 raise StorageUploadError("Cloudinary upload response did not include a URL")
             return url
         except StorageUploadError:
