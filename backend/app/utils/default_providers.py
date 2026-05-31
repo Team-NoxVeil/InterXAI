@@ -29,3 +29,14 @@ def default_llm_provider() -> LLMProviderInterface:
         return LiteLLMProvider()
 
     raise ValueError(f"Unknown LLM provider: '{settings.LLM_PROVIDER}'")
+
+
+def default_fallback_llm_provider() -> LLMProviderInterface | None:
+    if not settings.FALLBACK_LLM_PROVIDER:
+        return None
+
+    from app.ai.lite_llm import LiteLLMProvider
+
+    return LiteLLMProvider(
+        model_name=settings.FALLBACK_LLM_PROVIDER, api_key=settings.LITELLM_API_KEY
+    )

@@ -6,10 +6,12 @@ from app.ai.resume_evaluator import ResumeEvaluator
 from app.ai.schema import ResumeEvaluatorRequest
 from app.background.taskiq.taskiq import broker
 from app.database import AsyncSessionLocal
+from app.exceptions.ai import AIProviderError, AITimeoutError
 from app.logger import get_logger
 from app.models.application import Application
 from app.models.interview import CustomInterview
 from app.utils.default_providers import (
+    default_fallback_llm_provider,
     default_llm_provider,
     default_storage_provider,
 )
@@ -25,6 +27,7 @@ async def process_resume_task(file_bytes_b64: str, file_name: str, application_i
     file_bytes = base64.b64decode(file_bytes_b64)
     provider = default_storage_provider()
     llm_provider = default_llm_provider()
+    fallback_llm_provider = default_fallback_llm_provider()
 
     async with AsyncSessionLocal() as session:
         app_to_update = await session.get(Application, application_id)
@@ -54,7 +57,17 @@ async def process_resume_task(file_bytes_b64: str, file_name: str, application_i
             )
 
             logger.info("Starting resume evaluation for application %d...", application_id)
-            res = await evaluator.evaluate(req)
+            try:
+                res = await evaluator.evaluate(req)
+            except (AIProviderError, AITimeoutError):
+                if fallback_llm_provider is None:
+                    raise
+                logger.warning(
+                    "Primary LLM provider failed, retrying with fallback for application %d",
+                    application_id,
+                )
+                fallback_evaluator = ResumeEvaluator(llm_provider=fallback_llm_provider)
+                res = await fallback_evaluator.evaluate(req)
 
             app_to_update.resume = public_url
             app_to_update.extracted_resume = res.extracted_standardized_resume
