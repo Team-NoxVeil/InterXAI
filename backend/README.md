@@ -138,9 +138,15 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30000
 # TaskIQ / Redis
 REDIS_URL=redis://localhost:6379/0
 
-# LLM (Groq)
+# LLM — primary provider
 LLM_MODEL_NAME=groq/openai/gpt-oss-120b
 GROQ_API_KEY=your-groq-api-key
+LLM_PROVIDER=litellm
+
+# LLM — fallback provider (optional; leave blank to disable)
+# Set to any LiteLLM-compatible model string, e.g. gemini/gemini-2.5-flash
+FALLBACK_LLM_PROVIDER=
+LITELLM_API_KEY=
 
 # Supabase Storage
 SUPABASE_URL=https://your-project.supabase.co
@@ -259,7 +265,7 @@ app/interfaces/encrypter.py         →  app/utils/ (JwtEncrypter)
 app/interfaces/base_agent.py        →  app/ai/resume_evaluator.py
 ```
 
-This makes it straightforward to swap providers (e.g., Groq → OpenAI, Supabase → S3) without touching business logic.
+This makes it straightforward to swap providers (e.g., Groq → OpenAI, Supabase → S3) without touching business logic. The active provider is selected at startup via `LLM_PROVIDER`; a fallback is instantiated from `FALLBACK_LLM_PROVIDER` and activated automatically on `AIProviderError` or `AITimeoutError` during resume evaluation.
 
 ### Model Structure
 
