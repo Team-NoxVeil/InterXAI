@@ -3,8 +3,11 @@
  * Handles org login form state, validation, API call, and token persistence.
  */
 
-import { useState } from 'react';
-import { loginOrganization, OrgServiceError } from '../../../services/organization.service';
+import { useState } from "react";
+import {
+  loginOrganization,
+  OrgServiceError,
+} from "../../../services/organization.service";
 
 export interface OrgLoginFormState {
   username: string;
@@ -19,8 +22,13 @@ export interface UseOrgLoginReturn {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
-export function useOrgLogin(onSuccess?: (token: string) => void): UseOrgLoginReturn {
-  const [form, setForm] = useState<OrgLoginFormState>({ username: '', password: '' });
+export function useOrgLogin(
+  onSuccess?: (token: string) => void,
+): UseOrgLoginReturn {
+  const [form, setForm] = useState<OrgLoginFormState>({
+    username: "",
+    password: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,7 +43,7 @@ export function useOrgLogin(onSuccess?: (token: string) => void): UseOrgLoginRet
     setError(null);
 
     if (!form.username.trim() || !form.password.trim()) {
-      setError('Please fill in all fields.');
+      setError("Please fill in all fields.");
       return;
     }
 
@@ -45,13 +53,13 @@ export function useOrgLogin(onSuccess?: (token: string) => void): UseOrgLoginRet
         username: form.username.trim(),
         password: form.password,
       });
-      localStorage.setItem('org_token', token);
+      localStorage.setItem("org_token", token);
       onSuccess?.(token);
     } catch (err) {
       if (err instanceof OrgServiceError) {
         setError(err.message);
       } else {
-        setError('Something went wrong. Please try again.');
+        setError("Something went wrong. Please try again.");
       }
     } finally {
       setIsLoading(false);

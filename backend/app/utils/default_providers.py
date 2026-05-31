@@ -1,6 +1,7 @@
 from app.config import settings
 from app.interfaces.background_worker import BackgroundWorkerInterface
 from app.interfaces.llm_provider import LLMProviderInterface
+from app.interfaces.email_provider import EmailProvider
 from app.interfaces.storage_proivder import StorageProviderInterface
 
 
@@ -40,3 +41,10 @@ def default_fallback_llm_provider() -> LLMProviderInterface | None:
     return LiteLLMProvider(
         model_name=settings.FALLBACK_LLM_PROVIDER, api_key=settings.LITELLM_API_KEY
     )
+def default_email_provider() -> EmailProvider:
+    if settings.EMAIL_PROVIDER == "smtp":
+        from app.utils.smtp_provider import SmtpEmailProvider
+
+        return SmtpEmailProvider()
+
+    raise ValueError(f"Unknown email provider: '{settings.EMAIL_PROVIDER}'")

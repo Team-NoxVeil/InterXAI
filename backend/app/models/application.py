@@ -13,6 +13,7 @@ class InterviewStatus(StrEnum):
     CANCELLED = "cancelled"
     CHEATED = "cheated"
     ONGOING = "ongoing"
+    DISQUALIFIED = "disqualified"
 
 
 class CurrentRound(StrEnum):
@@ -60,6 +61,9 @@ class InterviewSession(BaseTable):
         DateTime, default=datetime.utcnow, server_default=func.now()
     )
     end_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    last_heartbeat_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, server_default=func.now()
+    )
     current_round: Mapped[str] = mapped_column(String(20), default=CurrentRound.QUESTIONS.value)
     current_question_index: Mapped[int] = mapped_column(Integer, default=1)
     status: Mapped[str] = mapped_column(String(20), default=InterviewStatus.SCHEDULED.value)

@@ -24,3 +24,7 @@ class Authenticator(ABC):
     @abstractmethod
     async def create_organization(self, username: str, password: str, email: str) -> User:
         pass
+
+    @abstractmethod
+    async def get_or_create_oidc_user(self, email: str, name: str) -> User:
+        pass

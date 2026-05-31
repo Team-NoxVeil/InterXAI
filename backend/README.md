@@ -65,7 +65,7 @@ backend/
 │   ├── interfaces/             # Abstract base classes (dependency inversion)
 │   │   ├── base_agent.py       # BaseAgent[TRequest, TResponse]
 │   │   ├── llm_provider.py     # LLMProviderInterface
-│   │   ├── storage_proivder.py # StorageProviderInterface
+│   │   ├── storage_provider.py # StorageProviderInterface
 │   │   ├── authenticator.py    # Auth interface
 │   │   ├── hasher.py           # Hasher interface
 │   │   ├── encrypter.py        # Encrypter interface

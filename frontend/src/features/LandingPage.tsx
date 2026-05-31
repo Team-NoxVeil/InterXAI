@@ -1,8 +1,8 @@
-import React from 'react';
-import Navbar from '../components/layout/Navbar';
-import HeroSection from '../components/sections/HeroSection';
-import FeaturesSection from '../components/sections/FeaturesSection';
-import Footer from '../components/layout/Footer';
+import React from "react";
+import Navbar from "../components/layout/Navbar";
+import HeroSection from "../components/sections/HeroSection";
+import FeaturesSection from "../components/sections/FeaturesSection";
+import Footer from "../components/layout/Footer";
 
 export interface LandingPageProps {
   /** Navigate to user login */
@@ -15,9 +15,15 @@ export interface LandingPageProps {
  * LandingPage
  * Top-level page component that composes all landing page sections.
  */
-const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick, onOrgLoginClick }) => {
+const LandingPage: React.FC<LandingPageProps> = ({
+  onLoginClick,
+  onOrgLoginClick,
+}) => {
   return (
-    <div id="landing-page" className="min-h-screen bg-[#050e0a] font-sans antialiased">
+    <div
+      id="landing-page"
+      className="min-h-screen bg-[#050e0a] font-sans antialiased"
+    >
       {/* Navigation */}
       <Navbar
         ctaLabel="Sign In"
@@ -32,8 +38,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick, onOrgLoginClick
         headlineAccent="AI Interviews."
         subheadline="Smarter Careers."
         description="InterXAI runs interviews, evaluates candidates, and coaches careers—fully autonomous."
-        primaryCta={{ label: 'Start AI Interview', onClick: onLoginClick }}
-        secondaryCta={{ label: 'Watch Demo', href: '#demo' }}
+        primaryCta={{ label: "Start AI Interview", onClick: onLoginClick }}
+        secondaryCta={{ label: "Watch Demo", href: "#demo" }}
         backgroundImage="/landingpagebackground.png"
       />
 
@@ -47,4 +53,3 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick, onOrgLoginClick
 };
 
 export default LandingPage;
-

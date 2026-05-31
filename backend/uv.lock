@@ -151,6 +151,25 @@ wheels = [
 ]
 
 [[package]]
+name = "anthropic"
+version = "0.104.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "distro" },
+    { name = "docstring-parser" },
+    { name = "httpx" },
+    { name = "jiter" },
+    { name = "pydantic" },
+    { name = "sniffio" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/22/c7/7a655b948916f777354648ce979f68b94d5b8dbdb5f61fed1f37fad9378c/anthropic-0.104.1.tar.gz", hash = "sha256:17362b6c45f527afcc9b0fdf62011ffd359726ab2ebcb1978ea0cc41bd8d8d40", size = 850081, upload-time = "2026-05-22T15:36:57.432Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b8/12/d9ab42790494d7c428391a46cd28492395566a6a8ccb138d681978594455/anthropic-0.104.1-py3-none-any.whl", hash = "sha256:35c8cb456f5a4405aafe1f10f03f6fcc54fa51fa8ec01d655cc4b437d120e9b7", size = 832996, upload-time = "2026-05-22T15:36:59.519Z" },
+]
+
+[[package]]
 name = "anyio"
 version = "4.13.0"
 source = { registry = "https://pypi.org/simple" }
@@ -213,16 +232,36 @@ wheels = [
 ]
 
 [[package]]
+name = "authlib"
+version = "1.7.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+    { name = "joserfc" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/36/98/7d93f30d029643c0275dbc0bd6d5a6f670661ee6c9a94d93af7ab4887600/authlib-1.7.2.tar.gz", hash = "sha256:2cea25fefcd4e7173bdf1372c0afc265c8034b23a8cd5dcb6a9164b826c64231", size = 176511, upload-time = "2026-05-06T08:10:23.116Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fb/95/adcb68e20c34162e9135f370d6e31737719c2b6f94bc953fe7ed1f10fe21/authlib-1.7.2-py2.py3-none-any.whl", hash = "sha256:3e1faedc9d87e7d56a164eca3ccb6ace0d61b94abe83e92242f8dc8bba9b4a9f", size = 259548, upload-time = "2026-05-06T08:10:21.436Z" },
+]
+
+[[package]]
 name = "backend"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "aiosqlite" },
     { name = "alembic" },
+    { name = "anthropic" },
     { name = "asyncpg" },
+    { name = "authlib" },
     { name = "bcrypt" },
     { name = "fastapi" },
     { name = "greenlet" },
+    { name = "groq" },
+    { name = "httpx" },
+    { name = "itsdangerous" },
+    { name = "langchain-anthropic" },
+    { name = "langchain-groq" },
     { name = "langchain-litellm" },
     { name = "pydantic", extra = ["email"] },
     { name = "pydantic-settings" },
@@ -239,7 +278,10 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "httpx" },
     { name = "mypy" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
     { name = "ruff" },
 ]
 
@@ -247,10 +289,17 @@ dev = [
 requires-dist = [
     { name = "aiosqlite", specifier = ">=0.22.1" },
     { name = "alembic", specifier = ">=1.18.4" },
+    { name = "anthropic", specifier = ">=0.40.0,<1" },
     { name = "asyncpg", specifier = ">=0.31.0" },
+    { name = "authlib", specifier = ">=1.7.2" },
     { name = "bcrypt", specifier = ">=4.0.0" },
     { name = "fastapi", specifier = ">=0.115.0" },
     { name = "greenlet", specifier = ">=3.4.0" },
+    { name = "groq", specifier = ">=0.30.0,<1" },
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "itsdangerous", specifier = ">=2.2.0" },
+    { name = "langchain-anthropic", specifier = ">=0.3.0" },
+    { name = "langchain-groq", specifier = ">=0.2.0" },
     { name = "langchain-litellm", specifier = ">=0.6.4" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.13.0" },
     { name = "pydantic-settings", specifier = ">=2.13.1" },
@@ -267,7 +316,10 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "httpx", specifier = ">=0.27" },
     { name = "mypy", specifier = ">=1.20.1" },
+    { name = "pytest", specifier = ">=8.0" },
+    { name = "pytest-asyncio", specifier = ">=0.23" },
     { name = "ruff", specifier = ">=0.15.10" },
 ]
 
@@ -590,6 +642,15 @@ wheels = [
 ]
 
 [[package]]
+name = "docstring-parser"
+version = "0.18.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e0/4d/f332313098c1de1b2d2ff91cf2674415cc7cddab2ca1b01ae29774bd5fdf/docstring_parser-0.18.0.tar.gz", hash = "sha256:292510982205c12b1248696f44959db3cdd1740237a968ea1e2e7a900eeb2015", size = 29341, upload-time = "2026-04-14T04:09:19.867Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a7/5f/ed01f9a3cdffbd5a008556fc7b2a08ddb1cc6ace7effa7340604b1d16699/docstring_parser-0.18.0-py3-none-any.whl", hash = "sha256:b3fcbed555c47d8479be0796ef7e19c2670d428d72e96da63f3a40122860374b", size = 22484, upload-time = "2026-04-14T04:09:18.638Z" },
+]
+
+[[package]]
 name = "email-validator"
 version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -814,6 +875,23 @@ wheels = [
 ]
 
 [[package]]
+name = "groq"
+version = "0.37.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "distro" },
+    { name = "httpx" },
+    { name = "pydantic" },
+    { name = "sniffio" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e9/78/18948a9056e1509c87e10ab8316a90ecce87035fbd53342dffdf97f4de00/groq-0.37.1.tar.gz", hash = "sha256:7353d6dfb60834fd7aacbb86af106e2dc2aeaff6d0edd65fb2fd0f16bd39314c", size = 145289, upload-time = "2025-12-04T18:08:07.118Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5f/d6/645a081750e43f858b7d09dce5d8e1e76cf11e7e4bdba81252e04f78963d/groq-0.37.1-py3-none-any.whl", hash = "sha256:b49f8c8898c55eaec9f71f1342f3fcacc9560d67a08ce5f35fbfb84e8dacd3da", size = 137494, upload-time = "2025-12-04T18:08:05.801Z" },
+]
+
+[[package]]
 name = "h11"
 version = "0.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -989,6 +1067,24 @@ wheels = [
 ]
 
 [[package]]
+name = "iniconfig"
+version = "2.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/72/34/14ca021ce8e5dfedc35312d08ba8bf51fdd999c576889fc2c24cb97f4f10/iniconfig-2.3.0.tar.gz", hash = "sha256:c76315c77db068650d49c5b56314774a7804df16fee4402c1f19d6d15d8c4730", size = 20503, upload-time = "2025-10-18T21:55:43.219Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl", hash = "sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12", size = 7484, upload-time = "2025-10-18T21:55:41.639Z" },
+]
+
+[[package]]
+name = "itsdangerous"
+version = "2.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9c/cb/8ac0172223afbccb63986cc25049b154ecfb5e85932587206f42317be31d/itsdangerous-2.2.0.tar.gz", hash = "sha256:e0050c0b7da1eea53ffaf149c0cfbb5c6e2e2b69c4bef22c81fa6eb73e5f6173", size = 54410, upload-time = "2024-04-16T21:28:15.614Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl", hash = "sha256:c6242fc49e35958c8b15141343aa660db5fc54d4f13a1db01a3f5891b98700ef", size = 16234, upload-time = "2024-04-16T21:28:14.499Z" },
+]
+
+[[package]]
 name = "jinja2"
 version = "3.1.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1073,6 +1169,18 @@ wheels = [
 ]
 
 [[package]]
+name = "joserfc"
+version = "1.6.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5d/ac/d4fd5b30f82900eac60d765f179f0ba005825ac462cc8ced6e13ec685ab3/joserfc-1.6.8.tar.gz", hash = "sha256:878620c553a6ebdd76ccdc356782fee3f735f21a356d079a546b42a4670ace5f", size = 232930, upload-time = "2026-05-27T03:22:37.819Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/98/8c/5cdce2cf3ce8155849baf9a5e2ce77e89dc87ec3bdb38259e5d85fbc45bd/joserfc-1.6.8-py3-none-any.whl", hash = "sha256:22fb31a69094a5e6f44632002a9df2c30c941fc6c8ce1b037e92c03de954cf9f", size = 70927, upload-time = "2026-05-27T03:22:35.796Z" },
+]
+
+[[package]]
 name = "jsonpatch"
 version = "1.33"
 source = { registry = "https://pypi.org/simple" }
@@ -1121,6 +1229,20 @@ wheels = [
 ]
 
 [[package]]
+name = "langchain-anthropic"
+version = "1.4.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anthropic" },
+    { name = "langchain-core" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fa/e3/d2f9dec95602524b1cfb4be2747ba5bc38d32501b2a56cb4bcb76e80bb45/langchain_anthropic-1.4.3.tar.gz", hash = "sha256:f8a2442463c0629b1b3110eaeaa56fdbdc87df2a802f8c7f5ecf611eb4874ec8", size = 685219, upload-time = "2026-05-03T17:33:27.118Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d3/55/482a1968c95275e8be6d8c1e53b54f0f7be0b8b155ce1608c947a95cf543/langchain_anthropic-1.4.3-py3-none-any.whl", hash = "sha256:65466e0f2f95909a009708f2958e917dfdbfab79c612b4484a30866a85e1f291", size = 50389, upload-time = "2026-05-03T17:33:25.671Z" },
+]
+
+[[package]]
 name = "langchain-core"
 version = "1.3.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1138,6 +1260,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d3/ae/8b74458fc3850ec3d150eb9f45e857db129dafa801fb5cf173dfc9f8bbf3/langchain_core-1.3.3.tar.gz", hash = "sha256:fa510a5db8efdc0c6ff41c0939fb5c00a0183c11f6b84233e892e3227ff69182", size = 915041, upload-time = "2026-05-05T19:02:36.612Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1f/01/4771b7ab2af1d1aba5b710bd8f13d9225c609425214b357590a17b01be77/langchain_core-1.3.3-py3-none-any.whl", hash = "sha256:18aae8506f37da7f74398492279a7d6efcee4f8e23c4c41c7af080eeb7ef7bd1", size = 543857, upload-time = "2026-05-05T19:02:34.52Z" },
+]
+
+[[package]]
+name = "langchain-groq"
+version = "1.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "groq" },
+    { name = "langchain-core" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3d/d9/bbaa43598fcaffb669c5aea4088d92c77a426c46d25a013c21c979772a54/langchain_groq-1.1.2.tar.gz", hash = "sha256:67d1d752fb6590be517735947ec49b4ab9ed9191c7cca79f105d227775c67ae5", size = 178337, upload-time = "2026-02-02T15:57:29.435Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e8/11/71a35db3ed8ac2c7129eb69f0d590e4961be67ac84b6c470fc097d0dd7c8/langchain_groq-1.1.2-py3-none-any.whl", hash = "sha256:1f59f12233e8e6280c968bca6c40a7e5434e971e9a5387ad23c4c64ec776de10", size = 19450, upload-time = "2026-02-02T15:57:28.6Z" },
 ]
 
 [[package]]
@@ -1690,6 +1825,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pluggy"
+version = "1.6.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f9/e2/3e91f31a7d2b083fe6ef3fa267035b518369d9511ffab804f839851d2779/pluggy-1.6.0.tar.gz", hash = "sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3", size = 69412, upload-time = "2025-05-15T12:30:07.975Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl", hash = "sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746", size = 20538, upload-time = "2025-05-15T12:30:06.134Z" },
+]
+
+[[package]]
 name = "postgrest"
 version = "2.30.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2046,6 +2190,35 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/43/6d/f991526fdef3cf7739f6db0cdf12b157e840e0ddd4a7e1c2a477da9072d6/pyroaring-1.1.0-cp314-cp314t-win32.whl", hash = "sha256:1fc112b9a9890f89cc645a16604783ed7fa25299f149b0ef7b45a5e2e3c1f31f", size = 241484, upload-time = "2026-04-24T21:29:06.114Z" },
     { url = "https://files.pythonhosted.org/packages/2e/6e/fb9876940acb50df355a473c087b9924e7b3368070403683941653b6fabc/pyroaring-1.1.0-cp314-cp314t-win_amd64.whl", hash = "sha256:d92a0f4c7e6bb7deeafac68c79c92ef9340895fe825cf1a31078443753ab6756", size = 304537, upload-time = "2026-04-24T21:29:07.312Z" },
     { url = "https://files.pythonhosted.org/packages/8a/e0/39afe4bddbed6276c54e35e310aa345fbeb00f8890e96e7f48cdc2be9c66/pyroaring-1.1.0-cp314-cp314t-win_arm64.whl", hash = "sha256:99c42fe1449acfbf130da65e66b4d5b2726aba4497be359bae7672e38a15fc62", size = 234615, upload-time = "2026-04-24T21:29:08.751Z" },
+]
+
+[[package]]
+name = "pytest"
+version = "9.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "iniconfig" },
+    { name = "packaging" },
+    { name = "pluggy" },
+    { name = "pygments" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7d/0d/549bd94f1a0a402dc8cf64563a117c0f3765662e2e668477624baeec44d5/pytest-9.0.3.tar.gz", hash = "sha256:b86ada508af81d19edeb213c681b1d48246c1a91d304c6c81a427674c17eb91c", size = 1572165, upload-time = "2026-04-07T17:16:18.027Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d4/24/a372aaf5c9b7208e7112038812994107bc65a84cd00e0354a88c2c77a617/pytest-9.0.3-py3-none-any.whl", hash = "sha256:2c5efc453d45394fdd706ade797c0a81091eccd1d6e4bccfcd476e2b8e0ab5d9", size = 375249, upload-time = "2026-04-07T17:16:16.13Z" },
+]
+
+[[package]]
+name = "pytest-asyncio"
+version = "1.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/90/2c/8af215c0f776415f3590cac4f9086ccefd6fd463befeae41cd4d3f193e5a/pytest_asyncio-1.3.0.tar.gz", hash = "sha256:d7f52f36d231b80ee124cd216ffb19369aa168fc10095013c6b014a34d3ee9e5", size = 50087, upload-time = "2025-11-10T16:07:47.256Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e5/35/f8b19922b6a25bc0880171a2f1a003eaeb93657475193ab516fd87cac9da/pytest_asyncio-1.3.0-py3-none-any.whl", hash = "sha256:611e26147c7f77640e6d0a92a38ed17c3e9848063698d5c93d5aa7aa11cebff5", size = 15075, upload-time = "2025-11-10T16:07:45.537Z" },
 ]
 
 [[package]]

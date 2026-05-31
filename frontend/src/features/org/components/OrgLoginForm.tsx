@@ -3,11 +3,11 @@
  * Pure UI form — receives all state via props, zero business logic.
  */
 
-import React from 'react';
-import FormInput from '../../../components/ui/FormInput';
-import Button from '../../../components/ui/Button';
-import AlertBanner from '../../../components/ui/AlertBanner';
-import type { OrgLoginFormState } from '../hooks/useOrgLogin';
+import React from "react";
+import FormInput from "../../../components/ui/FormInput";
+import Button from "../../../components/ui/Button";
+import AlertBanner from "../../../components/ui/AlertBanner";
+import type { OrgLoginFormState } from "../hooks/useOrgLogin";
 
 export interface OrgLoginFormProps {
   form: OrgLoginFormState;
@@ -26,7 +26,12 @@ const OrgLoginForm: React.FC<OrgLoginFormProps> = ({
   onSubmit,
   onSignupClick,
 }) => (
-  <form id="org-login-form" onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
+  <form
+    id="org-login-form"
+    onSubmit={onSubmit}
+    noValidate
+    className="flex flex-col gap-5"
+  >
     {error && <AlertBanner message={error} variant="error" />}
 
     <FormInput
@@ -57,7 +62,10 @@ const OrgLoginForm: React.FC<OrgLoginFormProps> = ({
     />
 
     <div className="flex justify-end -mt-2">
-      <a href="#forgot" className="text-xs text-[#3ddc84]/70 hover:text-[#3ddc84] transition-colors">
+      <a
+        href="#forgot"
+        className="text-xs text-[#3ddc84]/70 hover:text-[#3ddc84] transition-colors"
+      >
         Forgot password?
       </a>
     </div>
@@ -69,13 +77,19 @@ const OrgLoginForm: React.FC<OrgLoginFormProps> = ({
       className="w-full justify-center py-3.5 text-sm mt-1"
       disabled={isLoading}
     >
-      {isLoading ? <><SpinnerIcon /> Signing in…</> : 'Sign In'}
+      {isLoading ? (
+        <>
+          <SpinnerIcon /> Signing in…
+        </>
+      ) : (
+        "Sign In"
+      )}
     </Button>
 
     <Divider />
 
     <p className="text-center text-sm text-white/50">
-      Don't have an account?{' '}
+      Don't have an account?{" "}
       <button
         type="button"
         onClick={onSignupClick}
@@ -98,9 +112,27 @@ const Divider = () => (
 );
 
 const SpinnerIcon = () => (
-  <svg className="animate-spin" width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" strokeOpacity="0.25" />
-    <path d="M14 8a6 6 0 00-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  <svg
+    className="animate-spin"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+  >
+    <circle
+      cx="8"
+      cy="8"
+      r="6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeOpacity="0.25"
+    />
+    <path
+      d="M14 8a6 6 0 00-6-6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
   </svg>
 );
 

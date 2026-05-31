@@ -1,5 +1,5 @@
-import React from 'react';
-import Logo from '../ui/Logo';
+import React from "react";
+import Logo from "../ui/Logo";
 
 export interface FooterLink {
   label: string;
@@ -12,9 +12,9 @@ export interface FooterProps {
 }
 
 const defaultLinks: FooterLink[] = [
-  { label: 'Privacy Policy', href: '#privacy' },
-  { label: 'Terms', href: '#terms' },
-  { label: 'Contact', href: '#contact' },
+  { label: "Privacy Policy", href: "#privacy" },
+  { label: "Terms", href: "#terms" },
+  { label: "Contact", href: "#contact" },
 ];
 
 const Footer: React.FC<FooterProps> = ({

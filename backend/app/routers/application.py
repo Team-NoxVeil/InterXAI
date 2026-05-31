@@ -112,3 +112,48 @@ async def apply_for_interview(
 
     logger.info("Application created successfully: %d", application.id)
     return ApplicationResponse.model_validate(application)
+
+
+@router.patch("/{application_id}/shortlist", response_model=ApplicationResponse)
+async def shortlist_application(
+    application_id: int,
+    db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(is_organization),
+) -> ApplicationResponse:
+    """
+    Approve or reject (toggle shortlisting_decision) for an application.
+    Only the org that owns the interview may do this.
+    """
+    logger.info(
+        "Shortlist toggle request for application: %d by org: %d",
+        application_id,
+        org.id,
+    )
+
+    app_result = await db.execute(
+        select(Application).where(Application.id == application_id)
+    )
+    application = app_result.scalar_one_or_none()
+
+    if not application:
+        raise NotFoundError("Application not found")
+
+    # Verify the org owns the interview this application belongs to
+    interview_result = await db.execute(
+        select(CustomInterview).where(CustomInterview.id == application.interview_id)
+    )
+    interview = interview_result.scalar_one_or_none()
+
+    if not interview or interview.org_id != org.id:
+        raise ForbiddenError("You cannot modify this application")
+
+    application.shortlisting_decision = not application.shortlisting_decision
+    await db.commit()
+    await db.refresh(application)
+
+    logger.info(
+        "Application %d shortlisting_decision set to %s",
+        application_id,
+        application.shortlisting_decision,
+    )
+    return ApplicationResponse.model_validate(application)

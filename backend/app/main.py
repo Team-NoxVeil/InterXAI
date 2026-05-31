@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import settings
 from app.exceptions.auth import register_auth_exception_handlers
@@ -22,7 +23,9 @@ from app.models.organization import Organization
 from app.models.user import User, UserProfile
 from app.routers.application import router as application_router
 from app.routers.interview import router as interview_router
+from app.routers.leaderboard import router as leaderboard_router
 from app.routers.organization import router as organization_router
+from app.routers.session import router as session_router
 from app.routers.user import router as user_router
 from app.utils.default_providers import default_worker_provider
 
@@ -49,6 +52,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# Required by Authlib to persist the OAuth state/nonce across the OIDC redirect.
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 register_auth_exception_handlers(app)
 register_common_exception_handlers(app)
 register_sql_alchemy_exception_handlers(app)
@@ -57,6 +62,8 @@ app.include_router(user_router)
 app.include_router(organization_router)
 app.include_router(interview_router)
 app.include_router(application_router)
+app.include_router(session_router)
+app.include_router(leaderboard_router)
 
 logger.info("Application initialized: %s", settings.APP_NAME)
 

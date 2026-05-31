@@ -16,6 +16,20 @@
 
 </div>
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [API Reference](#api-reference)
+- [Data Models](#data-models)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+
 
 ## Overview
 
@@ -328,6 +342,8 @@ Contributions are welcome. Please follow these steps:
 3. **Make** your changes and ensure all quality checks pass: `./tools/backend_lint`
 4. **Commit** with a descriptive message following [Conventional Commits](https://www.conventionalcommits.org/)
 5. **Push** to your fork and **open a Pull Request**
+
+**For detailed instructions on local development setups, environment configurations, and workflow conventions, please refer to our dedicated [Contributing Guide](./CONTRIBUTING.md).**
 
 ### Code Guidelines
 
