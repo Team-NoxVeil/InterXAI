@@ -41,3 +41,72 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #3ddc84;
 }
+
+/* ===============================
+   Responsive Design Utilities
+   =============================== */
+
+/* Large tablets / small laptops */
+@media (max-width: 1024px) {
+  body {
+    font-size: 15px;
+  }
+
+  .container {
+    padding: 0 24px;
+  }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 0 18px;
+  }
+
+  /* Improve spacing for sections */
+  section {
+    padding: 60px 0;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+
+  .container {
+    padding: 0 14px;
+  }
+
+  /* Reduce section spacing */
+  section {
+    padding: 40px 0;
+  }
+
+  /* Better touch targets */
+  button,
+  a {
+    min-height: 44px;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  body {
+    font-size: 12.5px;
+  }
+
+  .container {
+    padding: 0 12px;
+  }
+
+  section {
+    padding: 32px 0;
+  }
+}
+
