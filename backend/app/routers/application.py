@@ -5,8 +5,10 @@ from fastapi import APIRouter, Depends, File, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.database import get_db
 from app.exceptions.common import BadRequestError, ForbiddenError, NotFoundError
+
 from app.logger import get_logger
 from app.models.application import Application
 from app.models.interview import CustomInterview
@@ -90,6 +92,18 @@ async def apply_for_interview(
     )
     if existing_app_result.scalar_one_or_none():
         raise BadRequestError("You have already applied for this interview")
+
+    # Validate file size before reading into memory
+    file_size = resume.size
+    if file_size is None:
+        await resume.seek(0, 2)
+        file_size = await resume.tell()
+        await resume.seek(0)
+
+    if file_size > settings.MAX_UPLOAD_SIZE:
+        raise BadRequestError(
+            f"File size exceeds the maximum allowed limit of {settings.MAX_UPLOAD_SIZE // (1024 * 1024)} MB"
+        )
 
     file_bytes = await resume.read()
 

@@ -48,6 +48,7 @@ async def create_tables() -> AsyncGenerator[None, None]:
     """Create all ORM tables once per test session, drop them afterwards."""
     # Import all models so Base.metadata knows about them.
     import app.models.application  # noqa: F401
+    import app.models.dsa_question  # noqa: F401
     import app.models.interaction  # noqa: F401
     import app.models.interview  # noqa: F401
     import app.models.organization  # noqa: F401

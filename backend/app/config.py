@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     APP_NAME: str = "InterXAI"
     DEBUG: bool = False
     API_V1_PREFIX: str = "/api/v1"
+    MAX_UPLOAD_SIZE: int = 5 * 1024 * 1024
+
     # Database
     DATABASE_URL: str = "sqlite+aiosqlite:///./dev.db"
 
@@ -16,6 +18,9 @@ class Settings(BaseSettings):
 
     # Redis/Celery
     REDIS_URL: str = "redis://localhost:6379/0"
+    # RabbitMQ support
+    BROKER_TYPE: str = "redis"  # options: redis, rabbitmq
+    BROKER_URL: str = "redis://localhost:6379/0"
 
     # LLM
     LLM_MODEL_NAME: str = "groq/openai/gpt-oss-120b"
