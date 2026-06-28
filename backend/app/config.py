@@ -17,6 +17,16 @@ class Settings(BaseSettings):
     # Redis/Celery
     REDIS_URL: str = "redis://localhost:6379/0"
 
+    # Broker – set BROKER_TYPE to "rabbitmq" and provide an amqp(s):// URL
+    # to use RabbitMQ instead of Redis for both Taskiq and Celery.
+    # Accepted values: "redis" | "rabbitmq"
+    BROKER_TYPE: str = "redis"
+    # When BROKER_TYPE="rabbitmq" this should be an amqp(s):// URL, e.g.
+    #   amqp://guest:guest@localhost:5672/
+    #   amqps://user:pass@rabbit.host:5671/vhost
+    # When BROKER_TYPE="redis" it defaults to REDIS_URL automatically.
+    BROKER_URL: str = ""
+
     # LLM
     LLM_MODEL_NAME: str = "groq/openai/gpt-oss-120b"
     GROQ_API_KEY: str = ""

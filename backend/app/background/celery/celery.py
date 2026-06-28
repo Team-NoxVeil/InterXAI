@@ -17,11 +17,27 @@ from app.utils.supabase_provider import SupabaseStorageProvider
 
 logger = get_logger(__name__)
 
-celery_app = Celery(
-    "interxai_worker",
-    broker=settings.REDIS_URL,
-    backend=settings.REDIS_URL,
-)
+# ---------------------------------------------------------------------------
+# Resolve effective broker / backend URLs based on BROKER_TYPE.
+# Fallback: when BROKER_URL is empty, use REDIS_URL for backward compat.
+# ---------------------------------------------------------------------------
+_broker_url: str = settings.BROKER_URL if settings.BROKER_URL else settings.REDIS_URL
+
+if settings.BROKER_TYPE == "rabbitmq":
+    # RabbitMQ: use amqp(s):// for the broker; rpc:// for the result backend
+    # so that no external store (Redis, DB) is required.
+    celery_app = Celery(
+        "interxai_worker",
+        broker=_broker_url,
+        backend="rpc://",
+    )
+else:
+    # Redis (default)
+    celery_app = Celery(
+        "interxai_worker",
+        broker=_broker_url,
+        backend=_broker_url,
+    )
 
 celery_app.conf.update(
     task_serializer="json",
@@ -31,7 +47,15 @@ celery_app.conf.update(
     enable_utc=True,
 )
 
-if settings.REDIS_URL.startswith("rediss://"):
+# Apply transport-specific SSL / TLS settings
+if settings.BROKER_TYPE == "rabbitmq" and _broker_url.startswith("amqps://"):
+    celery_app.conf.update(
+        broker_use_ssl={
+            "ssl": True,
+            "ssl_cert_reqs": ssl.CERT_NONE,
+        },
+    )
+elif _broker_url.startswith("rediss://"):
     celery_app.conf.update(
         broker_use_ssl={"ssl_cert_reqs": ssl.CERT_NONE},
         redis_backend_use_ssl={"ssl_cert_reqs": ssl.CERT_NONE},
