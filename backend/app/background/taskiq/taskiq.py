@@ -1,17 +1,19 @@
-import ssl
+from typing import Any
 
+from taskiq import AsyncBroker
+from taskiq.abc.result_backend import AsyncResultBackend
+from taskiq_aio_pika import AioPikaBroker
 from taskiq_redis import ListQueueBroker, RedisAsyncResultBackend
 
 from app.config import settings
 
-if settings.REDIS_URL.startswith("rediss://"):
-    _ssl_ctx: ssl.SSLContext | None = ssl.create_default_context()
-    assert _ssl_ctx is not None
-    _ssl_ctx.check_hostname = False
-    _ssl_ctx.verify_mode = ssl.CERT_NONE
-else:
-    _ssl_ctx = None
+# Explicitly annotate with [Any] to satisfy Mypy
+result_backend: AsyncResultBackend[Any] = RedisAsyncResultBackend(redis_url=settings.REDIS_URL)
 
-broker = ListQueueBroker(url=settings.REDIS_URL).with_result_backend(
-    RedisAsyncResultBackend(redis_url=settings.REDIS_URL)
-)
+# Define the broker type
+broker: AsyncBroker
+
+if settings.BROKER_TYPE.lower() == "rabbitmq":
+    broker = AioPikaBroker(url=settings.RABBITMQ_URL).with_result_backend(result_backend)
+else:
+    broker = ListQueueBroker(url=settings.REDIS_URL).with_result_backend(result_backend)
