@@ -233,7 +233,10 @@ uv run alembic upgrade head
 uv run uvicorn app.main:app --reload
 ```
 
+> **Verification:** Open `http://localhost:8000/health` after starting the backend. A successful response confirms that the API is running correctly before launching the TaskIQ worker and frontend.
+
 **2. TaskIQ Worker** (in a separate terminal):
+
 
 ```bash
 cd backend
