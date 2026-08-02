@@ -284,7 +284,7 @@ export default function DsaPanel({
               >
                 Sample test cases
               </div>
-              {question.sample_test_cases.map((c, i) => (
+              {question.(sample_test_cases ?? []).map((c, i) => (
                 <div
                   key={i}
                   style={{

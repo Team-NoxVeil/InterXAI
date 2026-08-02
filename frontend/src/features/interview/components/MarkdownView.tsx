@@ -20,7 +20,7 @@ export default function MarkdownView({ source }: Props) {
         color: "#334155",
       }}
     >
-      {blocks.map((b, i) => (
+      {(blocks ?? []).map((b, i) => (
         <Block key={i} block={b} />
       ))}
     </div>
