@@ -115,7 +115,7 @@ export default function DsaPanel({
       LANGUAGES.find((l) => l.value === language)?.starter ?? "";
     const nextStarter = LANGUAGES.find((l) => l.value === next)?.starter ?? "";
     setLanguage(next);
-    if (source.trim() === currentStarter.trim() || source.trim() === "") {
+    if (source.trim() === currentStarter.trim() || source.trim().length === 0) {
       setSource(nextStarter);
     }
   };
