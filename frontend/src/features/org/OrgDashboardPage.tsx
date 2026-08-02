@@ -806,7 +806,7 @@ const OverviewTab: React.FC<{ detail: OrgInterviewDetail }> = ({ detail }) => (
       {detail.questions.length === 0 ? (
         <Muted>No custom questions configured.</Muted>
       ) : (
-        detail.questions.map((q, i) => (
+        detail.(questions ?? []).map((q, i) => (
           <div
             key={q.id}
             style={{
