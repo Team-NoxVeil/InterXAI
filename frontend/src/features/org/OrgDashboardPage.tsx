@@ -466,7 +466,7 @@ const ListView: React.FC<{
           gap: 16,
         }}
       >
-        {interviews.map((iv) => (
+        {(interviews ?? []).map((iv) => (
           <InterviewCard
             key={iv.id}
             interview={iv}
