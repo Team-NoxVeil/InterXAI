@@ -2331,7 +2331,7 @@ const Step1Basics: React.FC<{
         label="Duration (min)"
         type="number"
         value={String(form.duration)}
-        onChange={(v) => set("duration", parseInt(v) || 0)}
+        onChange={(v) => set("duration", parseInt(v, 10) || 0)}
       />
       <Field
         label="Resume shortlist threshold (0–10)"
