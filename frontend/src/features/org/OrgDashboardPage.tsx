@@ -2999,7 +2999,7 @@ function formatDateTime(iso: string) {
   });
 }
 function scoreColor(s: number | null | undefined) {
-  if (s == null) return "#94a3b8";
+  if (s === null) return "#94a3b8";
   if (s >= 80) return "#10b981";
   if (s >= 60) return "#f59e0b";
   if (s >= 40) return "#f97316";
