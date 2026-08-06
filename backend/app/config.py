@@ -30,6 +30,12 @@ class Settings(BaseSettings):
     SUPABASE_KEY: str = ""
     SUPABASE_BUCKET_NAME: str = "resumes"
 
+    # Cloudinary
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
+    CLOUDINARY_FOLDER: str = "resumes"
+
     # Piston (code execution)
     PISTON_URL: str = "http://localhost:2000"
 
