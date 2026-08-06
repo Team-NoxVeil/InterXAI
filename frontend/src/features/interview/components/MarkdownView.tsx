@@ -93,7 +93,7 @@ function parseBlocks(src: string): Block[] {
       continue;
     }
 
-    if (line.trim() === "") {
+    if (line.trim().length === 0) {
       i++;
       continue;
     }
