@@ -93,7 +93,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
   );
 
   const selectedInterview = useMemo(() => {
-    if (selectedId == null) return null;
+    if (selectedId === null) return null;
     return (
       available.find((i) => i.id === selectedId) ??
       applied.find((i) => i.id === selectedId) ??
