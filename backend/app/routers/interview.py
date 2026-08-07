@@ -135,7 +135,6 @@ async def get_applied_interviews(
     return applied_interviews
 
 
-
 @router.post(
     "/seed-test",
     response_model=CustomInterviewResponse,
@@ -202,7 +201,6 @@ async def seed_test_interview(
 
 
 @router.get("/{interview_id}", response_model=CustomInterviewResponse)
-
 async def get_interview(
     interview_id: int,
     db: AsyncSession = Depends(get_db),

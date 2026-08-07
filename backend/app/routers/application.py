@@ -130,9 +130,7 @@ async def shortlist_application(
         org.id,
     )
 
-    app_result = await db.execute(
-        select(Application).where(Application.id == application_id)
-    )
+    app_result = await db.execute(select(Application).where(Application.id == application_id))
     application = app_result.scalar_one_or_none()
 
     if not application:

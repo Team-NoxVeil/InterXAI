@@ -30,6 +30,7 @@ FastAPI-based backend for the InterXAI interview automation platform. Handles al
 | **Groq** | LLM inference provider |
 | **PyPDF2** | Resume PDF text extraction |
 | **Supabase** | File storage (resume PDFs) |
+| **Cloudinary** | Optional file storage provider (resume PDFs) |
 | **PyJWT + bcrypt** | Authentication |
 | **Pydantic v2** | Request/response validation and settings |
 | **uv** | Python package manager |
@@ -73,7 +74,8 @@ backend/
 │   │
 │   ├── utils/                  # Concrete implementations
 │   │   ├── authorization.py    # JWT auth dependencies (get_current_user, etc.)
-│   │   ├── supabase.py         # SupabaseStorageProvider
+│   │   ├── supabase_provider.py # SupabaseStorageProvider
+│   │   ├── cloudinary_provider.py # CloudinaryStorageProvider
 │   │   └── ...                 # BcryptHasher, JwtEncrypter, PDF extractor
 │   │
 │   ├── ai/                     # LLM agents and prompts
@@ -146,6 +148,13 @@ GROQ_API_KEY=your-groq-api-key
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-service-role-key
 SUPABASE_BUCKET_NAME=resumes
+
+# Cloudinary Storage (alternative to Supabase)
+# STORAGE_PROVIDER=cloudinary
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+CLOUDINARY_FOLDER=resumes
 ```
 
 All variables are defined and validated in `app/config.py`. Access them anywhere via the `settings` singleton:
@@ -253,11 +262,13 @@ All major integrations follow the same pattern — abstractions in `app/interfac
 
 ```
 app/interfaces/llm_provider.py      →  app/ai/lite_llm.py
-app/interfaces/storage_provider.py  →  app/utils/supabase.py
+app/interfaces/storage_provider.py  →  app/utils/supabase_provider.py / app/utils/cloudinary_provider.py
 app/interfaces/hasher.py            →  app/utils/ (BcryptHasher)
 app/interfaces/encrypter.py         →  app/utils/ (JwtEncrypter)
 app/interfaces/base_agent.py        →  app/ai/resume_evaluator.py
 ```
+
+The storage provider is selected at runtime via `STORAGE_PROVIDER` in `app/config.py` (`supabase` or `cloudinary`) — no business logic changes needed.
 
 This makes it straightforward to swap providers (e.g., Groq → OpenAI, Supabase → S3) without touching business logic.
 
