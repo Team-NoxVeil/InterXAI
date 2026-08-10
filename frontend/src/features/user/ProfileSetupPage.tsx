@@ -169,7 +169,7 @@ const ProfileSetupPage: React.FC<ProfileSetupPageProps> = ({
                 "0 35px 60px -15px rgba(15,23,42,0.18), inset 0 1px 2px rgba(255,255,255,0.7)",
             }}
           >
-            <StepIndicator current={2} total={3} />
+            <StepIndicator current={3} total={3} />
 
             <h2
               style={{
