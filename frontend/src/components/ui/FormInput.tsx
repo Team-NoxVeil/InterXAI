@@ -27,8 +27,8 @@ const FormInput: React.FC<FormInputProps> = ({
   const inputType = revealable ? (revealed ? "text" : "password") : type;
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-white/70">
+    <div className="text-sm  font-medium  text-slate-700">
+      <label htmlFor={id} className="text-sm font-medium  text-slate-700">
         {label}
       </label>
 
